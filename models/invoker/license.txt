@@ -1,0 +1,11 @@
+Model Information:
+* title:	Invoker DOTA 2
+* source:	https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22
+* author:	ansaldotoys2 (https://sketchfab.com/ansaldotoys2)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Invoker DOTA 2" (https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22) by ansaldotoys2 (https://sketchfab.com/ansaldotoys2) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plus 25</title>
+<meta name="description" content="Plus 25 — Dota 2 MMR boosting. Climb the ladder. We carry.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<!-- Import map first (it must precede any module load), then start fetching the whole 3D module graph in
+     parallel with the page instead of one import at a time. -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+} }
+</script>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/loaders/GLTFLoader.js" crossorigin>
+<link rel="modulepreload" href="js/scene.js">
+<link rel="modulepreload" href="js/shared.js">
+<link rel="modulepreload" href="js/post.js">
+<link rel="modulepreload" href="js/orbs.js">
+<link rel="modulepreload" href="js/cast.js">
+<link rel="modulepreload" href="js/book.js">
+<style>
+  /* Single committed look: night sky over the Invoker's tower. Colors come from the measured orb + grimoire palettes. */
+  :root {
+    --void: #06070d;
+    --void-2: #0d0e18;
+    --ink: #efe6d6;          /* parchment white */
+    --muted: #a098ab;
+    --line: rgba(240, 175, 94, 0.2);
+    --gold: #f0af5e;         /* grimoire metal, brightest measured */
+    --gold-2: #de8839;
+    --gold-deep: #994c26;
+    --quas: #4fc3ff;
+    --wex: #c07bff;
+    --exort: #ffa23a;
+    --display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --ui: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+    --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+    --step-0: clamp(15px, 0.35vw + 14px, 17px);
+    --step-1: clamp(18px, 0.6vw + 15px, 21px);
+    --step-3: clamp(30px, 2.4vw + 18px, 48px);
+    --step-5: clamp(44px, 6.2vw + 12px, 104px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--void); color: var(--ink); font: 400 var(--step-0)/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  a { color: inherit; }
+  h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; text-wrap: balance; margin: 0; }
+  .eyebrow { font: 500 12px/1 var(--ui); letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin: 0 0 18px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+  .skip { position: absolute; left: 12px; top: -60px; z-index: 50; padding: 10px 14px; background: var(--gold); color: #1a0f08; font: 600 13px var(--ui); border-radius: 6px; }
+  .skip:focus { top: 12px; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 8px;
+    font: 600 13px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none;
+    border: 1px solid transparent; transition: background .2s, color .2s, border-color .2s, transform .2s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-gold { background: var(--gold); color: #1a0f08; }
+  .btn-gold:hover { background: #f6c27c; }
+  .btn-ghost { border-color: rgba(239, 230, 214, 0.28); color: var(--ink); background: rgba(6, 7, 13, 0.25); }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 30; display: flex; align-items: center; gap: 28px;
+    padding: 18px clamp(18px, 4vw, 56px); transition: background .3s, border-color .3s, padding .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled { background: rgba(6, 7, 13, 0.86); backdrop-filter: blur(12px); border-bottom-color: var(--line); padding-block: 12px; }
+  .logo { display: flex; align-items: baseline; gap: 12px; text-decoration: none; margin-right: auto; }
+  .logo-mark { font: 700 28px/1 var(--display); letter-spacing: 0.02em; }
+  .logo-mark b { color: var(--gold); font-weight: 700; margin-right: 1px; }
+  .logo-sub { font: 500 10px/1 var(--ui); letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+  .links { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+  .links a { font: 500 13px/1 var(--ui); letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; color: var(--ink); opacity: 0.82; transition: opacity .2s, color .2s; }
+  .links a:hover { opacity: 1; color: var(--gold); }
+  .nav .login { padding: 11px 18px; }
+  .menu-btn { display: none; }
+
+  /* ---------- hero: full-width wordmark behind the 3D cast, the first beat of the story stage ---------- */
+  .hero-panel {
+    position: absolute; inset: 0 clamp(6px, 0.8vw, 12px); z-index: 0; overflow: hidden; will-change: transform;
+    border: 1px solid rgba(240, 175, 94, 0.12); border-top: 0; border-radius: 0 0 22px 22px;
+    background: radial-gradient(62% 58% at 50% 64%, #1e1733 0%, #0d0d19 58%, var(--void-2) 100%);
+  }
+  .wordmark {
+    position: relative; z-index: 1; margin: 0; padding: clamp(84px, 12vh, 124px) clamp(18px, 3.4vw, 56px) 0;
+    font: 700 var(--wm, 15vw)/0.8 var(--display); letter-spacing: -0.03em; color: var(--ink);
+  }
+  .wm { display: inline-flex; align-items: flex-start; white-space: nowrap; }
+  .wm .plus { color: var(--gold); }
+  .wm sup { margin: 0.12em 0 0 0.3em; font: 600 clamp(11px, 1.5vw, 24px)/1 var(--ui); letter-spacing: 0.14em; color: var(--gold); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .step.step-hero { position: relative; align-items: flex-end; justify-content: space-between; gap: 24px;
+    padding: 0 clamp(18px, 3.4vw, 56px) clamp(22px, 5vh, 52px); }
+  .hero-copy { max-width: 25rem; }
+  .lede { margin: 0 0 24px; font-size: var(--step-1); line-height: 1.5; color: #d9cfc0; text-wrap: pretty; }
+  .lede strong { display: block; margin-bottom: 4px; color: var(--ink); font-weight: 500; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .video-toggle {
+    font: 500 11px/1 var(--ui); letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+    background: rgba(6,7,13,0.5); border: 1px solid rgba(239,230,214,0.18); border-radius: 999px; padding: 9px 14px; cursor: pointer;
+  }
+  .video-toggle:hover { color: var(--ink); }
+
+  /* load sequence — plays immediately, never waits on scroll */
+  .wordmark, .hero-copy, .step-hero .video-toggle { animation: rise 1s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-copy { animation-delay: .35s; }
+  .step-hero .video-toggle { animation-delay: .5s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .wordmark, .hero-copy, .step-hero .video-toggle { animation: none; } }
+
+  /* ---------- scrollytelling ---------- */
+  /* overflow-x: clip (not hidden) trims the card scrims' sideways spill without making a scroll container,
+     so the sticky stage still pins */
+  .story { position: relative; background: var(--void); overflow-x: clip; }
+  .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  /* transparent canvas: the hero panel (wordmark) shows through behind Invoker; later beats sit on the void */
+  .stage canvas { position: relative; z-index: 1; display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.4s ease; }
+  .story.is-3d .stage canvas { opacity: 1; }
+  .stage-fade { position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(180deg, rgba(6,7,13,0) 86%, var(--void) 100%); }
+  /* fallback when WebGL fails: the Invoker video under the wordmark */
+  .stage .fallback { position: absolute; inset: 0; display: none; }
+  .stage .fallback video { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .stage .fallback::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, var(--void) 0%, rgba(6,7,13,0.55) 40%, rgba(6,7,13,0.35) 100%); }
+  .story.no-webgl .stage .fallback { display: block; }
+  .story.no-webgl .hero-panel { background: transparent; }
+  .beat-rail { position: absolute; right: clamp(14px, 3vw, 40px); top: 50%; transform: translateY(-50%); display: grid; gap: 14px; pointer-events: none; z-index: 3; transition: opacity .5s; }
+  .story.at-hero .beat-rail { opacity: 0; }   /* the beat list appears once the orbs have come down */
+  .beat-rail li { list-style: none; display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    font: 500 10px/1 var(--ui); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(239,230,214,0.35); transition: color .3s; }
+  .beat-rail li::after { content: ""; width: 6px; height: 6px; border-radius: 50%; border: 1px solid currentColor; transition: background .3s, transform .3s; }
+  .beat-rail li.on { color: var(--c, var(--gold)); }
+  .beat-rail li.on::after { background: currentColor; transform: scale(1.4); }
+  .beat-rail ol { margin: 0; padding: 0; display: grid; gap: 14px; }
+
+  .steps { position: relative; margin-top: -100vh; margin-top: -100svh; z-index: 2; }
+  .step { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: 12vh clamp(20px, 7vw, 120px); }
+  .step[data-align="right"] { justify-content: flex-end; padding-right: clamp(90px, 11vw, 180px); }   /* clear of the beat rail */
+  .step[data-align="left"] { justify-content: flex-start; }
+  .step[data-align="center"] { justify-content: center; align-items: flex-end; text-align: center; }
+  .card { position: relative; max-width: 30rem; }
+  .step[data-align="center"] .card { max-width: 40rem; }
+  .card::before { /* soft local scrim so copy reads over the glow without a boxed panel */
+    content: ""; position: absolute; inset: -4rem -5rem; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(6,7,13,0.78), rgba(6,7,13,0.45) 55%, rgba(6,7,13,0)); }
+  .card .eyebrow { color: var(--el, var(--gold)); }
+  .card h2 { font-size: var(--step-3); line-height: 1.08; margin-bottom: 18px; }
+  .card h2 .el { color: var(--el); }
+  .card p { margin: 0; color: #d6ccbd; font-size: var(--step-1); line-height: 1.55; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
+  .step[data-align="center"] .chips { justify-content: center; }
+  .chips li { font: 500 11px/1 var(--ui); letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 11px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--el, var(--gold)) 45%, transparent); color: var(--el, var(--gold)); background: rgba(6,7,13,0.4); }
+  .step.quas { --el: var(--quas); }
+  .step.wex { --el: var(--wex); }
+  .step.exort { --el: var(--exort); }
+
+  /* ---------- content sections (functional pass — visual design comes later) ---------- */
+  .section { position: relative; padding: clamp(72px, 12vh, 140px) clamp(20px, 6vw, 96px); border-top: 1px solid var(--line); background: var(--void); }
+  .calc, .reviews { background: var(--void-2); }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .sec-head { max-width: 44rem; margin-bottom: clamp(32px, 5vh, 56px); }
+  .sec-head-row { max-width: none; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .section h2 { font-size: var(--step-3); line-height: 1.1; }
+  .sec-sub { margin: 14px 0 0; color: var(--muted); font-size: var(--step-1); }
+  .draft-note { display: inline-block; margin: 18px 0 0; padding: 7px 10px; border: 1px dashed rgba(160, 152, 171, 0.4); border-radius: 6px;
+    font: 500 11px/1.4 var(--ui); letter-spacing: 0.08em; color: #9a91a6; }
+  .draft-note code { font: inherit; color: var(--gold); }
+
+  /* calculator: compact form on the left, the grimoire arriving on the right */
+  /* clip sideways only (no page scroll from the book's overhang); vertical stays visible so the fade below can reach up */
+  .calc { overflow-x: clip; overflow-y: visible; border-top: 0; background: var(--void-2); }
+  /* one continuous, eased fade from the story's last frame into the calculator's navy: it ends in exactly the
+     calculator's colour at the seam (no dark dip then lighter band), with many stops so the dark ramp doesn't band */
+  .calc::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 55vh; pointer-events: none;
+    background: linear-gradient(180deg, rgba(13, 14, 24, 0) 0%, rgba(13, 14, 24, 0.08) 15%, rgba(13, 14, 24, 0.22) 30%, rgba(13, 14, 24, 0.42) 45%,
+      rgba(13, 14, 24, 0.64) 60%, rgba(13, 14, 24, 0.82) 75%, rgba(13, 14, 24, 0.94) 88%, var(--void-2) 100%); }
+  .calc-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .calc-panel { max-width: 32rem; }
+  .calc-form { display: grid; gap: 28px; }
+  .field label { display: block; margin-bottom: 14px; font: 500 12px/1 var(--ui); letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .field-row { display: flex; align-items: center; gap: 16px; }
+  .field-row input[type="range"] { flex: 1; min-width: 0; height: 28px; accent-color: var(--gold); }
+  .field input[type="number"] { width: 7.5rem; padding: 12px 14px; background: var(--void); border: 1px solid rgba(239, 230, 214, 0.2); border-radius: 8px;
+    color: var(--ink); font: 600 18px/1 var(--ui); font-variant-numeric: tabular-nums; }
+  .field input[type="number"]:focus-visible { border-color: var(--gold); outline: none; }
+  .money { position: relative; }
+  .money span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font: 600 18px var(--ui); pointer-events: none; }
+  .money input[type="number"] { padding-left: 28px; }
+  .hint { margin: 10px 0 0; font: 500 12px var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+  .calc-sum { padding-top: 22px; border-top: 1px solid var(--line); }
+  .sum-main { margin: 0 0 6px; font: 600 clamp(26px, 2.6vw, 36px)/1.1 var(--display); font-variant-numeric: tabular-nums; }
+  .sum-main .gain { color: var(--gold); }
+  .sum-main .dot { color: var(--muted); }
+  .sum-detail { margin: 0; color: #d6ccbd; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .calc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .calc-actions .draft-note { margin: 0; }
+  .res-note { margin: 0; color: var(--muted); font-size: 14px; }
+  /* the canvas overhangs its column so the book's orbiting pages aren't clipped; the section clips the rest */
+  .calc-book { position: relative; min-height: clamp(420px, 62vh, 660px); }
+  .calc-book canvas { position: absolute; left: -10%; top: -14%; display: block; width: 120%; height: 128%; pointer-events: none; opacity: 0;
+    /* feather the edges: the bloom's faint glow reaches the canvas border and would otherwise show as a box */
+    -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); }
+
+  /* pricing: one card per orb (Quas, Wex, Exort) in the story's colours, framed like the grimoire's panels */
+  .tiers {
+    background:
+      radial-gradient(38% 45% at 16% 72%, rgba(79, 195, 255, 0.06), rgba(79, 195, 255, 0) 70%),
+      radial-gradient(38% 45% at 50% 62%, rgba(192, 123, 255, 0.07), rgba(192, 123, 255, 0) 70%),
+      radial-gradient(38% 45% at 84% 72%, rgba(255, 162, 58, 0.06), rgba(255, 162, 58, 0) 70%),
+      var(--void);
+  }
+  .tier-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; padding-top: 14px; }
+  .tier.quas  { --el: var(--quas);  --el-hi: #defdfd; --el-lo: #01317f; }
+  .tier.wex   { --el: var(--wex);   --el-hi: #fbd7fd; --el-lo: #270a67; }
+  .tier.exort { --el: var(--exort); --el-hi: #fdfba7; --el-lo: #8e2404; }
+  .tier {
+    position: relative; isolation: isolate; display: flex; flex-direction: column; padding: 34px 30px 30px; border-radius: 18px;
+    border: 1px solid color-mix(in srgb, var(--el) 24%, transparent);
+    background:
+      radial-gradient(120% 55% at 50% 0%, color-mix(in srgb, var(--el) 16%, transparent), transparent 62%),
+      linear-gradient(180deg, #10111f 0%, #0a0b14 100%);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s;
+  }
+  .tier::before { /* inner hairline frame */
+    content: ""; position: absolute; inset: 9px; z-index: -1; border-radius: 12px; border: 1px solid rgba(240, 175, 94, 0.09); pointer-events: none; }
+  .tier::after { /* lit top edge in the element's colour */
+    content: ""; position: absolute; left: 18%; right: 18%; top: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--el), transparent); }
+  .tier:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--el) 55%, transparent);
+    box-shadow: 0 24px 60px -24px color-mix(in srgb, var(--el) 45%, transparent); }
+
+  .tier-head { display: grid; grid-template-columns: auto 1fr; column-gap: 16px; align-items: center; margin-bottom: 26px; }
+  .tier-orb {
+    grid-row: span 2; position: relative; width: 58px; height: 58px; border-radius: 50%;
+    background: radial-gradient(circle at 36% 32%, var(--el-hi) 0 7%, var(--el) 32%, var(--el-lo) 74%, #05060b 100%);
+    box-shadow: 0 0 18px 2px color-mix(in srgb, var(--el) 55%, transparent), 0 0 46px 10px color-mix(in srgb, var(--el) 20%, transparent),
+                inset 0 0 12px color-mix(in srgb, var(--el-hi) 40%, transparent);
+    transition: box-shadow .35s;
+  }
+  .tier-orb::after { /* slow swirl of light across the orb */
+    content: ""; position: absolute; inset: 0; border-radius: 50%; mix-blend-mode: screen;
+    background: conic-gradient(from 0deg, transparent 0 20%, color-mix(in srgb, var(--el-hi) 55%, transparent) 28%, transparent 40% 68%,
+                color-mix(in srgb, var(--el-hi) 35%, transparent) 78%, transparent 88%);
+    animation: orb-swirl 7s linear infinite;
+  }
+  @keyframes orb-swirl { to { transform: rotate(1turn); } }
+  .tier:hover .tier-orb { box-shadow: 0 0 24px 4px color-mix(in srgb, var(--el) 75%, transparent), 0 0 70px 18px color-mix(in srgb, var(--el) 30%, transparent),
+                                      inset 0 0 14px color-mix(in srgb, var(--el-hi) 55%, transparent); }
+  .tier-el { margin: 0; font: 600 12px/1 var(--ui); letter-spacing: 0.26em; text-transform: uppercase; color: var(--el); }
+  .tier-el i { margin: 0 4px; font-style: normal; color: var(--muted); }
+  .tier-tag { margin: 7px 0 0; font-size: 14px; line-height: 1.3; color: var(--muted); }
+
+  .tier-mmr { margin: 0; font: 700 clamp(44px, 4.4vw, 64px)/1 var(--display); letter-spacing: -0.01em; }
+  .tier-mmr span { margin-left: 8px; font: 500 12px var(--ui); letter-spacing: 0.24em; color: var(--muted); vertical-align: middle; }
+  .tier-wins { margin: 10px 0 0; font: 500 13px var(--ui); letter-spacing: 0.08em; color: #b9b0c4; }
+  .tier-rule { position: relative; height: 1px; margin: 24px 0; background: linear-gradient(90deg, transparent, rgba(240, 175, 94, 0.3), transparent); }
+  .tier-rule::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; transform: translate(-50%, -50%) rotate(45deg);
+    background: #0d0e1a; border: 1px solid var(--gold); }
+  .tier ul { list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 12px; color: #d6ccbd; font-size: 15px; }
+  .tier li { position: relative; padding-left: 22px; }
+  .tier li::before { content: ""; position: absolute; left: 1px; top: 0.52em; width: 7px; height: 7px; transform: rotate(45deg);
+    background: color-mix(in srgb, var(--el) 75%, transparent); box-shadow: 0 0 8px color-mix(in srgb, var(--el) 60%, transparent); }
+
+  .tier-foot { margin-top: auto; display: grid; gap: 16px; }
+  .tier-price { margin: 0; display: flex; align-items: baseline; gap: 4px; font: 600 42px/1 var(--display); font-variant-numeric: lining-nums; }
+  .tier-price sup { align-self: flex-start; margin-top: 4px; font: 600 18px/1 var(--ui); color: var(--muted); }
+  .tier-price small { margin-left: 10px; font: 500 11px var(--ui); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .tier-btn { justify-content: center; color: var(--ink); border-color: color-mix(in srgb, var(--el) 45%, transparent); background: color-mix(in srgb, var(--el) 8%, transparent); }
+  .tier-btn:hover { color: #fff; border-color: var(--el); background: color-mix(in srgb, var(--el) 18%, transparent); }
+
+  .tier.featured { transform: translateY(-10px); border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+    box-shadow: 0 30px 80px -30px color-mix(in srgb, var(--el) 55%, transparent); }
+  .tier.featured:hover { transform: translateY(-16px); }
+  .tier.featured .tier-btn { color: #1a0f08; border-color: var(--gold); background: var(--gold); }
+  .tier.featured .tier-btn:hover { background: #f6c27c; }
+  .tier-flag { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); margin: 0; padding: 7px 14px; border-radius: 99px; white-space: nowrap;
+    background: linear-gradient(90deg, var(--gold-2), var(--gold)); color: #1a0f08; font: 600 11px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase;
+    box-shadow: 0 6px 20px -6px rgba(240, 175, 94, 0.6); }
+  @media (prefers-reduced-motion: reduce) {
+    .tier-orb::after { animation: none; }
+    .tier, .tier:hover, .tier.featured, .tier.featured:hover { transform: none; transition: none; }
+  }
+
+  /* member pricing strip */
+  .member-bar { margin-top: 26px; display: flex; align-items: center; gap: 18px; padding: 18px 22px; border-radius: 14px; border: 1px solid var(--line);
+    background: linear-gradient(90deg, rgba(240, 175, 94, 0.08), rgba(240, 175, 94, 0) 60%), #0b0c16; color: #d6ccbd; text-decoration: none;
+    transition: border-color .25s; }
+  .member-bar:hover { border-color: var(--gold); }
+  .member-seal { flex: none; display: grid; place-items: center; width: 36px; height: 36px; margin: 0 4px; border-radius: 6px;
+    border: 1px solid rgba(240, 175, 94, 0.5); color: var(--gold); transform: rotate(45deg); }
+  .member-seal svg { transform: rotate(-45deg); }
+  .member-bar b { color: var(--ink); font-weight: 500; }
+  .member-bar .arrow { margin-left: auto; color: var(--gold); transition: transform .25s; }
+  .member-bar:hover .arrow { transform: translateX(4px); }
+
+  /* reviews carousel */
+  .car-ctrl { display: flex; gap: 8px; }
+  .car-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(239, 230, 214, 0.25); background: transparent; color: var(--ink); font-size: 18px; cursor: pointer; transition: border-color .2s, color .2s, opacity .2s; }
+  .car-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .car-btn:disabled { opacity: 0.3; cursor: default; }
+  .rev-track { list-style: none; margin: 24px 0 0; padding: 4px 2px 18px; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 32px) / 3); gap: 16px;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: rgba(240, 175, 94, 0.35) transparent; }
+  @media (prefers-reduced-motion: reduce) { .rev-track { scroll-behavior: auto; } }
+  .rev { scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px; padding: 26px; border: 1px solid rgba(239, 230, 214, 0.12); border-radius: 14px; background: var(--void); }
+  .stars { color: var(--gold); letter-spacing: 3px; font-size: 15px; }
+  .rev blockquote { flex: 1; margin: 0; color: #e2d8c9; font-size: 16px; line-height: 1.55; }
+  .rev footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font: 500 12px var(--ui); letter-spacing: 0.06em; color: var(--muted); }
+  .rev .who { color: var(--ink); }
+  .rev .gain { margin-left: auto; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+  /* blog */
+  .text-link { font: 500 13px var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
+  .text-link:hover { text-decoration: underline; }
+  .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .post a { display: flex; flex-direction: column; height: 100%; overflow: hidden; border: 1px solid rgba(239, 230, 214, 0.12); border-radius: 14px; background: var(--void-2); text-decoration: none; transition: border-color .2s, transform .2s; }
+  .post a:hover { border-color: color-mix(in srgb, var(--el) 60%, transparent); transform: translateY(-2px); }
+  .post-art { aspect-ratio: 16 / 9;
+    background: radial-gradient(34% 50% at 50% 55%, color-mix(in srgb, var(--el) 80%, white 20%) 0%, color-mix(in srgb, var(--el) 45%, transparent) 38%, transparent 72%),
+                repeating-radial-gradient(circle at 50% 55%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 22px), var(--void); }
+  .post-body { display: grid; gap: 10px; padding: 22px 22px 26px; }
+  .post-meta { margin: 0; font: 500 11px var(--ui); letter-spacing: 0.18em; text-transform: uppercase; color: var(--el); }
+  .post h3 { margin: 0; font: 600 20px/1.3 var(--display); color: var(--ink); text-wrap: balance; }
+  .post .ex { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .site-foot { padding: 28px clamp(20px, 6vw, 96px) 36px; border-top: 1px solid var(--line); background: var(--void); }
+  .site-foot p { max-width: 1180px; margin: 0 auto; font: 400 12px/1.6 var(--ui); letter-spacing: 0.04em; color: var(--muted); }
+  .site-foot a { color: var(--gold); }
+
+  @media (max-width: 900px) {
+    .calc-layout, .tier-grid, .post-grid { grid-template-columns: 1fr; }
+    .calc-book { min-height: 380px; }
+    .tier-grid { gap: 30px; }
+    .tier.featured, .tier.featured:hover { transform: none; }
+    .rev-track { grid-auto-columns: 86%; }
+  }
+
+  @media (max-width: 760px) {
+    .links, .logo-sub { display: none; }
+    .menu-btn { display: inline-flex; padding: 11px 14px; }
+    .nav.open .links { display: grid; position: absolute; top: 100%; left: 0; right: 0; gap: 0; padding: 8px 18px 16px; background: rgba(6,7,13,0.96); border-bottom: 1px solid var(--line); }
+    .nav.open .links a { display: block; padding: 14px 0; }
+    .wordmark { padding-top: 84px; }
+    .beat-rail { display: none; }
+    .step, .step[data-align="left"], .step[data-align="right"] { justify-content: center; align-items: flex-end; text-align: center; padding-bottom: 9vh; }
+    .step .chips { justify-content: center; }
+    .step.step-hero { flex-direction: column; align-items: stretch; justify-content: flex-end; text-align: left; padding-bottom: 28px;
+      background: linear-gradient(0deg, rgba(6, 7, 13, 0.92) 28%, rgba(6, 7, 13, 0) 55%); }
+    .step-hero .video-toggle { align-self: flex-start; }
+  }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="Plus 25 home">
+    <span class="logo-mark"><b>+</b>25</span>
+    <span class="logo-sub">Dota 2 boosting</span>
+  </a>
+  <nav aria-label="Primary">
+    <ul class="links" id="links">
+      <li><a href="#calculator">Boosting</a></li>
+      <li><a href="#accounts">Accounts</a></li>
+      <li><a href="#blog">Blog</a></li>
+    </ul>
+  </nav>
+  <button class="btn btn-ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+  <a class="btn btn-ghost login" href="#login">Login</a>
+</header>
+
+<main id="main">
+  <section class="story at-hero" id="invoke" aria-labelledby="hero-title">
+    <div class="stage">
+      <div class="fallback" aria-hidden="true"><video id="fallbackVideo" data-src="media/invoker-hero.mp4" muted playsinline loop preload="none"></video></div>
+      <div class="hero-panel" id="heroPanel">
+        <h1 class="wordmark" id="hero-title">
+          <span class="wm" id="wordmark" aria-hidden="true"><span>Plus</span><span class="plus">+</span><span>25</span><sup>MMR</sup></span>
+          <span class="sr-only">Plus 25: Dota 2 MMR boosting</span>
+        </h1>
+      </div>
+      <canvas id="scene" aria-hidden="true"></canvas>
+      <div class="stage-fade"></div>
+      <div class="beat-rail" aria-hidden="true">
+        <ol id="rail">
+          <li data-p="0.03">Orbs</li>
+          <li data-p="0.35" style="--c: var(--quas)">Quas</li>
+          <li data-p="0.66" style="--c: var(--wex)">Wex</li>
+          <li data-p="0.97" style="--c: var(--exort)">Exort</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="steps">
+      <article class="step step-hero" id="top">
+        <div class="hero-copy">
+          <p class="lede"><strong>Climb the ladder. We carry.</strong> Top-ladder players queue on your account and play your games up, +25 a win, with every match on your dashboard.</p>
+          <div class="cta-row"><a class="btn btn-gold" href="#calculator">Calculate my boost <span aria-hidden="true">↓</span></a></div>
+        </div>
+        <button class="video-toggle" id="videoToggle" type="button" aria-pressed="false">Pause animation</button>
+      </article>
+
+      <article class="step" data-align="center">
+        <div class="card">
+          <p class="eyebrow">How a +25 boost works</p>
+          <h2>Three orbs. One invocation.</h2>
+          <p>Invoker never wins on one element. Neither do we. Every boost is built from three things — and cast only when all three are in place.</p>
+        </div>
+      </article>
+
+      <article class="step quas" data-align="left">
+        <div class="card">
+          <p class="eyebrow">01 · Quas · Ice</p>
+          <h2><span class="el">Composure.</span> Your account stays cold and quiet.</h2>
+          <p>Logins matched to your region, offline mode, chat muted. Nothing about your games reads like a different player sat down.</p>
+          <ul class="chips"><li>Region-matched VPN</li><li>Offline mode</li><li>Chat off</li></ul>
+        </div>
+      </article>
+
+      <article class="step wex" data-align="right">
+        <div class="card">
+          <p class="eyebrow">02 · Wex · Storm</p>
+          <h2><span class="el">Tempo.</span> Orders start fast and never stall.</h2>
+          <p>Follow every match from your dashboard, message your booster, and pause the order whenever you want the account back.</p>
+          <ul class="chips"><li>Live match tracker</li><li>Pause anytime</li><li>Booster chat</li></ul>
+        </div>
+      </article>
+
+      <article class="step exort" data-align="right">
+        <div class="card">
+          <p class="eyebrow">03 · Exort · Fire</p>
+          <h2><span class="el">Power.</span> Players who already live at the top.</h2>
+          <p>Your games go to boosters vetted on replays, not just rank — matched to the heroes and role you actually play.</p>
+          <ul class="chips"><li>Replay-vetted</li><li>Role matching</li><li>Solo or duo</li></ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section calc" id="calculator" aria-labelledby="calc-title">
+    <div class="wrap calc-layout">
+      <div class="calc-panel">
+        <header class="sec-head">
+          <p class="eyebrow">MMR calculator</p>
+          <h2 id="calc-title">Set your budget. See your climb.</h2>
+          <p class="sec-sub">Tell us where you are and what you want to spend. Every +25 is one win on your account.</p>
+        </header>
+        <form class="calc-form" id="calcForm" novalidate>
+          <div class="field">
+            <label for="mmrNum">Current MMR</label>
+            <div class="field-row">
+              <input type="range" id="mmrRange" min="0" max="8000" step="10" value="2500" aria-label="Current MMR slider">
+              <input type="number" id="mmrNum" min="0" max="8000" step="10" value="2500" inputmode="numeric">
+            </div>
+            <p class="hint" id="rankNow">Archon</p>
+          </div>
+          <div class="field">
+            <label for="budgetNum">Budget (USD)</label>
+            <div class="field-row">
+              <input type="range" id="budgetRange" min="10" max="1000" step="5" value="185" aria-label="Budget slider">
+              <div class="money"><span>$</span><input type="number" id="budgetNum" min="10" max="1000" step="5" value="185" inputmode="numeric"></div>
+            </div>
+          </div>
+          <div class="calc-sum" aria-live="polite">
+            <p class="sum-main"><span class="gain" id="resGain">+1,525</span> MMR <span class="dot">·</span> <span id="resDays">7</span> days</p>
+            <p class="sum-detail" id="resDetail">Archon 2,500 → Ancient 4,025 · 61 wins</p>
+          </div>
+          <div class="calc-actions">
+            <button class="btn btn-gold" id="checkoutBtn" type="button">Start checkout</button>
+            <p class="draft-note">Placeholder rates: set real prices in <code>PRICING</code></p>
+          </div>
+          <p class="res-note" id="checkoutNote" hidden>Checkout connects when the store goes live on Shopify.</p>
+        </form>
+      </div>
+      <div class="calc-book" aria-hidden="true"><canvas id="calcBook"></canvas></div>
+    </div>
+  </section>
+
+  <section class="section tiers" id="pricing" aria-labelledby="tiers-title">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Fixed pricing</p>
+        <h2 id="tiers-title">Pick your element.</h2>
+        <p class="sec-sub">Three flat packages, one for each orb. Same boosters, same safety, same live tracking.</p>
+      </header>
+      <div class="tier-grid">
+        <article class="tier quas">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Quas <i>·</i> Ice</p>
+            <p class="tier-tag">A quiet, clean climb</p>
+          </header>
+          <p class="tier-mmr">+500<span>MMR</span></p>
+          <p class="tier-wins">20 wins · about 2 days</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Region-matched VPN</li><li>Live match tracker</li><li>Pause anytime</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>49<small>one-time</small></p>
+            <a class="btn tier-btn" href="#calculator">Choose +500</a>
+          </div>
+        </article>
+        <article class="tier wex featured">
+          <p class="tier-flag">+200 MMR free</p>
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Wex <i>·</i> Storm</p>
+            <p class="tier-tag">Most chosen, fastest value</p>
+          </header>
+          <p class="tier-mmr">+1000<span>MMR</span></p>
+          <p class="tier-wins">40 wins + 8 on us · about 5 days</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in +500</li><li>+200 bonus MMR included</li><li>Priority booster queue</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>89<small>one-time</small></p>
+            <a class="btn tier-btn" href="#calculator">Choose +1000</a>
+          </div>
+        </article>
+        <article class="tier exort">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Exort <i>·</i> Fire</p>
+            <p class="tier-tag">The full climb</p>
+          </header>
+          <p class="tier-mmr">+2000<span>MMR</span></p>
+          <p class="tier-wins">80 wins · about 8 days</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in +1000</li><li>Hero and role requests</li><li>Same booster start to finish</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>169<small>one-time</small></p>
+            <a class="btn tier-btn" href="#calculator">Choose +2000</a>
+          </div>
+        </article>
+      </div>
+      <a class="member-bar" href="#login">
+        <span class="member-seal" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <span><b>Log in for member pricing.</b> Returning customers get a discount on every tier.</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <p class="draft-note">Placeholder prices and delivery times</p>
+    </div>
+  </section>
+
+  <section class="section reviews" id="reviews" aria-labelledby="rev-title">
+    <div class="wrap">
+      <header class="sec-head sec-head-row">
+        <div>
+          <p class="eyebrow">Reviews</p>
+          <h2 id="rev-title">Climbs, in their words.</h2>
+        </div>
+        <div class="car-ctrl">
+          <button class="car-btn" id="revPrev" type="button" aria-label="Previous reviews" aria-controls="revTrack">←</button>
+          <button class="car-btn" id="revNext" type="button" aria-label="Next reviews" aria-controls="revTrack">→</button>
+        </div>
+      </header>
+      <p class="draft-note">Example reviews for layout only: replace with real customer reviews before launch</p>
+      <ul class="rev-track" id="revTrack" tabindex="0" aria-label="Customer reviews, scroll horizontally">
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Stuck at 2.8k for a year. The booster took me past 4k in under a week and the tracker showed every game.</blockquote>
+          <footer><span class="who">@sallow_mid</span><span>Archon → Ancient</span><span class="gain">+1,250</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Paused the order twice to play with friends and it picked right back up. Nothing weird on the account.</blockquote>
+          <footer><span class="who">@ember_pos4</span><span>Legend → Divine</span><span class="gain">+900</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Asked for a support player so my hero pool stayed normal. They actually listened.</blockquote>
+          <footer><span class="who">@riki_regret</span><span>Crusader → Legend</span><span class="gain">+1,500</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="4 out of 5 stars">★★★★☆</div>
+          <blockquote>Chatting with the booster mid-order was the best part. They explained every draft choice.</blockquote>
+          <footer><span class="who">@quaswexexort</span><span>Ancient → Divine</span><span class="gain">+1,100</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Clean and fast. Took the +1000 package and the extra +200 landed on top.</blockquote>
+          <footer><span class="who">@ursa_on_tilt</span><span>Guardian → Archon</span><span class="gain">+1,200</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>I was nervous about account safety. Offline mode, same region, nothing flagged.</blockquote>
+          <footer><span class="who">@topsy_turvy</span><span>Legend → Ancient</span><span class="gain">+800</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Second order this season. Same booster, same speed.</blockquote>
+          <footer><span class="who">@naga_nap</span><span>Archon → Legend</span><span class="gain">+600</span></footer></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section blog" id="blog" aria-labelledby="blog-title">
+    <div class="wrap">
+      <header class="sec-head sec-head-row">
+        <div>
+          <p class="eyebrow">Blog &amp; resources</p>
+          <h2 id="blog-title">Latest from the tower.</h2>
+        </div>
+        <a class="text-link" href="#blog">All posts →</a>
+      </header>
+      <div class="post-grid">
+        <article class="post" style="--el: var(--quas)">
+          <a href="#blog">
+            <div class="post-art" aria-hidden="true"></div>
+            <div class="post-body">
+              <p class="post-meta">Guide · 7 min read</p>
+              <h3>Why MMR stalls around 3,000, and what breaks the wall</h3>
+              <p class="ex">Draft habits, queue timing and the three mistakes that keep Archon players stuck.</p>
+            </div>
+          </a>
+        </article>
+        <article class="post" style="--el: var(--wex)">
+          <a href="#blog">
+            <div class="post-art" aria-hidden="true"></div>
+            <div class="post-body">
+              <p class="post-meta">Safety · 5 min read</p>
+              <h3>Offline mode, VPNs and quiet accounts: how a boost stays invisible</h3>
+              <p class="ex">What we change on your account during an order, what we never touch, and why.</p>
+            </div>
+          </a>
+        </article>
+        <article class="post" style="--el: var(--exort)">
+          <a href="#blog">
+            <div class="post-art" aria-hidden="true"></div>
+            <div class="post-body">
+              <p class="post-meta">Meta · 6 min read</p>
+              <h3>The heroes carrying pubs this patch</h3>
+              <p class="ex">Five picks our boosters queue most right now, with the item builds that win lane.</p>
+            </div>
+          </a>
+        </article>
+      </div>
+      <p class="draft-note">Example posts: these will come from the store's blog</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>Invoker model: "<a href="https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22">Invoker DOTA 2</a>" by
+    <a href="https://sketchfab.com/ansaldotoys2">ansaldotoys2</a>, licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.
+    Dota 2 is a trademark of Valve Corporation. Plus 25 is not affiliated with Valve.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="module">
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mobile = matchMedia('(max-width: 760px)').matches;
+
+/* ---------- nav ---------- */
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', scrollY > 40);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+const menuBtn = document.getElementById('menuBtn');
+menuBtn.addEventListener('click', () => {
+  const open = !nav.classList.contains('open');
+  nav.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open));
+});
+document.querySelectorAll('#links a').forEach((a) => a.addEventListener('click', () => { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }));
+
+/* ---------- hero wordmark: always spans the full width, whatever the font's metrics ---------- */
+const debug = new URLSearchParams(location.search).has('debug');
+{
+  const wm = document.getElementById('wordmark'), wmBox = wm.parentElement;
+  function fitWordmark() {
+    const cs = getComputedStyle(wmBox);
+    const avail = wmBox.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    for (let i = 0; i < 2; i++) {   // the superscript doesn't scale with the letters, so a second pass settles it
+      const size = parseFloat(getComputedStyle(wm).fontSize);
+      wmBox.style.setProperty('--wm', `${(size * avail / wm.getBoundingClientRect().width).toFixed(2)}px`);
+    }
+  }
+  fitWordmark();
+  document.fonts?.ready.then(fitWordmark);
+  addEventListener('resize', fitWordmark);
+}
+
+/* ---------- scrollytelling: one scene from the hero to +25 ---------- */
+// The story value v runs -1 → 0 through the hero (Invoker holds the orbs; as the hero scrolls away they come
+// down into the resting tableau), then 0 → 1 through the beats: Quas, Wex, Exort, Invoke, +25.
+const story = document.getElementById('invoke');
+const heroStep = document.getElementById('top');
+const heroPanel = document.getElementById('heroPanel');
+const toggle = document.getElementById('videoToggle');
+const railItems = [...document.querySelectorAll('#rail li')];
+function updateRail(p) {
+  let best = 0, bd = 9;
+  railItems.forEach((li, i) => { const d = Math.abs(p - Number(li.dataset.p)); if (d < bd) { bd = d; best = i; } });
+  railItems.forEach((li, i) => li.classList.toggle('on', i === best));
+}
+updateRail(0);
+
+let scene = null, fallback = null, value = -1, paused = false, inView = true;
+
+gsap.registerPlugin(ScrollTrigger);
+function onStory(self) {
+  const len = self.end - self.start, scrolled = self.progress * len, heroLen = heroStep.offsetHeight;
+  value = scrolled < heroLen ? scrolled / heroLen - 1 : Math.min(1, (scrolled - heroLen) / Math.max(1, len - heroLen));
+  // the stage is pinned, so move the wordmark panel with the page to keep it scrolling alongside the hero copy
+  heroPanel.style.transform = `translate3d(0, ${(-Math.min(scrolled, innerHeight * 1.3)).toFixed(1)}px, 0)`;
+  story.classList.toggle('at-hero', value < -0.15);
+  updateRail(Math.max(0, value));
+  scene?.setProgress(value);
+}
+ScrollTrigger.create({ trigger: story, start: 'top top', end: 'bottom bottom', onUpdate: onStory, onRefresh: onStory });
+
+// copy cards drift in and out with their beat (reduced motion: cards simply stay visible)
+const mm = gsap.matchMedia();
+mm.add('(prefers-reduced-motion: no-preference)', () => {
+  const steps = gsap.utils.toArray('.step:not(.step-hero)');
+  steps.forEach((step, i) => {
+    const card = step.querySelector('.card');
+    gsap.fromTo(card, { autoAlpha: 0.12, y: 50 }, { autoAlpha: 1, y: 0, ease: 'none',
+      scrollTrigger: { trigger: step, start: 'top 85%', end: 'top 40%', scrub: true } });
+    if (i < steps.length - 1) {
+      gsap.fromTo(card, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -40, ease: 'none', immediateRender: false,
+        scrollTrigger: { trigger: step, start: 'bottom 65%', end: 'bottom 25%', scrub: true } });
+    }
+  });
+});
+
+// pause freezes the animation clock; scrolling still moves the camera
+const setLabel = () => { toggle.textContent = paused ? 'Play animation' : 'Pause animation'; toggle.setAttribute('aria-pressed', String(paused)); };
+setLabel();
+toggle.addEventListener('click', () => { paused = !paused; setLabel(); scene?.setPaused(paused); fallback?.sync(); });
+
+// fallback when WebGL fails: the Invoker video, looping under the wordmark
+function startFallback() {
+  const v = document.getElementById('fallbackVideo');
+  v.src = v.dataset.src;
+  if (reduced) v.addEventListener('loadeddata', () => { v.currentTime = 5.0; }, { once: true });
+  const sync = () => { if (!paused && !reduced && inView) v.play().catch(() => {}); else v.pause(); };
+  sync();
+  return { sync };
+}
+
+// render only while the story is on screen
+new IntersectionObserver(([e]) => { inView = e.isIntersecting; scene?.setActive(inView); fallback?.sync(); }).observe(story);
+
+// the scene is the hero, so it loads straight away
+import('./js/scene.js')
+  .then(({ initInvokeScene }) => initInvokeScene({ canvas: document.getElementById('scene'), reduced, mobile, debug }))
+  .then((s) => {
+    scene = s;
+    s.jumpTo(value); s.setPaused(paused); s.setActive(inView);
+    story.classList.add('is-3d');
+    if (debug) window.__invoke = s;
+    if (!reduced && matchMedia('(pointer: fine)').matches) {
+      addEventListener('pointermove', (e) => s.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1), { passive: true });
+    }
+  })
+  .catch((err) => { console.error(err); story.classList.add('no-webgl'); fallback = startFallback(); });
+
+/* ---------- MMR calculator ---------- */
+// PLACEHOLDER pricing model — replace with real rates. Each bracket: [from MMR, USD per 100 MMR, MMR boosted per day].
+// Higher brackets cost more and move slower, so a budget buys less MMR the higher you start.
+const PRICING = {
+  brackets: [[0, 8, 320], [2000, 10, 260], [3000, 13, 230], [4000, 17, 200], [5000, 24, 160], [6000, 35, 120], [7000, 55, 80]],
+  maxMMR: 12000,
+};
+// Medal thresholds (approximate)
+const RANKS = [[0, 'Herald'], [770, 'Guardian'], [1540, 'Crusader'], [2310, 'Archon'], [3080, 'Legend'], [3850, 'Ancient'], [4620, 'Divine'], [5420, 'Immortal']];
+const rankOf = (m) => RANKS.reduce((name, [t, n]) => (m >= t ? n : name), RANKS[0][1]);
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+
+function quote(current, budget) {
+  const b = PRICING.brackets;
+  let mmr = current, left = budget, days = 0;
+  while (left > 0.005 && mmr < PRICING.maxMMR) {
+    let i = 0;
+    while (i < b.length - 1 && mmr >= b[i + 1][0]) i++;
+    const [, price, perDay] = b[i];
+    const next = i < b.length - 1 ? b[i + 1][0] : PRICING.maxMMR;
+    const cost = (next - mmr) / 100 * price;
+    if (cost <= left) { left -= cost; days += (next - mmr) / perDay; mmr = next; }
+    else { const g = left / price * 100; days += g / perDay; mmr += g; left = 0; }
+  }
+  const gain = Math.floor((mmr - current) / 25) * 25;   // whole wins only: every win is +25
+  return { gain, wins: gain / 25, days: gain > 0 ? Math.max(1, Math.ceil(days)) : 0, target: current + gain };
+}
+
+{
+  const $ = (id) => document.getElementById(id);
+  const mmrRange = $('mmrRange'), mmrNum = $('mmrNum'), budRange = $('budgetRange'), budNum = $('budgetNum');
+  const clampTo = (el, v) => Math.min(Number(el.max), Math.max(Number(el.min), Number.isFinite(v) ? v : Number(el.min)));
+
+  function render() {
+    const current = clampTo(mmrNum, parseFloat(mmrNum.value));
+    const budget = clampTo(budNum, parseFloat(budNum.value));
+    const q = quote(current, budget);
+    $('rankNow').textContent = `${rankOf(current)} · ${fmt(current)} MMR`;
+    $('resGain').textContent = `+${fmt(q.gain)}`;
+    $('resDays').textContent = q.days;
+    $('resDetail').textContent = `${rankOf(current)} ${fmt(current)} → ${rankOf(q.target)} ${fmt(q.target)} · ${q.wins} wins`;
+  }
+  const pair = (range, num) => {
+    range.addEventListener('input', () => { num.value = range.value; render(); });
+    num.addEventListener('input', () => { if (num.value !== '') range.value = clampTo(num, parseFloat(num.value)); render(); });
+    num.addEventListener('change', () => { num.value = clampTo(num, parseFloat(num.value)); range.value = num.value; render(); });
+  };
+  pair(mmrRange, mmrNum);
+  pair(budRange, budNum);
+  $('calcForm').addEventListener('submit', (e) => e.preventDefault());
+  $('checkoutBtn').addEventListener('click', () => { $('checkoutNote').hidden = false; });
+  render();
+}
+
+/* ---------- calculator: the grimoire flies in from the bottom right and opens beside the form ---------- */
+{
+  const section = document.getElementById('calculator');
+  let book = null, enter = 0, loading = false;
+  // the form fades up as the story hands over to it
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.fromTo('.calc-panel', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top 90%', end: 'top 45%', scrub: true } });
+  });
+  const onEnter = (self) => { enter = self.progress; book?.setEnter(enter); };
+  ScrollTrigger.create({ trigger: section, start: 'top bottom', end: 'top 15%', onUpdate: onEnter, onRefresh: onEnter });
+  // loads just before the section arrives, renders only while it's on screen
+  new IntersectionObserver(async ([e]) => {
+    if (e.isIntersecting && !book && !loading) {
+      loading = true;
+      try {
+        const { initCalcBook } = await import('./js/calcbook.js');
+        book = await initCalcBook({ canvas: document.getElementById('calcBook'), reduced, mobile, debug });
+        book.setEnter(enter);
+        if (debug) window.__calcBook = book;
+      } catch (err) { console.error(err); }
+    }
+    book?.setActive(e.isIntersecting);
+  }, { rootMargin: '400px 0px' }).observe(section);
+}
+
+/* ---------- pricing: the three element cards rise in, one after another ---------- */
+mm.add('(prefers-reduced-motion: no-preference)', () => {
+  gsap.from('.tier', { autoAlpha: 0, y: 48, duration: 0.9, ease: 'power3.out', stagger: 0.12, clearProps: 'transform,opacity,visibility',
+    scrollTrigger: { trigger: '#pricing', start: 'top 70%', once: true } });
+});
+
+/* ---------- reviews carousel: rotates on its own, one card at a time ---------- */
+// Pauses while the visitor is hovering, touching or tabbing through it, while it's off-screen or the tab is in
+// the background, and entirely under reduced motion. Arrows wrap around and restart the clock.
+{
+  const ROTATE_MS = 4500;
+  const track = document.getElementById('revTrack');
+  const section = track.closest('section');
+  const prev = document.getElementById('revPrev'), next = document.getElementById('revNext');
+  const step = () => { const card = track.querySelector('.rev'); return card ? card.getBoundingClientRect().width + 16 : track.clientWidth; };
+  const atStart = () => track.scrollLeft < 4;
+  const atEnd = () => track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+  const go = (dir) => {
+    if (dir > 0 && atEnd()) track.scrollTo({ left: 0 });
+    else if (dir < 0 && atStart()) track.scrollTo({ left: track.scrollWidth });
+    else track.scrollBy({ left: dir * step() });
+  };
+
+  let timer = 0, hovered = false, focused = false, visible = false;
+  const schedule = () => {
+    clearInterval(timer);
+    const run = !reduced && visible && !hovered && !focused && document.visibilityState === 'visible';
+    timer = run ? setInterval(() => go(1), ROTATE_MS) : 0;
+  };
+  prev.addEventListener('click', () => { go(-1); schedule(); });
+  next.addEventListener('click', () => { go(1); schedule(); });
+  section.addEventListener('pointerenter', () => { hovered = true; schedule(); });
+  section.addEventListener('pointerleave', () => { hovered = false; schedule(); });
+  track.addEventListener('pointerdown', () => { hovered = true; schedule(); });   // touch: the visitor has taken over
+  section.addEventListener('focusin', () => { focused = true; schedule(); });
+  section.addEventListener('focusout', (e) => { if (!section.contains(e.relatedTarget)) { focused = false; schedule(); } });
+  document.addEventListener('visibilitychange', schedule);
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; schedule(); }, { threshold: 0.3 }).observe(track);
+}
+</script>
