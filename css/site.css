@@ -1085,7 +1085,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 /* how it works: the step art smaller (the illustrations stay crisp), no numbered orbs; pages without art mark each step
    with a small lit diamond on the line */
 .svc .how-art { width: clamp(118px, 11vw, 148px); }
-.svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: calc(clamp(118px, 11vw, 148px) * 0.47); }
+.svc .how-grid.has-art::before, .svc .how-grid.has-art::after { display: none; }   /* the illustrations carry the steps: no connecting line */
 .svc .has-art .how-art { margin-bottom: 22px; }
 /* each step sits above the line: the scroll-in fade gives every step its own layer, which would otherwise put the line on top */
 .svc .how { z-index: 1; }
@@ -1110,7 +1110,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .tier-price { justify-content: center; }
 .svc .tier-price small:not(.from) { margin-left: 8px; }
 @media (max-width: 900px) {
-  .svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: 50px; bottom: 50px; left: 49px; }
   .svc .has-art .how { grid-template-columns: 100px minmax(0, 1fr); }
   .svc .has-art .how-art { width: 100px; margin: 0; }
   .svc .how-grid:not(.has-art)::before, .svc .how-grid:not(.has-art)::after { left: 8px; top: 9px; bottom: 9px; }
