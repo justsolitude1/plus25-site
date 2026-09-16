@@ -12,7 +12,7 @@ if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(
 // the page hostage (the CSS has its own failsafe too, in case this script never runs).
 {
   const pl = document.getElementById('preloader');
-  // only the first page of a visit plays the intro (the flag is set by a tiny script in each page's head)
+  // the intro plays when the site is opened or refreshed, not on the way between its pages (flag set in each page's head)
   if (pl && document.documentElement.classList.contains('seen-intro')) pl.remove();
   else if (pl) {
     const MIN_MS = 3000, MAX_MS = 6000, start = performance.now();   // a deliberate 3s intro; never more than 6s

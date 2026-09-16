@@ -15,8 +15,8 @@
 </script>
 <link rel="preload" href="media/loader-orbs.webp" as="image" fetchpriority="high">
 <link rel="stylesheet" href="css/site.css">
-<!-- the intro loader plays on the first page of a visit only -->
-<script>try{sessionStorage.getItem('p25-intro')?document.documentElement.classList.add('seen-intro'):sessionStorage.setItem('p25-intro','1')}catch(e){}</script>
+<!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
+<script>try{var n=performance.getEntriesByType('navigation')[0],r=document.referrer;if(n&&n.type!=='reload'&&r&&new URL(r).origin===location.origin)document.documentElement.classList.add('seen-intro')}catch(e){}</script>
 
 <div class="preloader" id="preloader" role="status" aria-label="Loading">
   <div class="pl-ring" aria-hidden="true">
