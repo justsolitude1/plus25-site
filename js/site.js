@@ -140,7 +140,7 @@ if (document.getElementById('revTrack')) {
         } catch (err) { console.error(err); }   // the CSS orb stays in place
       }
       orb?.setActive(e.isIntersecting);
-    }, { rootMargin: '200px 0px' }).observe(host);
+    }, { rootMargin: '150px 0px' }).observe(host);
   }
 }
 
@@ -169,6 +169,6 @@ import('./supabase.js').then(({ isConfigured, hasStoredSession }) => {
         } catch (err) { console.error(err); }
       }
       scene?.setActive(e.isIntersecting);
-    }, { rootMargin: '300px 0px' }).observe(host);
+    }, { rootMargin: '100px 0px' }).observe(host);
   }
 }

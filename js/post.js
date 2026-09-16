@@ -53,8 +53,14 @@ export function createPost(renderer, scene, camera, { pr = 1, bloom = [0.55, 0.4
 // Pixel-ratio budget for the 3D canvases. They start below full retina (the scenes are soft glow, so ~1.5x
 // looks the same as 2x for about half the GPU work), then step down 0.25 at a time while frames keep
 // running slower than slowMs on this device. Call sample() once per rendered frame with the raw interval.
-export function createQuality({ renderer, post, start, onChange, floor = 1, slowMs = 22 }) {
-  let pr = start, sum = 0, n = 0;
+export function createQuality({ renderer, post, start, onChange, floor = 1, slowMs = 22, fastMs = 13 }) {
+  let pr = start, sum = 0, n = 0, good = 0;
+  const set = (next) => {
+    pr = Math.round(next * 100) / 100;
+    renderer.setPixelRatio(pr);
+    post.setPixelRatio(pr);
+    onChange();
+  };
   return {
     get pixelRatio() { return pr; },
     sample(dtSec) {
@@ -63,12 +69,11 @@ export function createQuality({ renderer, post, start, onChange, floor = 1, slow
       if (n < 90) return;
       const avgMs = (sum / n) * 1000;
       sum = n = 0;
-      if (avgMs > slowMs && pr > floor) {
-        pr = Math.max(floor, Math.round((pr - 0.25) * 100) / 100);
-        renderer.setPixelRatio(pr);
-        post.setPixelRatio(pr);
-        onChange();
-      }
+      if (avgMs > slowMs && pr > floor) { good = 0; set(Math.max(floor, pr - 0.25)); return; }
+      // frames are comfortable again (e.g. the other canvases stopped drawing): climb back towards full detail,
+      // one step per two good windows, so a brief slow patch doesn't leave the scene soft for the whole visit
+      if (avgMs < fastMs && pr < start && ++good >= 2) { good = 0; set(Math.min(start, pr + 0.25)); }
+      else if (avgMs >= fastMs) good = 0;
     },
   };
 }

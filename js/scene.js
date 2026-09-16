@@ -228,7 +228,9 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
     // while both are on screen (scrolling between the story and the guide) it still runs at normal speed
     if (tdt) tickTime(tdt);
     const t = uTime.value;
-    p += (target - p) * (1 - Math.exp(-dt * 6));
+    // ease toward the scroll position, faster the further behind it is: a flick from the bottom of the page lands
+    // almost at once, while ordinary scrolling keeps its smoothing
+    p += (target - p) * (1 - Math.exp(-dt * (6 + 18 * Math.min(1, Math.abs(target - p)))));
     pointerS.lerp(pointer, 1 - Math.exp(-dt * 3));
     const h = Math.min(1, p + 1);
 
@@ -255,6 +257,7 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
     setActive(v) { if (v && !active) { clock.getDelta(); p = target; } active = v; },
     setPaused(v) { paused = v; },
     setPointer(x, y) { pointer.set(x, y); },
+    state() { return { p, target, active, paused }; },   // dev aid
     jumpTo(v) { target = p = Math.min(1, Math.max(-1, v)); },
     dispose() { cancelAnimationFrame(raf); removeEventListener('resize', resize); renderer.dispose(); },
     // Dev aids (?debug): render a settled frame at story value v, independent of rAF

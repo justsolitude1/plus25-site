@@ -375,8 +375,13 @@ let scene = null, fallback = null, value = -1, paused = false, inView = true;
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });   // showing the phone's address bar on scroll-up shouldn't re-measure the story
-function onStory(self) {
-  const len = self.end - self.start, scrolled = self.progress * len, heroLen = heroStep.offsetHeight;
+// The story reads its own position from the page every frame it is on screen, rather than waiting to be told.
+// A cached scroll position that misses an update (a fast flick back to the top, a restored scroll, a stalled
+// ticker) would otherwise leave the scene, the beat rail and the wordmark frozen at whatever beat you left.
+function onStory() {
+  const len = Math.max(1, story.offsetHeight - innerHeight);          // the story's own scroll length
+  const scrolled = Math.min(Math.max(-story.getBoundingClientRect().top, 0), len);
+  const heroLen = heroStep.offsetHeight;
   value = scrolled < heroLen ? scrolled / heroLen - 1 : Math.min(1, (scrolled - heroLen) / Math.max(1, len - heroLen));
   // the stage is pinned, so move the wordmark panel with the page to keep it scrolling alongside the hero copy
   heroPanel.style.transform = `translate3d(0, ${(-Math.min(scrolled, innerHeight * 1.3)).toFixed(1)}px, 0)`;
@@ -384,7 +389,18 @@ function onStory(self) {
   updateRail(Math.max(0, value));
   scene?.setProgress(value);
 }
-ScrollTrigger.create({ trigger: story, start: 'top top', end: 'bottom bottom', onUpdate: onStory, onRefresh: onStory });
+onStory();
+// the card fades and the grimoire still run on GSAP, so give it the same nudge: if its cached scroll position ever
+// falls behind (a flick, a restored scroll, a sleeping ticker), this brings it back in step
+const onScroll = () => { onStory(); window.ScrollTrigger?.update(); };
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', onScroll);
+// and once per frame while the story is on screen, so it can never sit on a stale position
+(function driveStory() {
+  requestAnimationFrame(driveStory);
+  if (inView) onStory();
+})();
+if (debug) window.__story = { get value() { return value; }, get inView() { return inView; }, scene: () => scene?.state() };
 
 // copy cards drift in and out with their beat (reduced motion: cards simply stay visible)
 const mm = gsap.matchMedia();
@@ -456,6 +472,6 @@ import('./js/scene.js')
       } catch (err) { console.error(err); }
     }
     book?.setActive(e.isIntersecting);
-  }, { rootMargin: '400px 0px' }).observe(section);
+  }, { rootMargin: '150px 0px' }).observe(section);
 }
 </script>
