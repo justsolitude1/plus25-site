@@ -2,6 +2,36 @@
 // reviews carousel. Loaded as a module after the GSAP scripts.
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
+// Stays at least MIN_MS so it doesn't flash on a fast load, never longer than MAX_MS so a slow 3D download can't hold
+// the page hostage (the CSS has its own failsafe too, in case this script never runs).
+{
+  const pl = document.getElementById('preloader');
+  if (pl) {
+    const MIN_MS = 700, MAX_MS = 5000, start = performance.now();
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      setTimeout(() => {
+        pl.classList.add('is-done');
+        pl.setAttribute('aria-hidden', 'true');
+        setTimeout(() => pl.remove(), 700);          // after the fade
+      }, Math.max(0, MIN_MS - (performance.now() - start)));
+    };
+    const pageLoaded = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
+    // the home page waits for the story scene too (it marks itself is-3d, or no-webgl if it falls back to video)
+    const story = document.getElementById('invoke');
+    const sceneReady = !story ? Promise.resolve() : new Promise((r) => {
+      const ready = () => story.classList.contains('is-3d') || story.classList.contains('no-webgl');
+      if (ready()) return r();
+      new MutationObserver((_, mo) => { if (ready()) { mo.disconnect(); r(); } }).observe(story, { attributes: true, attributeFilter: ['class'] });
+    });
+    Promise.all([pageLoaded, sceneReady]).then(finish);
+    setTimeout(finish, MAX_MS);
+  }
+}
+
 /* ---------- nav ---------- */
 const nav = document.getElementById('nav');
 const onScroll = () => nav.classList.toggle('scrolled', scrollY > 40);
