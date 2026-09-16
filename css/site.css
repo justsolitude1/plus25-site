@@ -399,19 +399,25 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .member-bar:hover .arrow { transform: translateX(4px); }
 
 /* reviews: a centred headline with the row of cards running underneath */
-.reviews { position: relative; overflow: hidden; border-top: 0;   /* no rule above the reviews headline */
-  background:
-    radial-gradient(45% 55% at 12% 30%, rgba(79, 195, 255, 0.07), transparent 70%),
-    radial-gradient(45% 55% at 88% 30%, rgba(192, 123, 255, 0.07), transparent 70%),
-    radial-gradient(60% 60% at 50% 110%, rgba(255, 162, 58, 0.09), transparent 70%),
-    var(--void-2); }
+.reviews { position: relative; overflow: hidden; border-top: 0; background: var(--void-2); }   /* no rule above the reviews headline */
 .reviews::before {   /* faint rune hatch, so the backdrop isn't a flat panel */
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
   background: repeating-linear-gradient(135deg, rgba(240, 175, 94, 0.035) 0 1px, transparent 1px 26px);
-  -webkit-mask-image: radial-gradient(80% 70% at 50% 40%, #000, transparent 75%); mask-image: radial-gradient(80% 70% at 50% 40%, #000, transparent 75%); }
+  -webkit-mask-image: radial-gradient(80% 60% at 50% 55%, #000, transparent 75%); mask-image: radial-gradient(80% 60% at 50% 55%, #000, transparent 75%); }
+/* a soft handover from the section above, so the two meet without a seam */
+#guide + .reviews::after, .tiers + .reviews::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(90px, 14vh, 190px); z-index: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--void-2) 0%, rgba(13, 14, 24, 0.55) 55%, transparent 100%); }
 .reviews > .wrap { position: relative; z-index: 1; }
 /* the orbs, drifting behind the section (js/backdrop.js); the CSS glows above stay as the fallback */
-.rev-backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.rev-backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(45% 55% at 12% 30%, rgba(79, 195, 255, 0.07), transparent 70%),
+    radial-gradient(45% 55% at 88% 30%, rgba(192, 123, 255, 0.07), transparent 70%),
+    radial-gradient(60% 60% at 50% 110%, rgba(255, 162, 58, 0.09), transparent 70%);
+  /* fade the whole layer (glows, orbs and all) into the sections above and below */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 86%, transparent 100%); }
 .rev-backdrop canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease;
   -webkit-mask-image: radial-gradient(75% 65% at 50% 45%, #000 40%, transparent 100%);
   mask-image: radial-gradient(75% 65% at 50% 45%, #000 40%, transparent 100%); }
