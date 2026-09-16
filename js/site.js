@@ -94,6 +94,14 @@ if (!reduced && document.querySelector('main.svc')) {
   }, { threshold: 0.35 }).observe(pain);
 }
 
+// guarantee cards: a soft light follows the cursor across the card (mouse only)
+document.querySelectorAll('.svc .promise').forEach((card) => card.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+  card.style.setProperty('--my', `${e.clientY - r.top}px`);
+}));
+
 /* ---------- order buttons: reveal the "checkout isn't live yet" note they point at ---------- */
 document.querySelectorAll('[data-order]').forEach((btn) => btn.addEventListener('click', () => {
   const note = document.getElementById(btn.dataset.order);
