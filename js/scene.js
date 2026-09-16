@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createPost, createQuality } from './post.js';
-import { uTime, rng, smooth, band } from './shared.js';
+import { uTime, tickTime, rng, smooth, band } from './shared.js';
 import { ORB_DEFS, createOrb } from './orbs.js';
 import { createInvoker } from './cast.js';
 
@@ -224,7 +224,9 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
 
   function renderFrame(dt) {
     const tdt = paused ? 0 : dt * timeScale;
-    uTime.value += tdt;
+    // the grimoire beside the guide shares this clock; tickTime lets whichever canvas draws first advance it, so
+    // while both are on screen (scrolling between the story and the guide) it still runs at normal speed
+    if (tdt) tickTime(tdt);
     const t = uTime.value;
     p += (target - p) * (1 - Math.exp(-dt * 6));
     pointerS.lerp(pointer, 1 - Math.exp(-dt * 3));

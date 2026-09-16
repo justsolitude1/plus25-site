@@ -351,6 +351,7 @@ updateRail(0);
 let scene = null, fallback = null, value = -1, paused = false, inView = true;
 
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });   // showing the phone's address bar on scroll-up shouldn't re-measure the story
 function onStory(self) {
   const len = self.end - self.start, scrolled = self.progress * len, heroLen = heroStep.offsetHeight;
   value = scrolled < heroLen ? scrolled / heroLen - 1 : Math.min(1, (scrolled - heroLen) / Math.max(1, len - heroLen));
