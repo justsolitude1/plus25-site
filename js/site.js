@@ -209,13 +209,15 @@ if (document.getElementById('revTrack')) {
     const canvas = host.querySelector('canvas');
     let orb = null, loading = false;
     canvas.addEventListener('orbready', () => host.classList.add('is-3d'), { once: true });
+    // no WebGL: the CSS orb takes the glow's place (only on failure, so it never swaps for the 3D orb)
+    const fallback = () => host.classList.add('no-3d');
     new IntersectionObserver(async ([e]) => {
       if (e.isIntersecting && !orb && !loading) {
         loading = true;
         try {
           const { initHeroOrb } = await import('./heroorb.js');
           orb = await initHeroOrb({ canvas, key: host.dataset.orb, reduced, mobile: matchMedia('(max-width: 760px)').matches });
-        } catch (err) { console.error(err); }   // the CSS orb stays in place
+        } catch (err) { console.error(err); fallback(); }
       }
       orb?.setActive(e.isIntersecting);
     }, { rootMargin: '150px 0px' }).observe(host);

@@ -734,8 +734,14 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .hero-orb3d canvas { position: absolute; inset: -12%; width: 124%; height: 124%; display: block; pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
   /* feather the edges: bloom reaches the canvas border and would otherwise show as a box */
   -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }
-.hero-orb3d .hero-orb { transition: opacity .8s ease; }
+/* while the 3D orb loads only a soft glow shows (no flat circle that then swaps for the real orb); the CSS orb appears
+   only if WebGL can't run (js/site.js adds .no-3d) */
+.hero-orb3d::before { content: ''; position: absolute; inset: 14%; border-radius: 50%; pointer-events: none; transition: opacity 1.2s ease;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--el) 26%, transparent), color-mix(in srgb, var(--el) 8%, transparent) 55%, transparent); }
+.hero-orb3d .hero-orb { opacity: 0; transition: opacity .8s ease; }
+.hero-orb3d.no-3d .hero-orb { opacity: 1; }
 .hero-orb3d.is-3d canvas { opacity: 1; }
+.hero-orb3d.is-3d::before, .hero-orb3d.no-3d::before { opacity: 0; }
 .hero-orb3d.is-3d .hero-orb { opacity: 0; }
 @media (max-width: 900px) {
   .hero-orb3d { order: -1; justify-self: center; width: min(78vw, 320px); margin: -20px 0 -10px; }
