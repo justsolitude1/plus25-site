@@ -426,7 +426,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .tier.featured:hover { transform: translateY(-16px); }
 .tier.featured .tier-btn { --btn-fill: #ffd59b; color: #1a0f08; border-color: var(--gold); background: var(--gold); }
 .tier.featured .tier-btn:hover { color: #1a0f08; }
-.tier-flag { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); margin: 0; padding: 7px 14px; border-radius: 99px; white-space: nowrap;
+.tier-flag { position: absolute; z-index: 2; top: -13px; left: 50%; transform: translateX(-50%); margin: 0; padding: 7px 14px; border-radius: 99px; white-space: nowrap;
   background: linear-gradient(90deg, var(--gold-2), var(--gold)); color: #1a0f08; font: 600 11px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase;
   box-shadow: 0 6px 20px -6px rgba(240, 175, 94, 0.6); }
 @media (prefers-reduced-motion: reduce) {
