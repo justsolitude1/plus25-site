@@ -398,19 +398,14 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .member-bar .arrow { margin-left: auto; color: var(--gold); transition: transform .25s; }
 .member-bar:hover .arrow { transform: translateX(4px); }
 
-/* reviews: an editorial header — a bold word and a serif word, with the intro and arrows opposite */
+/* reviews: a centred headline with the row of cards running underneath */
 .reviews { overflow: hidden; }
-.rev-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(24px, 4vw, 64px);
-  align-items: end; margin-bottom: clamp(26px, 4vh, 44px); }
-.rev-hero > * { position: relative; z-index: 1; }
-.rev-hero h2 { display: grid; line-height: 0.92; }
-.th-bold { font: 600 clamp(38px, 5.4vw, 76px)/0.95 var(--ui); letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); }
-.th-serif { font: 600 clamp(38px, 5.4vw, 76px)/0.95 var(--display); letter-spacing: 0.01em; text-transform: uppercase; color: var(--gold); }
-.rev-hero-side { display: grid; gap: 20px; justify-items: start; }
-.rev-lead { margin: 0; max-width: 34rem; color: #d6ccbd; font-size: var(--step-1); line-height: 1.55; }
-@media (max-width: 900px) {
-  .rev-hero { grid-template-columns: 1fr; align-items: start; }
-}
+.rev-hero { max-width: 44rem; margin: 0 auto clamp(28px, 4vh, 48px); display: grid; justify-items: center; text-align: center; gap: 18px; }
+.rev-hero .eyebrow { margin: 0; }
+.rev-hero h2 { font-size: clamp(34px, 4.4vw, 62px); line-height: 1.08; letter-spacing: 0.01em; text-wrap: balance; }
+.rev-hero h2 em { font-style: italic; color: var(--gold); }
+.rev-lead { margin: 0; max-width: 34rem; color: var(--muted); font-size: var(--step-1); line-height: 1.55; }
+.rev-hero .car-ctrl { margin-top: 4px; }
 
 /* reviews carousel */
 .car-ctrl { display: flex; gap: 8px; }
@@ -418,7 +413,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .car-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
 .car-btn:disabled { opacity: 0.3; cursor: default; }
 .rev-track { list-style: none; margin: 28px 0 0; padding: 6px 2px 20px; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 36px) / 3); gap: 18px;
-  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: rgba(240, 175, 94, 0.35) transparent;
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
   /* the row fades at both edges, so it reads as continuing past the frame */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent); }
@@ -428,15 +423,11 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .rev-track.is-dragging { cursor: grabbing; scroll-behavior: auto; user-select: none; }
 .rev-track img { -webkit-user-drag: none; user-select: none; }   /* dragging a medal would interrupt the pan */
 .rev-track.is-dragging .rev { transition: none; }
-.rev-progress { position: relative; height: 3px; margin: 2px 2px 0; border-radius: 999px; background: rgba(239, 230, 214, 0.1); overflow: hidden; }
-.rev-progress span { position: absolute; top: 0; bottom: 0; left: var(--x, 0%); width: var(--w, 33%); border-radius: 999px;
-  background: linear-gradient(90deg, var(--gold-2), var(--gold)); transition: left .2s ease-out, width .2s ease-out; }
-@media (prefers-reduced-motion: reduce) { .rev-progress span { transition: none; } }
-@media (prefers-reduced-motion: reduce) { .rev-track { scroll-behavior: auto; } }
+
 .rev.quas { --el: var(--quas); }
 .rev.wex { --el: var(--wex); }
 .rev.exort { --el: var(--exort); }
-.rev { position: relative; isolation: isolate; scroll-snap-align: start; display: flex; flex-direction: column; gap: 18px; padding: 28px 26px 24px;
+.rev { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 18px; padding: 28px 26px 24px;
   border: 1px solid rgba(239, 230, 214, 0.12); border-radius: 16px;
   background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--el, var(--gold)) 10%, transparent), transparent 60%), var(--void);
   transition: transform .3s cubic-bezier(.2,.7,.2,1), border-color .3s, box-shadow .3s; }
