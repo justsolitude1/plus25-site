@@ -398,6 +398,26 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .member-bar .arrow { margin-left: auto; color: var(--gold); transition: transform .25s; }
 .member-bar:hover .arrow { transform: translateX(4px); }
 
+/* reviews: an editorial header — bold word, serif word, and a brush-script watermark cutting across behind it */
+.reviews { overflow: hidden; }
+.rev-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(24px, 4vw, 64px);
+  align-items: end; margin-bottom: clamp(26px, 4vh, 44px); }
+.rev-hero > * { position: relative; z-index: 1; }
+.rev-watermark {
+  position: absolute; z-index: 0; left: -3%; top: 50%; transform: translateY(-46%) rotate(-7deg); transform-origin: left center;
+  font: 400 clamp(130px, 21vw, 300px)/0.8 "Caveat Brush", "Segoe Script", cursive; white-space: nowrap; pointer-events: none; user-select: none;
+  color: color-mix(in srgb, var(--gold) 26%, transparent); text-shadow: 0 0 60px color-mix(in srgb, var(--gold) 22%, transparent);
+}
+.rev-hero h2 { display: grid; line-height: 0.92; }
+.th-bold { font: 600 clamp(38px, 5.4vw, 76px)/0.95 var(--ui); letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); }
+.th-serif { font: 600 clamp(38px, 5.4vw, 76px)/0.95 var(--display); letter-spacing: 0.01em; text-transform: uppercase; color: var(--gold); }
+.rev-hero-side { display: grid; gap: 20px; justify-items: start; }
+.rev-lead { margin: 0; max-width: 34rem; color: #d6ccbd; font-size: var(--step-1); line-height: 1.55; }
+@media (max-width: 900px) {
+  .rev-hero { grid-template-columns: 1fr; align-items: start; }
+  .rev-watermark { font-size: clamp(110px, 33vw, 200px); top: 40%; }
+}
+
 /* reviews carousel */
 .car-ctrl { display: flex; gap: 8px; }
 .car-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(239, 230, 214, 0.25); background: transparent; color: var(--ink); font-size: 18px; cursor: pointer; transition: border-color .2s, color .2s, opacity .2s; }

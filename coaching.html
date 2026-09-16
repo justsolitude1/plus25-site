@@ -6,7 +6,7 @@
 <meta name="description" content="Dota 2 coaching: live one-to-one sessions with a high-MMR coach, built around your role, heroes and goals.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js",
@@ -204,14 +204,18 @@
 
   <section class="section reviews" id="reviews" aria-labelledby="rev-title">
     <div class="wrap">
-      <header class="sec-head sec-head-row">
-        <div>
+      <header class="rev-hero">
+        <span class="rev-watermark" aria-hidden="true">coached</span>
+        <div class="rev-hero-title">
           <p class="eyebrow">Reviews</p>
-          <h2 id="rev-title">Sessions, in their words.</h2>
+          <h2 id="rev-title"><span class="th-bold">Reviews</span><span class="th-serif">&amp;sessions</span></h2>
         </div>
-        <div class="car-ctrl">
+        <div class="rev-hero-side">
+          <p class="rev-lead">Time on the practice tool, not just theory. Every card is one block of sessions and the rank it was worked at.</p>
+          <div class="car-ctrl">
           <button class="car-btn" id="revPrev" type="button" aria-label="Previous reviews" aria-controls="revTrack">←</button>
           <button class="car-btn" id="revNext" type="button" aria-label="Next reviews" aria-controls="revTrack">→</button>
+          </div>
         </div>
       </header>
       <p class="draft-note">Example reviews for layout only: show real customer reviews (with their real rating and count) before launch</p>
