@@ -40,36 +40,22 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 }
 .preloader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
 @keyframes pl-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
-.pl-ring { position: relative; width: clamp(140px, 30vw, 200px); aspect-ratio: 1; animation: pl-spin 2.6s linear infinite; }
-/* the orbit, faintly */
-.pl-ring::before { content: ""; position: absolute; inset: 8.4%; border-radius: 50%; border: 1px solid rgba(240, 175, 94, 0.1); }
-/* a comet tail behind each orb, in its colour, sweeping round with them */
-.pl-ring::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background: conic-gradient(from 0deg,
-    transparent 0deg 50deg, color-mix(in srgb, var(--wex) 0%, transparent) 50deg, color-mix(in srgb, var(--wex) 85%, transparent) 120deg,
-    transparent 120deg 170deg, color-mix(in srgb, var(--exort) 0%, transparent) 170deg, color-mix(in srgb, var(--exort) 85%, transparent) 240deg,
-    transparent 240deg 290deg, color-mix(in srgb, var(--quas) 0%, transparent) 290deg, color-mix(in srgb, var(--quas) 85%, transparent) 360deg);
-  -webkit-mask-image: radial-gradient(closest-side, transparent 79%, #000 82%, #000 85%, transparent 88%);
-  mask-image: radial-gradient(closest-side, transparent 79%, #000 82%, #000 85%, transparent 88%);
-  filter: blur(1.5px);
+.pl-ring { --s: clamp(140px, 34vw, 180px); position: relative; width: var(--s); aspect-ratio: 1; }
+/* the orbit, faintly (inset matches the orbs' path in the sprite) */
+.pl-ring::before { content: ""; position: absolute; inset: 17.5%; border-radius: 50%; border: 1px solid rgba(240, 175, 94, 0.1); }
+/* the real orbs, captured from the 3D scene into a 32-frame sprite (media/loader-orbs.webp, made with
+   tools/loader-capture.html). Rendered on black and screened over the loader, so only their light shows. */
+.pl-sprite {
+  position: absolute; inset: 0; z-index: 1; mix-blend-mode: screen;
+  background: url("../media/loader-orbs.webp") 0 0 / calc(var(--s) * 32) var(--s) no-repeat;
+  animation: pl-sprite 1.6s steps(32) infinite;
 }
-.pl-orb {
-  position: absolute; top: 50%; left: 50%; z-index: 1; width: 25%; aspect-ratio: 1; margin: -12.5% 0 0 -12.5%; border-radius: 50%;
-  background: radial-gradient(circle at 36% 32%, var(--el-hi) 0 8%, var(--el) 34%, var(--el-lo) 76%, #05060b 100%);
-  box-shadow: 0 0 18px 2px color-mix(in srgb, var(--el) 60%, transparent), 0 0 44px 10px color-mix(in srgb, var(--el) 22%, transparent);
-  animation: pl-breathe 1.8s ease-in-out infinite;
-}
-.pl-orb.quas  { --el: var(--quas);  --el-hi: #defdfd; --el-lo: #01317f; transform: rotate(0deg) translateY(-167%); }
-.pl-orb.wex   { --el: var(--wex);   --el-hi: #fbd7fd; --el-lo: #270a67; transform: rotate(120deg) translateY(-167%); animation-delay: .6s; }
-.pl-orb.exort { --el: var(--exort); --el-hi: #fdfba7; --el-lo: #8e2404; transform: rotate(240deg) translateY(-167%); animation-delay: 1.2s; }
+@keyframes pl-sprite { to { background-position: calc(var(--s) * -32) 0; } }
 .pl-core {
-  position: absolute; top: 50%; left: 50%; width: 12%; aspect-ratio: 1; margin: -6% 0 0 -6%; rotate: 45deg;
+  position: absolute; top: 50%; left: 50%; z-index: 2; width: 9%; aspect-ratio: 1; margin: -4.5% 0 0 -4.5%; rotate: 45deg;
   background: var(--gold); box-shadow: 0 0 22px 6px color-mix(in srgb, var(--gold) 45%, transparent);
   animation: pl-core 1.8s ease-in-out infinite;
 }
-@keyframes pl-spin { to { rotate: 1turn; } }
-@keyframes pl-breathe { 50% { filter: brightness(1.35); } }
 @keyframes pl-core { 0%, 100% { opacity: .55; scale: .82; } 50% { opacity: 1; scale: 1.06; } }
 .pl-mark { margin: 0; font: 700 clamp(30px, 6vw, 40px)/1 var(--display); letter-spacing: 0.02em; color: var(--ink); }
 .pl-mark b { color: var(--gold); font-weight: 700; }
@@ -77,7 +63,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .pl-dots::after { content: "..."; animation: pl-dots 1.4s steps(4, end) infinite; clip-path: inset(0 100% 0 0); display: inline-block; }
 @keyframes pl-dots { to { clip-path: inset(0 0 0 0); } }
 @media (prefers-reduced-motion: reduce) {
-  .pl-ring, .pl-orb, .pl-core, .pl-dots::after { animation: none; }
+  .pl-sprite, .pl-core, .pl-dots::after { animation: none; }
   .pl-core { opacity: .9; }
 }
 

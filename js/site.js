@@ -3,12 +3,12 @@
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
-// Stays at least MIN_MS so it doesn't flash on a fast load, never longer than MAX_MS so a slow 3D download can't hold
+// Stays at least MIN_MS (a 3-second intro), never longer than MAX_MS so a slow 3D download can't hold
 // the page hostage (the CSS has its own failsafe too, in case this script never runs).
 {
   const pl = document.getElementById('preloader');
   if (pl) {
-    const MIN_MS = 700, MAX_MS = 5000, start = performance.now();
+    const MIN_MS = 3000, MAX_MS = 6000, start = performance.now();   // a deliberate 3s intro; never more than 6s
     let done = false;
     const finish = () => {
       if (done) return;

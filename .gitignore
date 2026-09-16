@@ -1,3 +1,6 @@
 .DS_Store
 # dev-only page for checking the Invoker model on its own
 invoker-viewer.html
+
+# dev-only tools (loader sprite capture); not published
+tools/
