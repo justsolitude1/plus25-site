@@ -907,18 +907,10 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   background: #0a0b14; border: 1px solid color-mix(in srgb, var(--el) 70%, transparent); color: var(--el); text-shadow: none;
   box-shadow: 0 0 18px -2px color-mix(in srgb, var(--el) 70%, transparent); }
 .svc .has-art .how-num::before { display: none; }
-/* ---------- about: an editorial column, and what's included on an ornate panel over a turning rune ring ---------- */
+/* ---------- about: an editorial column, and what's included on an ornate panel ---------- */
 .svc .about { overflow: hidden; background: radial-gradient(40% 60% at 78% 50%, color-mix(in srgb, var(--el) 9%, transparent), transparent 70%), var(--void); }
 .svc .about-grid { position: relative; align-items: center; }
 .svc .about-grid > * { position: relative; z-index: 1; }
-.svc .about-grid::before, .svc .about-grid::after { /* the rune ring, centred behind the panel */
-  content: ""; position: absolute; z-index: 0; left: 76%; top: 50%; width: min(660px, 90vw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
-  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--el) 45%, transparent) 0 0.5deg, transparent 0.5deg 6deg);
-  -webkit-mask-image: radial-gradient(closest-side, transparent 90%, #000 91% 96%, transparent 97%);
-  mask-image: radial-gradient(closest-side, transparent 90%, #000 91% 96%, transparent 97%);
-  animation: ring-spin 90s linear infinite; opacity: .7; }
-.svc .about-grid::after { width: min(520px, 72vw); background: none; border: 1px solid color-mix(in srgb, var(--el) 22%, transparent);
-  -webkit-mask-image: none; mask-image: none; animation: none; }
 .svc .about-copy > p:first-of-type { color: var(--ink); font-size: clamp(20px, 1.7vw, 24px); line-height: 1.55; }
 .svc .about-copy > p:first-of-type::first-letter { float: left; margin: 0.08em 0.14em 0 0; font: 700 3.6em/0.8 var(--display); color: var(--el);
   text-shadow: 0 0 30px color-mix(in srgb, var(--el) 55%, transparent); }
@@ -1033,7 +1025,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 @keyframes rv-in { from { opacity: 0; translate: 0 30px; } to { opacity: 1; translate: 0 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .svc .how-num::before, .svc .about-grid::before, .svc .pain::before, .svc .pain::after, .pain-orb { animation: none; }
+  .svc .how-num::before, .svc .pain::before, .svc .pain::after, .pain-orb { animation: none; }
   .svc .pain-list li, .svc .pain-list li::after { transition: none; }
   .svc .more .svc-link, .svc .more .svc-link:hover { transform: none; }
 }
@@ -1044,7 +1036,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .promise:nth-child(n) { border-right: 0; border-bottom: 1px solid rgba(239, 230, 214, 0.08); }
   .svc .promise:nth-child(odd) { border-right: 1px solid rgba(239, 230, 214, 0.08); }
   .svc .promise:nth-last-child(-n + 2) { border-bottom: 0; }
-  .svc .about-grid::before, .svc .about-grid::after { left: 50%; top: auto; bottom: -10%; translate: -50% 0; }
   .svc .included { margin-top: 60px; }
   /* how it works: the line runs down the left, beside each step */
   .svc .how-grid { gap: 36px; }
