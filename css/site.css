@@ -896,6 +896,16 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .how .chips { justify-content: center; }
 @keyframes ring-spin { to { transform: rotate(1turn); } }
 
+/* with illustrations (replay analysis): the art stands on the line, the step number is a small seal beneath it */
+.svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: calc(clamp(160px, 16vw, 200px) * 0.47); }   /* the art's middle */
+.svc .how-art { position: relative; z-index: 1; display: block; width: clamp(160px, 16vw, 200px); height: auto; aspect-ratio: 360 / 344; object-fit: contain; margin: 0 auto;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 26px color-mix(in srgb, var(--el) 28%, transparent));
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.svc .how:hover .how-art { transform: translateY(-6px) scale(1.03); }
+.svc .has-art .how-num { width: 44px; height: 44px; margin: -6px auto 20px; font-size: 15px;
+  background: #0a0b14; border: 1px solid color-mix(in srgb, var(--el) 70%, transparent); color: var(--el); text-shadow: none;
+  box-shadow: 0 0 18px -2px color-mix(in srgb, var(--el) 70%, transparent); }
+.svc .has-art .how-num::before { display: none; }
 /* ---------- about: an editorial column, and what's included on an ornate panel over a turning rune ring ---------- */
 .svc .about { overflow: hidden; background: radial-gradient(40% 60% at 78% 50%, color-mix(in srgb, var(--el) 9%, transparent), transparent 70%), var(--void); }
 .svc .about-grid { position: relative; align-items: center; }
@@ -945,6 +955,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .guarantee .draft-note { display: block; width: fit-content; margin-inline: auto; }
 
 /* ---------- packages and reviews ---------- */
+.svc .tier-head { grid-template-columns: 1fr; min-height: 0; row-gap: 0; }
 .svc .tiers { padding-bottom: clamp(90px, 14vh, 160px); }
 .svc .tiers + .reviews::after { display: none; }
 .svc .reviews { background: var(--void); }
@@ -1052,6 +1063,10 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .how h3 { margin-top: 14px; }
   .svc .how p:not(.how-num) { margin-inline: 0; }
   .svc .how .chips { justify-content: flex-start; }
+  .svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: 60px; bottom: 60px; left: 59px; }
+  .svc .has-art .how { grid-template-columns: 120px minmax(0, 1fr); }
+  .svc .has-art .how-art { grid-row: 1 / span 3; width: 120px; margin: 0; }
+  .svc .has-art .how-num { display: none; }
 }
 @media (max-width: 560px) {
   .svc .promise-grid { grid-template-columns: 1fr; }
