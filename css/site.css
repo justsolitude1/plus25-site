@@ -912,8 +912,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .about-grid { position: relative; align-items: center; }
 .svc .about-grid > * { position: relative; z-index: 1; }
 .svc .about-copy > p:first-of-type { color: var(--ink); font-size: clamp(20px, 1.7vw, 24px); line-height: 1.55; }
-.svc .about-copy > p:first-of-type::first-letter { float: left; margin: 0.08em 0.14em 0 0; font: 700 3.6em/0.8 var(--display); color: var(--el);
-  text-shadow: 0 0 30px color-mix(in srgb, var(--el) 55%, transparent); }
 .svc .about-copy > p { max-width: 36rem; }
 .about-copy .sec-head .eyebrow { font-size: 12px; line-height: 1; margin-bottom: 18px; }   /* not the body paragraph size */
 .svc .included { position: relative; margin: 44px 0 0; padding: 62px clamp(22px, 3vw, 36px) 26px; border-radius: 20px;
