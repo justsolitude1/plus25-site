@@ -904,7 +904,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 @keyframes ring-spin { to { transform: rotate(1turn); } }
 
 /* with illustrations (replay analysis): the art stands on the line, the step number is a small seal beneath it */
-.svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: calc(clamp(160px, 16vw, 200px) * 0.47); }   /* the art's middle */
 .svc .how-art { position: relative; z-index: 1; display: block; width: clamp(160px, 16vw, 200px); height: auto; aspect-ratio: 360 / 344; object-fit: contain; margin: 0 auto;
   filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 26px color-mix(in srgb, var(--el) 28%, transparent));
   transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
@@ -996,19 +995,10 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .faq-list details[open]::details-content { height: auto; }
 }
 
-/* ---------- closing call: the page's orb, a huge line, and the pain points struck out ---------- */
+/* ---------- closing call: a huge line, and the pain points struck out ---------- */
 .svc .pain { overflow: hidden; padding-block: clamp(110px, 18vh, 200px);
   background: radial-gradient(42% 55% at 50% 50%, color-mix(in srgb, var(--el) 16%, transparent), transparent 72%), var(--void); }
-.svc .pain::before, .svc .pain::after {
-  content: ""; position: absolute; left: 50%; top: 50%; width: min(980px, 130vw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
-  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--el) 40%, transparent) 0 0.4deg, transparent 0.4deg 4deg);
-  -webkit-mask-image: radial-gradient(closest-side, transparent 93%, #000 94% 97%, transparent 98%);
-  mask-image: radial-gradient(closest-side, transparent 93%, #000 94% 97%, transparent 98%);
-  animation: ring-spin 120s linear infinite; opacity: .55; }
-.svc .pain::after { width: min(700px, 96vw); background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--gold) 45%, transparent) 0 0.6deg, transparent 0.6deg 15deg);
-  animation-direction: reverse; animation-duration: 80s; }
 .svc .pain .wrap { position: relative; z-index: 1; max-width: 58rem; }
-.pain-orb { display: block; width: 104px; height: 104px; margin: 0 auto 36px; animation: orb-float 6s ease-in-out infinite; }
 .svc .pain h2 { margin-bottom: 20px; font-size: clamp(40px, 6.4vw, 88px); line-height: 1.02; }
 .svc .pain .sec-sub { max-width: 36rem; margin-bottom: 36px; }
 .svc .pain .btn { min-width: min(300px, 100%); min-height: 62px; font-size: 18px; }
@@ -1048,7 +1038,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 @keyframes rv-in { from { opacity: 0; translate: 0 30px; } to { opacity: 1; translate: 0 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .svc .how-num::before, .svc .pain::before, .svc .pain::after, .pain-orb { animation: none; }
+  .svc .how-num::before { animation: none; }
   .svc .pain-list li, .svc .pain-list li::after { transition: none; }
   .svc .more .svc-link, .svc .more .svc-link:hover { transform: none; }
 }
@@ -1069,7 +1059,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .how h3 { margin-top: 14px; }
   .svc .how p:not(.how-num) { margin-inline: 0; }
   .svc .how .chips { justify-content: flex-start; }
-  .svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: 60px; bottom: 60px; left: 59px; }
   .svc .has-art .how { grid-template-columns: 120px minmax(0, 1fr); }
   .svc .has-art .how-art { grid-row: 1 / span 3; width: 120px; margin: 0; }
   .svc .has-art .how-num { display: none; }
