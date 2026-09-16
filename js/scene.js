@@ -53,8 +53,14 @@ function cameraKeys(portrait) {
 }
 
 export async function initInvokeScene({ canvas, reduced = false, mobile = false, debug = false }) {
+  // dev aid (?debug): how long each setup step takes, logged once the scene is ready
+  const t0 = performance.now(), timings = [];
+  const mark = (label) => { if (debug) timings.push([label, Math.round(performance.now() - t0)]); };
   const pr = Math.min(devicePixelRatio, mobile ? 1.25 : 1.5);   // starting budget; createQuality lowers it on slow devices
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance', preserveDrawingBuffer: debug });
+  mark('renderer');
+  // start loading Invoker straight away; the rest of the scene is built while his files download
+  const invokerLoading = createInvoker({ renderer, mobile, pr });
   renderer.setPixelRatio(pr);
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.NoToneMapping;
@@ -62,6 +68,7 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   const scene = new THREE.Scene();   // no background: the hero panel, then the page's void, shows through
   scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), 0.04).texture;
   scene.environmentIntensity = 0.3;
+  mark('environment');
   const camera = new THREE.PerspectiveCamera(STORY_FOV, 1, 0.1, 300);
 
   // faint starfield — fades in once the hero has gone, so it never speckles the wordmark
@@ -78,7 +85,8 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
 
   // Invoker + grimoire, lit warm from the front with Quas-blue and Wex-violet rims (orb shaders are unlit)
   // His transform is set every frame (see pinInvoker), so his lights and orbit ring ride along as children.
-  const invoker = await createInvoker({ renderer, mobile, pr });
+  const invoker = await invokerLoading;
+  mark('invoker model');
   invoker.root.matrixAutoUpdate = false;
   invoker.root.matrix.makeTranslation(INVOKER_AT.x, INVOKER_AT.y, INVOKER_AT.z);
   scene.add(invoker.root);
@@ -104,7 +112,9 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   invoker.root.add(heroRing);
   invoker.root.updateMatrixWorld(true);
 
+  mark('orbs');
   const post = createPost(renderer, scene, camera, { pr });
+  mark('bloom');
 
   // Invoker holds still on screen while the camera travels: each frame he is placed in the camera's frame
   // exactly as he stood in the hero shot. Scaling him about the camera by d sends him back behind the orbs'
@@ -232,11 +242,15 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   }
   // compile every shader up front, in parallel where the browser supports it, so the first frame doesn't stall
   await renderer.compileAsync(scene, camera);
+  mark('shaders compiled');
+  if (debug) console.log('[scene setup ms]', 'started at', Math.round(t0), JSON.stringify(timings));
   raf = requestAnimationFrame(frame);
 
   return {
     setProgress(v) { target = Math.min(1, Math.max(-1, v)); },
-    setActive(v) { if (v && !active) clock.getDelta(); active = v; },
+    // Off screen the scene stops drawing, so its eased position goes stale (e.g. still mid-intro after a fast scroll
+    // past the story). Returning, snap to the scroll position rather than sweep across the story from there.
+    setActive(v) { if (v && !active) { clock.getDelta(); p = target; } active = v; },
     setPaused(v) { paused = v; },
     setPointer(x, y) { pointer.set(x, y); },
     jumpTo(v) { target = p = Math.min(1, Math.max(-1, v)); },

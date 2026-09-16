@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your account · Plus 25</title>
+<meta name="description" content="Your Plus 25 account: orders and member pricing.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/site.css">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="./" aria-label="Plus 25 home">
+    <span class="logo-mark"><b>+</b>25</span>
+    <span class="logo-sub">Dota 2 services</span>
+  </a>
+  <nav aria-label="Primary">
+    <ul class="links" id="links">
+      <li><a href="replay-analysis.html">Replay analysis</a></li>
+      <li><a href="coaching.html">Coaching</a></li>
+      <li><a href="mmr-boost.html">MMR boost</a></li>
+      <li><a href="./#blog">Blog</a></li>
+    </ul>
+  </nav>
+  <button class="btn btn-ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+  <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
+</header>
+
+<main id="main" class="auth-page">
+  <section class="account" aria-labelledby="account-title">
+    <div class="wrap">
+      <p class="account-loading" id="accountLoading" role="status">Loading your account…</p>
+      <p class="draft-note" id="authSetup" hidden>Accounts aren't connected yet: add the Supabase project URL and public key in js/supabase.js (see supabase/README.md)</p>
+
+      <div id="accountView" hidden>
+        <header class="account-head">
+          <img class="account-avatar" id="accAvatar" alt="" width="64" height="64" hidden>
+          <div class="account-who">
+            <p class="eyebrow">Your account</p>
+            <h1 id="account-title">Welcome, <span id="accName">player</span></h1>
+            <p class="account-email" id="accEmail"></p>
+          </div>
+          <button class="btn btn-ghost" id="signOut" type="button">Log out</button>
+        </header>
+
+        <div class="account-grid">
+          <section class="account-card" aria-labelledby="member-title">
+            <h2 id="member-title">Member pricing</h2>
+            <p class="member-status" id="memberStatus"></p>
+          </section>
+          <section class="account-card" aria-labelledby="name-title">
+            <h2 id="name-title">Display name</h2>
+            <form class="name-form" id="nameForm" novalidate>
+              <label class="sr-only" for="nameInput">Display name</label>
+              <input type="text" id="nameInput" name="display_name" maxlength="60" autocomplete="nickname" required>
+              <button class="btn btn-ghost" type="submit">Save</button>
+            </form>
+            <p class="auth-msg" id="nameMsg" role="status" aria-live="polite"></p>
+          </section>
+        </div>
+
+        <section class="account-orders" aria-labelledby="orders-title">
+          <h2 id="orders-title">Your orders</h2>
+          <ul class="order-list" id="orderList"></ul>
+          <div class="orders-empty" id="ordersEmpty" hidden>
+            <p>No orders yet. When you order, it shows up here with its progress.</p>
+            <div class="cta-row">
+              <a class="btn btn-gold" href="mmr-boost.html">MMR boost</a>
+              <a class="btn btn-ghost" href="coaching.html">Coaching</a>
+              <a class="btn btn-ghost" href="replay-analysis.html">Replay analysis</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>Invoker model: "<a href="https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22">Invoker DOTA 2</a>" by
+    <a href="https://sketchfab.com/ansaldotoys2">ansaldotoys2</a>, licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.
+    Dota 2 is a trademark of Valve Corporation. Plus 25 is not affiliated with Valve.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="module" src="js/site.js"></script>
+<script type="module" src="js/account.js"></script>

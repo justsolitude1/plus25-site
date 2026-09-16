@@ -3,6 +3,16 @@ import * as THREE from 'three';
 
 export const uTime = { value: 0 };
 
+// Advances uTime at most once per frame, so two canvases animating on one page (a hero orb and the grimoire)
+// don't run the shared clock at double speed.
+let lastTick = -Infinity;
+export function tickTime(dt, rate = 1) {
+  const now = performance.now();
+  if (now - lastTick < 4) return;
+  lastTick = now;
+  uTime.value += dt * rate;
+}
+
 // Additive light that leaves the alpha channel alone: on a transparent canvas (the hero) glows add onto
 // the page behind instead of boxing it in; on an opaque canvas it looks exactly like AdditiveBlending.
 export const ADDITIVE_BLEND = {

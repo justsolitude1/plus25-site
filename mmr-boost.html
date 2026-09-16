@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MMR boost · Plus 25</title>
+<meta name="description" content="Dota 2 MMR boosting: top-ladder players climb your account, +25 a win, priced 10% under the competition. Offline mode, live tracking and bonus MMR.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="css/site.css">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="./" aria-label="Plus 25 home">
+    <span class="logo-mark"><b>+</b>25</span>
+    <span class="logo-sub">Dota 2 services</span>
+  </a>
+  <nav aria-label="Primary">
+    <ul class="links" id="links">
+      <li><a href="replay-analysis.html">Replay analysis</a></li>
+      <li><a href="coaching.html">Coaching</a></li>
+      <li><a href="mmr-boost.html" aria-current="page">MMR boost</a></li>
+      <li><a href="./#blog">Blog</a></li>
+    </ul>
+  </nav>
+  <button class="btn btn-ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+  <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
+</header>
+
+<main id="main" class="el-exort">
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="page-hero-in">
+      <div>
+        <p class="eyebrow">Exort · Fire · MMR boost</p>
+        <h1 id="page-title"><span class="el">MMR</span> boost</h1>
+        <p class="lede">Top-ladder players queue on your account and play your games up, +25 a win, with every match on your dashboard. Pick a rune, set your goal, see your price.</p>
+        <ul class="chips"><li>From $22</li><li>Bonus MMR</li><li>Offline mode</li></ul>
+        <div class="cta-row"><a class="btn btn-gold" href="#calculator">Calculate my boost <span aria-hidden="true">↓</span></a><a class="btn btn-ghost" href="#packages">See packages</a></div>
+      </div>
+      <div class="hero-orb3d" data-orb="exort" aria-hidden="true">
+        <span class="tier-orb hero-orb"></span>
+        <canvas></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="section calc" id="calculator" aria-labelledby="calc-title">
+    <div class="wrap calc-layout">
+      <div class="calc-panel">
+        <header class="sec-head">
+          <p class="eyebrow">Order · MMR calculator</p>
+          <h2 id="calc-title">Pick your goal. See your price.</h2>
+          <p class="sec-sub">Tell us where you are and where you want to be. Every +25 is one win on your account.</p>
+        </header>
+        <form class="calc-form" id="calcForm" novalidate>
+          <fieldset class="types">
+            <legend>Boost type</legend>
+            <label class="type"><input type="radio" name="boostType" value="bounty" checked><span>Bounty<small>Starts ~12 h</small></span></label>
+            <label class="type"><input type="radio" name="boostType" value="haste"><span>Haste<small>Starts ~8 h</small></span></label>
+            <label class="type"><input type="radio" name="boostType" value="doubleDamage"><span>Double Damage<small>Starts ~1 h</small></span></label>
+          </fieldset>
+          <div class="field">
+            <label for="curNum">Current MMR</label>
+            <div class="mmr-row">
+              <div class="mmr-box">
+                <input type="number" id="curNum" min="0" max="6950" step="1" value="2500" inputmode="numeric" autocomplete="off">
+                <span class="unit" aria-hidden="true">MMR</span>
+              </div>
+              <p class="rank"><img class="medal" id="medalNow" src="media/medals/archon.svg" width="30" height="30" alt=""><span class="hint" id="rankNow">Archon 2</span></p>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head">
+              <label for="desRange">Desired MMR</label>
+              <p class="goal"><span class="rank"><img class="medal" id="medalGoal" src="media/medals/legend.svg" width="30" height="30" alt=""><span class="hint" id="rankGoal">Legend 3</span></span><output id="desOut" for="desRange">3,500</output></p>
+            </div>
+            <input type="range" class="slider" id="desRange" min="2550" max="7000" step="25" value="3500">
+            <div class="slider-scale" aria-hidden="true"><span id="desMin">2,550</span><span id="desMax">7,000</span></div>
+          </div>
+          <fieldset class="opts-set">
+            <legend>Options <span id="optCount">2 of 11 included</span></legend>
+            <div class="opts" id="optList"></div>
+            <div class="opt-details" id="optDetails" hidden>
+              <div class="detail" data-for="schedule" hidden>
+                <label for="optSchedule">When can we play?</label>
+                <input type="text" id="optSchedule" name="schedule" placeholder="e.g. weekdays 18:00–23:00 GMT" autocomplete="off">
+              </div>
+              <div class="detail" data-for="server" hidden>
+                <label for="optServer">Server</label>
+                <select id="optServer" name="server">
+                  <option value="">Select a server</option>
+                  <option>SEA</option><option>Japan</option><option>Australia</option><option>Europe</option><option>USA</option>
+                </select>
+              </div>
+              <fieldset class="detail" data-for="role" hidden>
+                <legend>Roles</legend>
+                <div class="picks">
+                  <label class="pick"><input type="checkbox" name="role" value="Safe lane"><span>Safe lane</span></label>
+                  <label class="pick"><input type="checkbox" name="role" value="Mid lane"><span>Mid lane</span></label>
+                  <label class="pick"><input type="checkbox" name="role" value="Off lane"><span>Off lane</span></label>
+                  <label class="pick"><input type="checkbox" name="role" value="Soft support"><span>Soft support</span></label>
+                  <label class="pick"><input type="checkbox" name="role" value="Hard support"><span>Hard support</span></label>
+                </div>
+              </fieldset>
+              <div class="detail" data-for="heroes" hidden>
+                <label for="optHeroes">Heroes to play or avoid</label>
+                <input type="text" id="optHeroes" name="heroes" placeholder="e.g. play Invoker, Storm Spirit · avoid Techies" autocomplete="off">
+              </div>
+            </div>
+          </fieldset>
+          <div class="calc-sum" aria-live="polite">
+            <p class="sum-main"><span class="gain" id="resPrice">$84.01</span> <span class="dot">·</span> <span id="resDays">7 days</span></p>
+            <p class="sum-detail" id="resDetail">+1,000 MMR · 40 wins · starts in ~12 h</p>
+            <p class="sum-nudge" id="resNudge">Bonus MMR comes with Haste and Double Damage.</p>
+          </div>
+          <div class="calc-actions">
+            <button class="btn btn-gold" id="checkoutBtn" type="button">Start checkout</button>
+          </div>
+          <p class="res-note" id="checkoutNote" hidden>Online checkout isn't live yet.</p>
+        </form>
+      </div>
+      <div class="calc-book" aria-hidden="true"><canvas id="calcBook"></canvas></div>
+    </div>
+  </section>
+
+  <section class="section guarantee" aria-labelledby="guarantee-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
+      <ul class="promise-grid">
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Starts in as little as 1 hour</b><small>With Double Damage. Bounty starts within about 12 hours.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Offline mode and region-matched VPN</b><small>Your account stays quiet and plays from your region.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Live match tracking</b><small>Follow every game from your dashboard.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Steam Guard stays on</b><small>Keep your mobile authenticator enabled.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Pause any time</b><small>Take your account back whenever you want to play.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Chat with your booster</b><small>Message them while your order runs.</small></span></li>
+      </ul>
+      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
+    </div>
+  </section>
+
+  <section class="section about" aria-labelledby="about-title">
+    <div class="wrap about-grid">
+      <div class="about-copy">
+        <header class="sec-head"><p class="eyebrow">About the service</p><h2 id="about-title">Your account, in careful hands.</h2></header>
+        <p>We play on your account and climb it to the MMR you choose, one +25 win at a time. Every booster is vetted on their own replays, not just their rank, and treats your account as if it were their own.</p>
+        <p>Whether you need a small push past a wall or a long climb to a new medal, you choose the pace with a rune, add the options you want, and follow every match as it happens.</p>
+      </div>
+      <div class="included">
+        <h3>What's included</h3>
+        <ul><li>Boosters vetted on replays</li><li>Offline mode, chat off, region-matched VPN</li><li>Live match tracking on your dashboard</li><li>Bonus MMR on Haste and Double Damage</li><li>Pause the order whenever you like</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section how-it-works" aria-labelledby="how-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">Three orbs, one boost.</h2><p class="sec-sub">Every boost is built from three things, and runs only when all three are in place.</p></header>
+      <ol class="how-grid">
+        <li class="how"><p class="how-num">Step 01</p><h3>Composure</h3><p>Logins matched to your region, offline mode, chat muted. Nothing about your games reads like a different player sat down.</p><ul class="chips"><li>Region-matched VPN</li><li>Offline mode</li><li>Chat off</li></ul></li>
+        <li class="how"><p class="how-num">Step 02</p><h3>Tempo</h3><p>Follow every match from your dashboard, message your booster, and pause the order whenever you want the account back.</p><ul class="chips"><li>Live match tracker</li><li>Pause anytime</li><li>Booster chat</li></ul></li>
+        <li class="how"><p class="how-num">Step 03</p><h3>Power</h3><p>Your games go to boosters vetted on replays, not just rank, matched to the heroes and role you actually play.</p><ul class="chips"><li>Replay-vetted</li><li>Role matching</li><li>Solo or duo</li></ul></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section tiers" id="packages" aria-labelledby="tiers-title">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Packages</p>
+        <h2 id="tiers-title">Pick your rune.</h2>
+        <p class="sec-sub">Three packages, one for each rune. Prices shown are from 0 MMR; the calculator gives your exact price.</p>
+      </header>
+      <div class="tier-grid">
+        <article class="tier quas" data-gain="500" data-type="bounty">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Quas <i>·</i> Ice</p>
+            <p class="tier-tag">Bounty boost · a quiet, clean climb</p>
+          </header>
+          <p class="tier-mmr">+500<span>MMR</span></p>
+          <p class="tier-wins">20 wins · about <span data-days>4 days</span></p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Invisible mode</li><li>Expose data turned off</li><li>Starts in ~12 hours</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><small class="from">from</small><sup>$</sup><span data-price>22</span></p>
+            <a class="btn tier-btn" href="#calculator">Choose +500</a>
+          </div>
+        </article>
+        <article class="tier wex featured" data-gain="1000" data-type="haste">
+          <p class="tier-flag"><span data-bonus>+80</span> MMR free</p>
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Wex <i>·</i> Storm</p>
+            <p class="tier-tag">Haste boost · most chosen, best value</p>
+          </header>
+          <p class="tier-mmr">+1000<span>MMR</span></p>
+          <p class="tier-wins">40 wins · <span data-bonus>+80</span> bonus MMR · about <span data-days>7 days</span></p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in +500</li><li>Choose server, role and heroes</li><li>Set a play schedule</li><li>Starts in ~8 hours</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><small class="from">from</small><sup>$</sup><span data-price>67</span></p>
+            <a class="btn tier-btn" href="#calculator">Choose +1000</a>
+          </div>
+        </article>
+        <article class="tier exort" data-gain="2000" data-type="doubleDamage">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Exort <i>·</i> Fire</p>
+            <p class="tier-tag">Double Damage boost · the full climb</p>
+          </header>
+          <p class="tier-mmr">+2000<span>MMR</span></p>
+          <p class="tier-wins">80 wins · <span data-bonus>+150</span> bonus MMR · about <span data-days>13 days</span></p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in +1000</li><li>Priority order and maximum acceleration</li><li>Private streaming and varied heroes</li><li>Starts in ~1 hour</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><small class="from">from</small><sup>$</sup><span data-price>206</span></p>
+            <a class="btn tier-btn" href="#calculator">Choose +2000</a>
+          </div>
+        </article>
+      </div>
+      <a class="member-bar" href="login.html">
+        <span class="member-seal" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <span><b>Log in for member pricing.</b> Returning customers get a discount on every tier.</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section reviews" id="reviews" aria-labelledby="rev-title">
+    <div class="wrap">
+      <header class="sec-head sec-head-row">
+        <div>
+          <p class="eyebrow">Reviews</p>
+          <h2 id="rev-title">Climbs, in their words.</h2>
+        </div>
+        <div class="car-ctrl">
+          <button class="car-btn" id="revPrev" type="button" aria-label="Previous reviews" aria-controls="revTrack">←</button>
+          <button class="car-btn" id="revNext" type="button" aria-label="Next reviews" aria-controls="revTrack">→</button>
+        </div>
+      </header>
+      <p class="draft-note">Example reviews for layout only: replace with real customer reviews before launch</p>
+      <ul class="rev-track" id="revTrack" tabindex="0" aria-label="Customer reviews, scroll horizontally">
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Stuck at 2.8k for a year. The booster took me past 4k in under a week and the tracker showed every game.</blockquote>
+          <footer><span class="who">@sallow_mid</span><span>Archon → Ancient</span><span class="gain">+1,250</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Paused the order twice to play with friends and it picked right back up. Nothing weird on the account.</blockquote>
+          <footer><span class="who">@ember_pos4</span><span>Legend → Divine</span><span class="gain">+900</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Asked for a support player so my hero pool stayed normal. They actually listened.</blockquote>
+          <footer><span class="who">@riki_regret</span><span>Crusader → Legend</span><span class="gain">+1,500</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="4 out of 5 stars">★★★★☆</div>
+          <blockquote>Chatting with the booster mid-order was the best part. They explained every draft choice.</blockquote>
+          <footer><span class="who">@quaswexexort</span><span>Ancient → Divine</span><span class="gain">+1,100</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Clean and fast. Took the +1000 package and the extra +200 landed on top.</blockquote>
+          <footer><span class="who">@ursa_on_tilt</span><span>Guardian → Archon</span><span class="gain">+1,200</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>I was nervous about account safety. Offline mode, same region, nothing flagged.</blockquote>
+          <footer><span class="who">@topsy_turvy</span><span>Legend → Ancient</span><span class="gain">+800</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Second order this season. Same booster, same speed.</blockquote>
+          <footer><span class="who">@naga_nap</span><span>Archon → Legend</span><span class="gain">+600</span></footer></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pain" aria-labelledby="pain-title">
+    <div class="wrap">
+      <ul class="pain-list"><li>Losing streaks</li><li>Teammates who feed</li><li>No time to grind</li><li>Stuck at the same medal</li></ul>
+      <h2 id="pain-title">Stuck in the same bracket?</h2>
+      <p class="sec-sub">Let a player who already lives at the top of the ladder carry you to where you belong.</p>
+      <a class="btn btn-gold" href="#calculator">Calculate my boost</a>
+    </div>
+  </section>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
+      <div class="faq-list">
+        <details><summary>Is my account safe?</summary><p>Boosters play in offline mode with chat off, through a VPN matched to your region, so nothing about your games looks unusual.</p></details>
+        <details><summary>Can I keep Steam Guard on?</summary><p>Yes. Keep your mobile authenticator enabled; we coordinate logins with you.</p></details>
+        <details><summary>How long will my boost take?</summary><p>About 160 MMR a day as a guide. Your estimate appears in the calculator as you set your goal.</p></details>
+        <details><summary>Can I play during my order?</summary><p>Pause the order whenever you want to play, then resume it when you are done.</p></details>
+        <details><summary>What is bonus MMR?</summary><p>Free MMR on top of your order on Haste and Double Damage, from +20 at +300 MMR up to +150 at +1,500.</p></details>
+      </div>
+      <p class="draft-note">Draft answers: check against the real policies before launch</p>
+    </div>
+  </section>
+
+  <section class="section more" aria-labelledby="more-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">More ways to climb</p><h2 id="more-title">The other two orbs.</h2></header>
+      <div class="more-grid">
+        <a class="svc-link el-quas" href="replay-analysis.html"><span class="tier-orb" aria-hidden="true"></span><span><b>Replay analysis</b><small>A high-MMR analyst breaks down your games</small></span><span class="arrow" aria-hidden="true">→</span></a>
+        <a class="svc-link el-wex" href="coaching.html"><span class="tier-orb" aria-hidden="true"></span><span><b>Coaching</b><small>Live one-to-one sessions with a coach</small></span><span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>Invoker model: "<a href="https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22">Invoker DOTA 2</a>" by
+    <a href="https://sketchfab.com/ansaldotoys2">ansaldotoys2</a>, licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.
+    Dota 2 is a trademark of Valve Corporation. Plus 25 is not affiliated with Valve.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="module" src="js/site.js"></script>
+<script type="module" src="js/boost.js"></script>

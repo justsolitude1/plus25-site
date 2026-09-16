@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coaching · Plus 25</title>
+<meta name="description" content="Dota 2 coaching: live one-to-one sessions with a high-MMR coach, built around your role, heroes and goals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="css/site.css">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="./" aria-label="Plus 25 home">
+    <span class="logo-mark"><b>+</b>25</span>
+    <span class="logo-sub">Dota 2 services</span>
+  </a>
+  <nav aria-label="Primary">
+    <ul class="links" id="links">
+      <li><a href="replay-analysis.html">Replay analysis</a></li>
+      <li><a href="coaching.html" aria-current="page">Coaching</a></li>
+      <li><a href="mmr-boost.html">MMR boost</a></li>
+      <li><a href="./#blog">Blog</a></li>
+    </ul>
+  </nav>
+  <button class="btn btn-ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+  <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
+</header>
+
+<main id="main" class="el-wex">
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="page-hero-in">
+      <div>
+        <p class="eyebrow">Wex · Storm · Coaching</p>
+        <h1 id="page-title"><span class="el">Coaching</span></h1>
+        <p class="lede">Live one-to-one sessions with a coach who has already climbed where you want to go. Review your games together, play with them watching, and leave with drills for your next queue.</p>
+        <ul class="chips"><li>Live 1:1 sessions</li><li>Your role and heroes</li><li>Drills between games</li></ul>
+        <div class="cta-row"><a class="btn btn-gold" href="#order">Book coaching <span aria-hidden="true">↓</span></a><a class="btn btn-ghost" href="#packages">See packages</a></div>
+      </div>
+      <div class="hero-orb3d" data-orb="wex" aria-hidden="true">
+        <span class="tier-orb hero-orb"></span>
+        <canvas></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="section order" id="order" aria-labelledby="order-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">Book</p><h2 id="order-title">Plan your sessions.</h2><p class="sec-sub">Pick how many sessions you want and tell us where you're at. We'll match you with a coach for your role.</p></header>
+      <form class="order-layout" data-order-form novalidate>
+        <div class="order-fields">
+          <fieldset class="types">
+            <legend>Package</legend>
+            <label class="type"><input type="radio" name="package" value="1" data-price="25" data-label="1 session"><span>1 session<small>$25</small></span></label>
+            <label class="type"><input type="radio" name="package" value="5" data-price="110" data-label="5 sessions" checked><span>5 sessions<small>$110</small></span></label>
+            <label class="type"><input type="radio" name="package" value="monthly" data-price="190" data-label="Monthly"><span>Monthly<small>$190 · 8 sessions</small></span></label>
+          </fieldset>
+          <fieldset class="field-set">
+            <legend>Your role</legend>
+            <div class="picks"><label class="pick"><input type="checkbox" name="role" value="Safe lane"><span>Safe lane</span></label><label class="pick"><input type="checkbox" name="role" value="Mid lane"><span>Mid lane</span></label><label class="pick"><input type="checkbox" name="role" value="Off lane"><span>Off lane</span></label><label class="pick"><input type="checkbox" name="role" value="Soft support"><span>Soft support</span></label><label class="pick"><input type="checkbox" name="role" value="Hard support"><span>Hard support</span></label></div>
+          </fieldset>
+          <div class="field">
+            <label for="coachRank">Your rank</label>
+            <select id="coachRank" name="rank"><option value="">Select your medal</option><option>Herald</option><option>Guardian</option><option>Crusader</option><option>Archon</option><option>Legend</option><option>Ancient</option><option>Divine</option><option>Immortal</option></select>
+          </div>
+          <div class="field">
+            <label for="coachGoals">What do you want to work on?</label>
+            <textarea id="coachGoals" name="goals" rows="3" placeholder="Laning as mid, deciding when to fight, staying calm after a bad game"></textarea>
+          </div>
+          <div class="field">
+            <label for="coachZone">Time zone</label>
+            <select id="coachZone" name="zone"><option value="">Select your time zone</option><option>UTC−8 (US West)</option><option>UTC−5 (US East)</option><option>UTC−3 (South America)</option><option>UTC+0 (UK)</option><option>UTC+1 (Central Europe)</option><option>UTC+3 (Moscow)</option><option>UTC+5 (Pakistan)</option><option>UTC+8 (Southeast Asia)</option><option>UTC+10 (Australia East)</option></select>
+          </div>
+          <div class="field">
+            <label for="coachTimes">When are you free?</label>
+            <input type="text" id="coachTimes" name="times" placeholder="Weekday evenings after 19:00" autocomplete="off">
+          </div>
+          <fieldset class="field-set">
+            <legend>Extras</legend>
+            <div class="opts">
+              <label class="opt"><input type="checkbox" name="topCoach" data-surcharge="0.4" data-label="Top-ranked coach"><span class="opt-box"><i class="opt-tick" aria-hidden="true"></i><span class="opt-text"><b>Top-ranked coach</b><small class="opt-tag">+40%</small></span></span></label>
+            </div>
+          </fieldset>
+        </div>
+        <aside class="order-sum" aria-live="polite">
+          <p class="eyebrow">Your sessions</p>
+          <ul class="order-lines">
+            <li><span>Package</span><span data-out="package">5 sessions</span></li>
+            <li><span>Role</span><span data-out-picks="role" data-empty="Not set">Not set</span></li>
+            <li><span>Rank</span><span data-out-field="rank" data-empty="Not set">Not set</span></li>
+            <li><span>Time zone</span><span data-out-field="zone" data-empty="Not set">Not set</span></li>
+            <li><span>Extras</span><span data-out="extras">None</span></li>
+          </ul>
+          <p class="order-total"><small>Total</small><span data-out="total">$110.00</span></p>
+          <button class="btn btn-gold" type="button" data-order="coachNote">Start checkout</button>
+          <p class="res-note" id="coachNote" hidden>Online checkout isn't live yet.</p>
+          <p class="draft-note">Placeholder prices: confirm before launch</p>
+        </aside>
+      </form>
+    </div>
+  </section>
+
+  <section class="section guarantee" aria-labelledby="guarantee-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
+      <ul class="promise-grid">
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Vetted high-MMR coaches</b><small>Checked on their own games and on how well they teach.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Free rescheduling</b><small>Move a session up to 24 hours before it starts.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Sessions on Discord</b><small>Voice and screen share, nothing extra to install.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Keep the recording</b><small>Rewatch any session whenever you like.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Drills after every session</b><small>Clear goals to practise before the next one.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>The same coach throughout</b><small>On 5-session and monthly packages.</small></span></li>
+      </ul>
+      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
+    </div>
+  </section>
+
+  <section class="section about" aria-labelledby="about-title">
+    <div class="wrap about-grid">
+      <div class="about-copy">
+        <header class="sec-head"><p class="eyebrow">About the service</p><h2 id="about-title">Learn the how, not just the what.</h2></header>
+        <p>Guides tell you what to do. A coach shows you how to do it in your games, at your rank, on your heroes. Sessions are live and one-to-one, so every minute is about you.</p>
+        <p>Review a recent game together, queue while your coach watches and talks you through decisions, or work through a specific skill. Every session ends with drills and a goal for the next one.</p>
+      </div>
+      <div class="included">
+        <h3>What's included</h3>
+        <ul><li>Live one-to-one session on Discord</li><li>Game review or play-along, your choice</li><li>Focus on your role and hero pool</li><li>Drills and a goal after every session</li><li>Session recording to keep</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section how-it-works" aria-labelledby="how-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">Book, train, practise.</h2></header>
+      <ol class="how-grid">
+        <li class="how"><p class="how-num">Step 01</p><h3>Book your sessions</h3><p>Pick a package, tell us your role, rank and goals, and when you are free.</p></li>
+        <li class="how"><p class="how-num">Step 02</p><h3>Meet your coach</h3><p>Join your coach on Discord. Review a game together or queue while they watch.</p></li>
+        <li class="how"><p class="how-num">Step 03</p><h3>Practise between sessions</h3><p>Work on the drills you leave with, then pick up where you left off next time.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section tiers" id="packages" aria-labelledby="packages-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">Packages</p><h2 id="packages-title">Pick your pace.</h2><p class="sec-sub">Try a single session, or commit to a run with the same coach.</p></header>
+      <div class="tier-grid">
+        <article class="tier wex">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Wex <i>·</i> Spark</p>
+            <p class="tier-tag">Try it out</p>
+          </header>
+          <p class="tier-mmr">1<span>session</span></p>
+          <p class="tier-wins">60 minutes, live</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Game review or play-along</li><li>Drills to take away</li><li>Session recording</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>25<small>one-time</small></p>
+            <a class="btn tier-btn" href="#order" data-pick-package="1">Choose 1 session</a>
+          </div>
+        </article>
+        <article class="tier wex featured">
+          <p class="tier-flag">Most chosen</p>
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Wex <i>·</i> Storm</p>
+            <p class="tier-tag">Build real habits</p>
+          </header>
+          <p class="tier-mmr">5<span>sessions</span></p>
+          <p class="tier-wins">Same coach every time</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in 1 session</li><li>Progress notes between sessions</li><li>A plan built around your goals</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>110<small>one-time</small></p>
+            <a class="btn tier-btn" href="#order" data-pick-package="5">Choose 5 sessions</a>
+          </div>
+        </article>
+        <article class="tier wex">
+          <header class="tier-head">
+            <span class="tier-orb" aria-hidden="true"></span>
+            <p class="tier-el">Wex <i>·</i> Tempest</p>
+            <p class="tier-tag">A month of focused training</p>
+          </header>
+          <p class="tier-mmr">8<span>sessions</span></p>
+          <p class="tier-wins">Plus 4 replay analyses</p>
+          <div class="tier-rule" aria-hidden="true"></div>
+          <ul><li>Everything in 5 sessions</li><li>4 replay analyses included</li><li>Message your coach between sessions</li></ul>
+          <div class="tier-foot">
+            <p class="tier-price"><sup>$</sup>190<small>per month</small></p>
+            <a class="btn tier-btn" href="#order" data-pick-package="monthly">Choose 8 sessions</a>
+          </div>
+        </article>
+      </div>
+      <p class="draft-note">Placeholder prices and package contents: confirm before launch</p>
+    </div>
+  </section>
+
+  <section class="section reviews" id="reviews" aria-labelledby="rev-title">
+    <div class="wrap">
+      <header class="sec-head sec-head-row">
+        <div>
+          <p class="eyebrow">Reviews</p>
+          <h2 id="rev-title">Sessions, in their words.</h2>
+        </div>
+        <div class="car-ctrl">
+          <button class="car-btn" id="revPrev" type="button" aria-label="Previous reviews" aria-controls="revTrack">←</button>
+          <button class="car-btn" id="revNext" type="button" aria-label="Next reviews" aria-controls="revTrack">→</button>
+        </div>
+      </header>
+      <p class="draft-note">Example reviews for layout only: show real customer reviews (with their real rating and count) before launch</p>
+      <ul class="rev-track" id="revTrack" tabindex="0" aria-label="Customer reviews, scroll horizontally">
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>My coach watched me play three games and fixed my blink timings in one evening. Nobody had ever explained it like that.</blockquote>
+          <footer><span class="who">@initiator_ian</span><span>5 sessions</span><span class="gain">Legend</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>I kept tilting after one bad fight. We worked on that as much as the gameplay, and it helped.</blockquote>
+          <footer><span class="who">@calm_carry</span><span>Monthly</span><span class="gain">Archon</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Booked one session to try it and ended up taking five. Same coach, clear homework every time.</blockquote>
+          <footer><span class="who">@wardbot</span><span>5 sessions</span><span class="gain">Ancient</span></footer></li>
+        <li class="rev"><div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+          <blockquote>Reschedule was easy when work got in the way. The session recording is great to rewatch.</blockquote>
+          <footer><span class="who">@midnight_mid</span><span>1 session</span><span class="gain">Divine</span></footer></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pain" aria-labelledby="pain-title">
+    <div class="wrap">
+      <ul class="pain-list"><li>Tilting after one bad game</li><li>Unsure what to practise</li><li>Plateau after plateau</li><li>Freezing in big fights</li></ul>
+      <h2 id="pain-title">Know what to do, but not how?</h2>
+      <p class="sec-sub">A coach turns what you already know into what you actually do, game after game.</p>
+      <a class="btn btn-gold" href="#order">Book coaching</a>
+    </div>
+  </section>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
+      <div class="faq-list">
+        <details><summary>How do sessions work?</summary><p>On Discord with voice and screen share. You can review a recent game together, play while your coach watches, or work on a specific skill.</p></details>
+        <details><summary>Can I choose my coach?</summary><p>We match you with a coach for your role and goals. Add the top-ranked coach extra for our highest-ranked coaches.</p></details>
+        <details><summary>What if I need to reschedule?</summary><p>Move any session for free up to 24 hours before it starts.</p></details>
+        <details><summary>Do I need a certain rank?</summary><p>No. Coaching works at every rank, from Herald to Immortal.</p></details>
+        <details><summary>How long is a session?</summary><p>Each session is 60 minutes.</p></details>
+      </div>
+      <p class="draft-note">Draft answers: check against the real policies before launch</p>
+    </div>
+  </section>
+
+  <section class="section more" aria-labelledby="more-title">
+    <div class="wrap">
+      <header class="sec-head"><p class="eyebrow">More ways to climb</p><h2 id="more-title">The other two orbs.</h2></header>
+      <div class="more-grid">
+        <a class="svc-link el-quas" href="replay-analysis.html"><span class="tier-orb" aria-hidden="true"></span><span><b>Replay analysis</b><small>A high-MMR analyst breaks down your games</small></span><span class="arrow" aria-hidden="true">→</span></a>
+        <a class="svc-link el-exort" href="mmr-boost.html"><span class="tier-orb" aria-hidden="true"></span><span><b>MMR boost</b><small>Top players climb your account for you</small></span><span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <p>Invoker model: "<a href="https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22">Invoker DOTA 2</a>" by
+    <a href="https://sketchfab.com/ansaldotoys2">ansaldotoys2</a>, licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.
+    Dota 2 is a trademark of Valve Corporation. Plus 25 is not affiliated with Valve.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="module" src="js/site.js"></script>
+<script type="module" src="js/order.js"></script>

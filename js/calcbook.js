@@ -3,7 +3,7 @@
 // Transparent canvas; glow is screened over the page.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { uTime, smooth, band } from './shared.js';
+import { uTime, tickTime, smooth, band } from './shared.js';
 import { createBook } from './book.js';
 import { createPost, createQuality } from './post.js';
 
@@ -52,7 +52,7 @@ export async function initCalcBook({ canvas, reduced = false, mobile = false, de
   const clock = new THREE.Clock();
 
   function update(dt) {
-    uTime.value += dt * (reduced ? 0.35 : 1);
+    tickTime(dt, reduced ? 0.35 : 1);
     const t = uTime.value;
     enterS += (enter - enterS) * (1 - Math.exp(-dt * 5));
     const e = smooth(enterS);
