@@ -1085,6 +1085,8 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .how-art { width: clamp(118px, 11vw, 148px); }
 .svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: calc(clamp(118px, 11vw, 148px) * 0.47); }
 .svc .has-art .how-art { margin-bottom: 22px; }
+/* each step sits above the line: the scroll-in fade gives every step its own layer, which would otherwise put the line on top */
+.svc .how { z-index: 1; }
 .svc .has-art .how-num { display: none; }
 .svc .how-grid:not(.has-art)::before, .svc .how-grid:not(.has-art)::after { top: 9px; }
 .svc .how-grid:not(.has-art) .how-num { width: 18px; height: 18px; margin: 0 auto 30px; border-radius: 3px; rotate: 45deg; font-size: 0;
