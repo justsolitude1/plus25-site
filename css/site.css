@@ -289,7 +289,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .type input { position: absolute; opacity: 0; pointer-events: none; }
 .type span { display: grid; align-content: center; gap: 6px; padding: 11px 6px; text-align: center; border: 1px solid rgba(239, 230, 214, 0.2); border-radius: 8px;
   background: var(--void); font: 600 15px/1 var(--ui); color: var(--ink); transition: border-color .2s, color .2s, background .2s; }
-.type small { font: 500 10px/1.2 var(--ui); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.type small { font: 500 11px/1.2 var(--ui); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .type:hover span { border-color: rgba(240, 175, 94, 0.55); }
 .type input:checked + span { border-color: var(--gold); background: rgba(240, 175, 94, 0.1); color: var(--gold); }
 .type input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 3px; }
@@ -307,7 +307,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .opt-text { display: grid; gap: 4px; min-width: 0; }
 .opt-text b { font-weight: 500; }
 .opt-tick { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border: 1px solid rgba(239, 230, 214, 0.35); border-radius: 4px; transition: background .2s, border-color .2s; }
-.opt-tag { font: 600 10px/1 var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.opt-tag { font: 600 11px/1 var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
 .opt-tag:empty { display: none; }
 .opt.locked .opt-tag::before { content: "with "; }
 .opt:hover .opt-box { border-color: rgba(240, 175, 94, 0.5); }
@@ -555,7 +555,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 @media (prefers-reduced-motion: reduce) { .rev { transition: none; } }
 
 /* blog */
-.text-link { font: 600 15px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
+.text-link { display: inline-block; padding-block: 12px; font: 600 15px var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
 .text-link:hover { text-decoration: underline; }
 .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .post a { display: flex; flex-direction: column; height: 100%; overflow: hidden; border: 1px solid rgba(239, 230, 214, 0.12); border-radius: 14px; background: var(--void-2); text-decoration: none; transition: border-color .2s, transform .2s; }
@@ -1105,6 +1105,36 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .how-grid:not(.has-art) .how { grid-template-columns: 18px minmax(0, 1fr); }
   .svc .how-grid:not(.has-art) .how-num { margin: 16px 0 0; }
 }
+
+/* ---------- phones: a tighter header, swipeable packages, comfortable tap targets, no zoom on form focus ---------- */
+@media (pointer: coarse) { .slider { height: 44px; } }
+@media (max-width: 760px) {
+  .logo { padding-block: 8px; }
+  .pick span { padding: 13px 15px; }
+  /* 16px text in fields stops iPhones zooming the page when one is tapped */
+  .field textarea, .field select, .field input[type='text'], .detail input[type='text'], .detail select, .auth-email input, .name-form input { font-size: 16px; }
+
+  /* service page header: the title and main button fit on the first screen */
+  .page-hero { padding-top: 92px; padding-bottom: 56px; }
+  .hero-orb3d { width: min(58vw, 230px); margin: 0 auto 4px; }
+  .page-hero h1 { margin-bottom: 16px; }
+  .page-hero .chips { margin-bottom: 24px; }
+  .page-hero .cta-row { flex-direction: column; gap: 10px; }
+  .page-hero .cta-row .btn { width: 100%; }
+
+  /* packages: a row you swipe through, the next card peeking in (js/site.js centres the featured card and runs the dots) */
+  .svc .tier-grid { --pad: clamp(20px, 6vw, 96px); display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; gap: 14px;
+    margin-inline: calc(-1 * var(--pad)); padding: 22px var(--pad) 8px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad);
+    overscroll-behavior-x: contain; scrollbar-width: none; }
+  .svc .tier-grid::-webkit-scrollbar { display: none; }
+  .svc .tier { scroll-snap-align: center; }
+  .svc .tier:hover, .svc .tier.featured, .svc .tier.featured:hover { transform: none; }
+  .tier-dots { display: flex; justify-content: center; gap: 4px; margin: 6px 0 0; padding: 0; list-style: none; }
+  .tier-dots button { width: 32px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .tier-dots button::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: rgba(239, 230, 214, 0.25); transition: background .25s, transform .25s; }
+  .tier-dots button[aria-current='true']::before { background: var(--el, var(--gold)); transform: scale(1.35); box-shadow: 0 0 10px var(--el, var(--gold)); }
+}
+@media (min-width: 761px) { .tier-dots { display: none; } }
 
 /* draft notes are for the team: shown locally or with ?drafts, never to visitors */
 html:not(.drafts) .draft-note { display: none; }

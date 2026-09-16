@@ -102,6 +102,40 @@ document.querySelectorAll('.svc .promise').forEach((card) => card.addEventListen
   card.style.setProperty('--my', `${e.clientY - r.top}px`);
 }));
 
+/* ---------- phones: packages swipe sideways; open on the featured card, with dots to show where you are ---------- */
+{
+  const phone = matchMedia('(max-width: 760px)');
+  document.querySelectorAll('.svc .tier-grid').forEach((grid) => {
+    const cards = [...grid.querySelectorAll('.tier')];
+    if (cards.length < 2) return;
+    const dots = document.createElement('ol');
+    dots.className = 'tier-dots';
+    dots.setAttribute('aria-label', 'Packages');
+    const buttons = cards.map((card, i) => {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', `Show package ${i + 1} of ${cards.length}`);
+      b.addEventListener('click', () => card.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest', inline: 'center' }));
+      li.append(b); dots.append(li);
+      return b;
+    });
+    grid.after(dots);
+    const centreOn = (card) => { grid.scrollLeft = card.offsetLeft - (grid.clientWidth - card.offsetWidth) / 2; };
+    const mark = () => {
+      const mid = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+      let best = 0, bestD = Infinity;
+      cards.forEach((c, i) => { const r = c.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
+      buttons.forEach((b, i) => b.setAttribute('aria-current', String(i === best)));
+    };
+    let raf = 0;
+    grid.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(mark); }, { passive: true });
+    const setup = () => { if (phone.matches) centreOn(grid.querySelector('.tier.featured') || cards[0]); mark(); };
+    setup();
+    phone.addEventListener('change', setup);
+  });
+}
+
 /* ---------- order buttons: reveal the "checkout isn't live yet" note they point at ---------- */
 document.querySelectorAll('[data-order]').forEach((btn) => btn.addEventListener('click', () => {
   const note = document.getElementById(btn.dataset.order);
