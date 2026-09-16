@@ -15,6 +15,8 @@
 </script>
 <link rel="preload" href="media/loader-orbs.webp" as="image" fetchpriority="high">
 <link rel="stylesheet" href="css/site.css">
+<!-- the intro loader plays on the first page of a visit only -->
+<script>try{sessionStorage.getItem('p25-intro')?document.documentElement.classList.add('seen-intro'):sessionStorage.setItem('p25-intro','1')}catch(e){}</script>
 
 <div class="preloader" id="preloader" role="status" aria-label="Loading">
   <div class="pl-ring" aria-hidden="true">
@@ -44,7 +46,7 @@
   <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
 </header>
 
-<main id="main" class="el-quas">
+<main id="main" class="svc el-quas">
   <section class="page-hero" aria-labelledby="page-title">
     <div class="page-hero-in">
       <div>
@@ -98,7 +100,7 @@
           </fieldset>
         </div>
         <aside class="order-sum" aria-live="polite">
-          <p class="eyebrow">Your order</p>
+          <header class="sum-head"><span class="tier-orb" aria-hidden="true"></span><p class="eyebrow">Your order</p></header>
           <ul class="order-lines">
             <li><span>Package</span><span data-out="package">3 replays</span></li>
             <li><span>Match IDs</span><span data-out="ids">0 of 3</span></li>
@@ -116,18 +118,14 @@
     </div>
   </section>
 
-  <section class="section guarantee" aria-labelledby="guarantee-title">
+  <section class="section how-it-works" aria-labelledby="how-title">
     <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
-      <ul class="promise-grid">
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Delivered in 48 hours</b><small>Or 24 hours with Express.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>High-MMR analysts</b><small>Every analyst plays well above the rank they review.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Timestamped notes</b><small>Jump straight to each moment in your replay.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>A free follow-up question</b><small>Ask about anything in your breakdown.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Nothing touches your account</b><small>We only need match IDs, never your login.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Written or video</b><small>Read it, or watch us talk through it.</small></span></li>
-      </ul>
-      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
+      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">From match ID to game plan.</h2></header>
+      <ol class="how-grid">
+        <li class="how"><p class="how-num"><span>Step </span>01</p><h3>Send your matches</h3><p>Copy the match IDs from your Dota 2 profile and paste them into your order. Recent matches work best while replays can still be downloaded.</p></li>
+        <li class="how"><p class="how-num"><span>Step </span>02</p><h3>An analyst watches</h3><p>A high-MMR analyst reviews each game in full, focusing on the areas you picked.</p></li>
+        <li class="how"><p class="how-num"><span>Step </span>03</p><h3>Get your breakdown</h3><p>Receive timestamped notes (or a video) and your top fixes, then ask your follow-up question.</p></li>
+      </ol>
     </div>
   </section>
 
@@ -139,20 +137,25 @@
         <p>You get a clear breakdown of what went wrong and why, plus the three changes that will win you the most games right now. No account access, no jargon, just what to do differently next queue.</p>
       </div>
       <div class="included">
+        <span class="tier-orb inc-orb" aria-hidden="true"></span>
         <h3>What's included</h3>
         <ul><li>A full watch of every match you send</li><li>Timestamped notes on laning, rotations and fights</li><li>Draft and item choices, and what to pick instead</li><li>Your top three fixes, in priority order</li><li>One follow-up question answered</li></ul>
       </div>
     </div>
   </section>
 
-  <section class="section how-it-works" aria-labelledby="how-title">
+  <section class="section guarantee" aria-labelledby="guarantee-title">
     <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">From match ID to game plan.</h2></header>
-      <ol class="how-grid">
-        <li class="how"><p class="how-num">Step 01</p><h3>Send your matches</h3><p>Copy the match IDs from your Dota 2 profile and paste them into your order. Recent matches work best while replays can still be downloaded.</p></li>
-        <li class="how"><p class="how-num">Step 02</p><h3>An analyst watches</h3><p>A high-MMR analyst reviews each game in full, focusing on the areas you picked.</p></li>
-        <li class="how"><p class="how-num">Step 03</p><h3>Get your breakdown</h3><p>Receive timestamped notes (or a video) and your top fixes, then ask your follow-up question.</p></li>
-      </ol>
+      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
+      <ul class="promise-grid">
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>I</i></span><span><b>Delivered in 48 hours</b><small>Or 24 hours with Express.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>II</i></span><span><b>High-MMR analysts</b><small>Every analyst plays well above the rank they review.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>III</i></span><span><b>Timestamped notes</b><small>Jump straight to each moment in your replay.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>IV</i></span><span><b>A free follow-up question</b><small>Ask about anything in your breakdown.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>V</i></span><span><b>Nothing touches your account</b><small>We only need match IDs, never your login.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>VI</i></span><span><b>Written or video</b><small>Read it, or watch us talk through it.</small></span></li>
+      </ul>
+      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
     </div>
   </section>
 
@@ -293,26 +296,33 @@
     </div>
   </section>
 
+  <section class="section faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div class="faq-side">
+        <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
+        <p class="faq-more">Still deciding? You see the full price before you pay anything.</p>
+        <a class="btn btn-gold" href="#order">Build your analysis</a>
+      </div>
+      <div class="faq-main">
+        <div class="faq-list">
+          <details><summary>What do I need to send?</summary><p>Just the match IDs, which you can copy from your Dota 2 profile or match history. We never need your Steam login.</p></details>
+          <details><summary>Who analyses my games?</summary><p>Players ranked well above the bracket they review, who have been checked on their own replays.</p></details>
+          <details><summary>How do I get my breakdown?</summary><p>By email as written, timestamped notes, or as a recorded video if you add the video extra.</p></details>
+          <details><summary>Can I ask questions afterwards?</summary><p>Yes. Every package includes one follow-up question, and the deep dive includes a live call.</p></details>
+          <details><summary>What if my replay has expired?</summary><p>Replays can only be downloaded for a limited time. If one has expired, we'll ask you for another match.</p></details>
+        </div>
+        <p class="draft-note">Draft answers: check against the real policies before launch</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section pain" aria-labelledby="pain-title">
     <div class="wrap">
+      <span class="tier-orb pain-orb" aria-hidden="true"></span>
       <ul class="pain-list"><li>Same deaths every game</li><li>Lanes that fall apart</li><li>Fights you can't read</li><li>Items that don't fit</li></ul>
       <h2 id="pain-title">Losing, and not sure why?</h2>
       <p class="sec-sub">Your replays already hold the answer. Let someone who has climbed past your bracket point it out.</p>
       <a class="btn btn-gold" href="#order">Order an analysis</a>
-    </div>
-  </section>
-
-  <section class="section faq" aria-labelledby="faq-title">
-    <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
-      <div class="faq-list">
-        <details><summary>What do I need to send?</summary><p>Just the match IDs, which you can copy from your Dota 2 profile or match history. We never need your Steam login.</p></details>
-        <details><summary>Who analyses my games?</summary><p>Players ranked well above the bracket they review, who have been checked on their own replays.</p></details>
-        <details><summary>How do I get my breakdown?</summary><p>By email as written, timestamped notes, or as a recorded video if you add the video extra.</p></details>
-        <details><summary>Can I ask questions afterwards?</summary><p>Yes. Every package includes one follow-up question, and the deep dive includes a live call.</p></details>
-        <details><summary>What if my replay has expired?</summary><p>Replays can only be downloaded for a limited time. If one has expired, we'll ask you for another match.</p></details>
-      </div>
-      <p class="draft-note">Draft answers: check against the real policies before launch</p>
     </div>
   </section>
 

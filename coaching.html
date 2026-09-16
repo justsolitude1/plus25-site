@@ -15,6 +15,8 @@
 </script>
 <link rel="preload" href="media/loader-orbs.webp" as="image" fetchpriority="high">
 <link rel="stylesheet" href="css/site.css">
+<!-- the intro loader plays on the first page of a visit only -->
+<script>try{sessionStorage.getItem('p25-intro')?document.documentElement.classList.add('seen-intro'):sessionStorage.setItem('p25-intro','1')}catch(e){}</script>
 
 <div class="preloader" id="preloader" role="status" aria-label="Loading">
   <div class="pl-ring" aria-hidden="true">
@@ -44,7 +46,7 @@
   <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
 </header>
 
-<main id="main" class="el-wex">
+<main id="main" class="svc el-wex">
   <section class="page-hero" aria-labelledby="page-title">
     <div class="page-hero-in">
       <div>
@@ -100,7 +102,7 @@
           </fieldset>
         </div>
         <aside class="order-sum" aria-live="polite">
-          <p class="eyebrow">Your sessions</p>
+          <header class="sum-head"><span class="tier-orb" aria-hidden="true"></span><p class="eyebrow">Your sessions</p></header>
           <ul class="order-lines">
             <li><span>Package</span><span data-out="package">5 sessions</span></li>
             <li><span>Role</span><span data-out-picks="role" data-empty="Not set">Not set</span></li>
@@ -117,18 +119,14 @@
     </div>
   </section>
 
-  <section class="section guarantee" aria-labelledby="guarantee-title">
+  <section class="section how-it-works" aria-labelledby="how-title">
     <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
-      <ul class="promise-grid">
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Vetted high-MMR coaches</b><small>Checked on their own games and on how well they teach.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Free rescheduling</b><small>Move a session up to 24 hours before it starts.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Sessions on Discord</b><small>Voice and screen share, nothing extra to install.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Keep the recording</b><small>Rewatch any session whenever you like.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>Drills after every session</b><small>Clear goals to practise before the next one.</small></span></li>
-        <li class="promise"><span class="promise-mark" aria-hidden="true"></span><span><b>The same coach throughout</b><small>On 5-session and monthly packages.</small></span></li>
-      </ul>
-      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
+      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">Book, train, practise.</h2></header>
+      <ol class="how-grid">
+        <li class="how"><p class="how-num"><span>Step </span>01</p><h3>Book your sessions</h3><p>Pick a package, tell us your role, rank and goals, and when you are free.</p></li>
+        <li class="how"><p class="how-num"><span>Step </span>02</p><h3>Meet your coach</h3><p>Join your coach on Discord. Review a game together or queue while they watch.</p></li>
+        <li class="how"><p class="how-num"><span>Step </span>03</p><h3>Practise between sessions</h3><p>Work on the drills you leave with, then pick up where you left off next time.</p></li>
+      </ol>
     </div>
   </section>
 
@@ -140,20 +138,25 @@
         <p>Review a recent game together, queue while your coach watches and talks you through decisions, or work through a specific skill. Every session ends with drills and a goal for the next one.</p>
       </div>
       <div class="included">
+        <span class="tier-orb inc-orb" aria-hidden="true"></span>
         <h3>What's included</h3>
         <ul><li>Live one-to-one session on Discord</li><li>Game review or play-along, your choice</li><li>Focus on your role and hero pool</li><li>Drills and a goal after every session</li><li>Session recording to keep</li></ul>
       </div>
     </div>
   </section>
 
-  <section class="section how-it-works" aria-labelledby="how-title">
+  <section class="section guarantee" aria-labelledby="guarantee-title">
     <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">How it works</p><h2 id="how-title">Book, train, practise.</h2></header>
-      <ol class="how-grid">
-        <li class="how"><p class="how-num">Step 01</p><h3>Book your sessions</h3><p>Pick a package, tell us your role, rank and goals, and when you are free.</p></li>
-        <li class="how"><p class="how-num">Step 02</p><h3>Meet your coach</h3><p>Join your coach on Discord. Review a game together or queue while they watch.</p></li>
-        <li class="how"><p class="how-num">Step 03</p><h3>Practise between sessions</h3><p>Work on the drills you leave with, then pick up where you left off next time.</p></li>
-      </ol>
+      <header class="sec-head"><p class="eyebrow">Our guarantee</p><h2 id="guarantee-title">What you can count on.</h2></header>
+      <ul class="promise-grid">
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>I</i></span><span><b>Vetted high-MMR coaches</b><small>Checked on their own games and on how well they teach.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>II</i></span><span><b>Free rescheduling</b><small>Move a session up to 24 hours before it starts.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>III</i></span><span><b>Sessions on Discord</b><small>Voice and screen share, nothing extra to install.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>IV</i></span><span><b>Keep the recording</b><small>Rewatch any session whenever you like.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>V</i></span><span><b>Drills after every session</b><small>Clear goals to practise before the next one.</small></span></li>
+        <li class="promise"><span class="promise-mark" aria-hidden="true"><i>VI</i></span><span><b>The same coach throughout</b><small>On 5-session and monthly packages.</small></span></li>
+      </ul>
+      <p class="draft-note">Draft promises: confirm each one with the team before launch</p>
     </div>
   </section>
 
@@ -294,26 +297,33 @@
     </div>
   </section>
 
+  <section class="section faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div class="faq-side">
+        <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
+        <p class="faq-more">Still deciding? You see the full price before you pay anything.</p>
+        <a class="btn btn-gold" href="#order">Book coaching</a>
+      </div>
+      <div class="faq-main">
+        <div class="faq-list">
+          <details><summary>How do sessions work?</summary><p>On Discord with voice and screen share. You can review a recent game together, play while your coach watches, or work on a specific skill.</p></details>
+          <details><summary>Can I choose my coach?</summary><p>We match you with a coach for your role and goals. Add the top-ranked coach extra for our highest-ranked coaches.</p></details>
+          <details><summary>What if I need to reschedule?</summary><p>Move any session for free up to 24 hours before it starts.</p></details>
+          <details><summary>Do I need a certain rank?</summary><p>No. Coaching works at every rank, from Herald to Immortal.</p></details>
+          <details><summary>How long is a session?</summary><p>Each session is 60 minutes.</p></details>
+        </div>
+        <p class="draft-note">Draft answers: check against the real policies before launch</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section pain" aria-labelledby="pain-title">
     <div class="wrap">
+      <span class="tier-orb pain-orb" aria-hidden="true"></span>
       <ul class="pain-list"><li>Tilting after one bad game</li><li>Unsure what to practise</li><li>Plateau after plateau</li><li>Freezing in big fights</li></ul>
       <h2 id="pain-title">Know what to do, but not how?</h2>
       <p class="sec-sub">A coach turns what you already know into what you actually do, game after game.</p>
       <a class="btn btn-gold" href="#order">Book coaching</a>
-    </div>
-  </section>
-
-  <section class="section faq" aria-labelledby="faq-title">
-    <div class="wrap">
-      <header class="sec-head"><p class="eyebrow">FAQ</p><h2 id="faq-title">Questions, answered.</h2></header>
-      <div class="faq-list">
-        <details><summary>How do sessions work?</summary><p>On Discord with voice and screen share. You can review a recent game together, play while your coach watches, or work on a specific skill.</p></details>
-        <details><summary>Can I choose my coach?</summary><p>We match you with a coach for your role and goals. Add the top-ranked coach extra for our highest-ranked coaches.</p></details>
-        <details><summary>What if I need to reschedule?</summary><p>Move any session for free up to 24 hours before it starts.</p></details>
-        <details><summary>Do I need a certain rank?</summary><p>No. Coaching works at every rank, from Herald to Immortal.</p></details>
-        <details><summary>How long is a session?</summary><p>Each session is 60 minutes.</p></details>
-      </div>
-      <p class="draft-note">Draft answers: check against the real policies before launch</p>
     </div>
   </section>
 

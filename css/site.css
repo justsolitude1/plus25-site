@@ -801,3 +801,269 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .account-grid { grid-template-columns: 1fr; }
   .account-head .btn { width: 100%; justify-content: center; }
 }
+
+/* ======================================================================================================================
+   service pages, crafted pass: every section below the header gets the landing page's care (orb light, ornament,
+   motion). Scoped to main.svc; --el / --el-hi / --el-lo come from the page's orb (el-quas, el-wex, el-exort).
+   ==================================================================================================================== */
+.svc .section { border-top: 0; }
+/* a lit hairline with a diamond marks where each section begins, instead of a flat rule */
+.svc .section:not(.reviews):not(.pain)::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: min(620px, 72%); height: 1px; transform: translateX(-50%); pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--el) 45%, transparent), transparent); }
+.svc .section:not(.reviews):not(.pain)::after {
+  content: ""; position: absolute; top: -4px; left: 50%; width: 9px; height: 9px; margin-left: -4.5px; transform: rotate(45deg); pointer-events: none;
+  background: var(--void); border: 1px solid color-mix(in srgb, var(--el) 70%, transparent); box-shadow: 0 0 12px color-mix(in srgb, var(--el) 60%, transparent); }
+.svc .section h2 { font-size: clamp(34px, 4.2vw, 58px); line-height: 1.06; }
+.svc .sec-head .eyebrow { display: inline-flex; align-items: center; gap: 12px; color: var(--el); }
+.svc .sec-head .eyebrow::before, .svc .sec-head .eyebrow::after { content: ""; width: 30px; height: 1px; background: linear-gradient(90deg, transparent, currentColor); }
+.svc .sec-head .eyebrow::after { transform: scaleX(-1); }
+.svc .sec-sub { max-width: 40rem; }
+.svc :is(.order, .how-it-works, .guarantee, .tiers, .more) .sec-head { margin-inline: auto; text-align: center; }
+.svc :is(.order, .how-it-works, .guarantee, .tiers, .more) .sec-sub { margin-inline: auto; }
+
+/* ---------- order / calculator: a framed panel of numbered steps, and a glowing summary ---------- */
+.svc .order, .svc .calc { background: radial-gradient(45% 55% at 88% 30%, color-mix(in srgb, var(--el) 9%, transparent), transparent 70%),
+  radial-gradient(40% 50% at 8% 90%, color-mix(in srgb, var(--el) 6%, transparent), transparent 70%), var(--void); }
+.svc .order-fields, .svc .calc-form {
+  position: relative; gap: 0; counter-reset: step; padding: clamp(22px, 3vw, 40px); border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--el) 22%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--el) 6%, #0c0d18), #08090f 70%);
+  box-shadow: 0 40px 90px -60px color-mix(in srgb, var(--el) 70%, transparent); }
+/* gilded corners */
+.svc .order-fields::before, .svc .order-fields::after, .svc .calc-form::before, .svc .calc-form::after {
+  content: ""; position: absolute; width: 26px; height: 26px; border: 2px solid var(--gold); opacity: .6; pointer-events: none; }
+.svc .order-fields::before, .svc .calc-form::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 20px; }
+.svc .order-fields::after, .svc .calc-form::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 20px; }
+.svc .order-fields > *, .svc .calc-form > * { padding-block: 24px; }
+.svc .order-fields > :first-child, .svc .calc-form > :first-child { padding-top: 0; }
+.svc .order-fields > :last-child, .svc .calc-form > :last-child { padding-bottom: 0; }
+/* the separator is a background line: a border on a fieldset would be drawn through its legend */
+.svc .order-fields > * + *, .svc .calc-form > * + * { background: linear-gradient(rgba(239, 230, 214, 0.07), rgba(239, 230, 214, 0.07)) top / 100% 1px no-repeat; }
+.svc .calc-form > .calc-actions, .svc .calc-form > .res-note { background: none; padding-top: 0; }
+/* each step numbered */
+.svc :is(.order-fields, .calc-form) > fieldset > legend::before,
+.svc :is(.order-fields, .calc-form) > .field > label::before,
+.svc .calc-form > .field > .field-head > label::before {
+  counter-increment: step; content: counter(step, decimal-leading-zero);
+  display: inline-grid; place-items: center; min-width: 30px; height: 22px; margin-right: 12px; padding: 0 6px; border-radius: 5px; vertical-align: middle;
+  border: 1px solid color-mix(in srgb, var(--el) 50%, transparent); background: color-mix(in srgb, var(--el) 10%, transparent);
+  font: 600 11px/1 var(--ui); letter-spacing: 0.08em; color: var(--el); }
+.svc :is(.order-fields, .calc-form) .field > label, .svc :is(.order-fields, .calc-form) .field-head > label, .svc :is(.order-fields, .calc-form) fieldset > legend { color: #cfc6d8; }
+.svc .type span { gap: 8px; padding: 16px 8px; font-size: 16px; background: rgba(6, 7, 13, 0.6); transition: border-color .2s, color .2s, background .2s, box-shadow .2s; }
+.svc .type input:checked + span { color: var(--ink); border-color: var(--el); background: color-mix(in srgb, var(--el) 13%, transparent);
+  box-shadow: inset 0 0 0 1px var(--el), 0 12px 30px -18px var(--el); }
+.svc .type input:checked + span small { color: var(--el); }
+
+.svc .order-sum { top: 104px; gap: 18px; padding: clamp(24px, 2.6vw, 34px); border-radius: 20px; overflow: hidden;
+  border-color: color-mix(in srgb, var(--el) 38%, transparent);
+  background: radial-gradient(120% 45% at 50% 0%, color-mix(in srgb, var(--el) 20%, transparent), transparent 62%), linear-gradient(180deg, #0f101d, #08090f);
+  box-shadow: 0 40px 90px -45px color-mix(in srgb, var(--el) 65%, transparent); }
+.svc .order-sum::before { content: ""; position: absolute; left: 15%; right: 15%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--el), transparent); }
+.sum-head { display: flex; align-items: center; gap: 14px; }
+.sum-head .tier-orb { grid-row: auto; flex: none; width: 42px; height: 42px; }
+.sum-head .eyebrow { margin: 0; font-size: 13px; }
+.svc .order-lines li { padding-bottom: 10px; border-bottom: 1px solid rgba(239, 230, 214, 0.06); }
+.svc .order-total { padding-top: 8px; border-top: 0; font-size: clamp(34px, 3.2vw, 46px); }
+.svc .order-total span { text-shadow: 0 0 28px color-mix(in srgb, var(--el) 55%, transparent); }
+
+/* ---------- how it works: three orb nodes on a line that fills as the section scrolls past ---------- */
+.svc .how-it-works { background: radial-gradient(60% 45% at 50% 38%, color-mix(in srgb, var(--el) 7%, transparent), transparent 70%), var(--void); }
+.svc .how-grid { --g: clamp(20px, 3vw, 44px); position: relative; gap: var(--g); view-timeline: --how block; }
+.svc .how-grid::before, .svc .how-grid::after {
+  content: ""; position: absolute; top: 40px; left: calc((100% - 2 * var(--g)) / 6); right: calc((100% - 2 * var(--g)) / 6); height: 2px; margin-top: -1px;
+  border-radius: 2px; background: rgba(239, 230, 214, 0.1); pointer-events: none; }
+.svc .how-grid::after { background: linear-gradient(90deg, color-mix(in srgb, var(--el) 30%, transparent), var(--el) 50%, color-mix(in srgb, var(--el) 30%, transparent));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--el) 70%, transparent); transform-origin: left center; }
+@supports (animation-timeline: view()) {
+  .svc .how-grid::after { animation: how-fill linear both; animation-timeline: --how; animation-range: entry 60% cover 55%; }
+}
+@keyframes how-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes how-fill-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.svc .how { position: relative; padding: 0 clamp(4px, 1vw, 14px); border: 0; background: none; text-align: center; }
+.svc .how-num {
+  position: relative; z-index: 1; display: grid; place-items: center; width: 80px; height: 80px; margin: 0 auto 28px; border-radius: 50%;
+  background: radial-gradient(circle at 36% 32%, var(--el-hi) 0 6%, var(--el) 32%, var(--el-lo) 74%, #05060b 100%);
+  box-shadow: 0 0 22px 3px color-mix(in srgb, var(--el) 55%, transparent), 0 0 60px 14px color-mix(in srgb, var(--el) 18%, transparent);
+  font: 700 24px/1 var(--display); letter-spacing: 0; color: #fff; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
+.svc .how-num span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.svc .how-num::before { /* a slow dashed ring around each node */
+  content: ""; position: absolute; inset: -11px; border-radius: 50%; border: 1px dashed color-mix(in srgb, var(--el) 50%, transparent);
+  animation: ring-spin 24s linear infinite; }
+.svc .how:nth-child(2) .how-num::before { animation-direction: reverse; }
+.svc .how h3 { margin-bottom: 12px; font-size: clamp(22px, 1.9vw, 27px); }
+.svc .how p:not(.how-num) { max-width: 22rem; margin-inline: auto; color: #cfc6bb; font-size: 16px; line-height: 1.6; }
+.svc .how .chips { justify-content: center; }
+@keyframes ring-spin { to { transform: rotate(1turn); } }
+
+/* ---------- about: an editorial column, and what's included on an ornate panel over a turning rune ring ---------- */
+.svc .about { overflow: hidden; background: radial-gradient(40% 60% at 78% 50%, color-mix(in srgb, var(--el) 9%, transparent), transparent 70%), var(--void); }
+.svc .about-grid { position: relative; align-items: center; }
+.svc .about-grid > * { position: relative; z-index: 1; }
+.svc .about-grid::before, .svc .about-grid::after { /* the rune ring, centred behind the panel */
+  content: ""; position: absolute; z-index: 0; left: 76%; top: 50%; width: min(660px, 90vw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--el) 45%, transparent) 0 0.5deg, transparent 0.5deg 6deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 90%, #000 91% 96%, transparent 97%);
+  mask-image: radial-gradient(closest-side, transparent 90%, #000 91% 96%, transparent 97%);
+  animation: ring-spin 90s linear infinite; opacity: .7; }
+.svc .about-grid::after { width: min(520px, 72vw); background: none; border: 1px solid color-mix(in srgb, var(--el) 22%, transparent);
+  -webkit-mask-image: none; mask-image: none; animation: none; }
+.svc .about-copy > p:first-of-type { color: var(--ink); font-size: clamp(20px, 1.7vw, 24px); line-height: 1.55; }
+.svc .about-copy > p:first-of-type::first-letter { float: left; margin: 0.08em 0.14em 0 0; font: 700 3.6em/0.8 var(--display); color: var(--el);
+  text-shadow: 0 0 30px color-mix(in srgb, var(--el) 55%, transparent); }
+.svc .about-copy > p { max-width: 36rem; }
+.about-copy .sec-head .eyebrow { font-size: 12px; line-height: 1; margin-bottom: 18px; }   /* not the body paragraph size */
+.svc .included { position: relative; margin: 44px 0 0; padding: 62px clamp(22px, 3vw, 36px) 26px; border-radius: 20px;
+  border-color: color-mix(in srgb, var(--el) 34%, transparent);
+  background: radial-gradient(90% 40% at 50% 0%, color-mix(in srgb, var(--el) 14%, transparent), transparent 70%), linear-gradient(180deg, #0f101d, #08090f);
+  box-shadow: 0 40px 90px -50px color-mix(in srgb, var(--el) 60%, transparent); }
+.inc-orb { position: absolute; top: -40px; left: 50%; width: 80px; height: 80px; margin-left: -40px; }
+.svc .included h3 { margin-bottom: 14px; text-align: center; font: 600 clamp(22px, 2vw, 28px)/1.2 var(--display); letter-spacing: 0.02em; text-transform: none; color: var(--ink); }
+.svc .included ul { gap: 0; }
+.svc .included li { padding: 15px 0 15px 40px; border-top: 1px solid rgba(239, 230, 214, 0.08); font-size: 16px; }
+.svc .included li::before { left: 3px; top: 50%; width: 20px; height: 20px; margin-top: -10px; background: color-mix(in srgb, var(--el) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--el) 60%, transparent); box-shadow: 0 0 12px -2px color-mix(in srgb, var(--el) 60%, transparent); }
+.svc .included li::after { content: ""; position: absolute; left: 10px; top: 50%; width: 7px; height: 3px; margin-top: -3px;
+  border: 2px solid var(--el); border-top: 0; border-right: 0; transform: rotate(-45deg); }
+
+/* ---------- guarantee: six numbered seals on a lit grid ---------- */
+.svc .guarantee { padding-block: clamp(72px, 12vh, 140px); background: radial-gradient(55% 60% at 50% 55%, color-mix(in srgb, var(--el) 7%, transparent), transparent 70%), var(--void); }
+.svc .promise-grid { gap: 0; }
+.svc .promise { position: relative; flex-direction: column; align-items: center; gap: 20px; padding: clamp(28px, 4vw, 44px) clamp(18px, 2.4vw, 32px);
+  text-align: center; border: 0; border-radius: 0; background: none; transition: background .35s; }
+.svc .promise:hover { background: radial-gradient(60% 70% at 50% 40%, color-mix(in srgb, var(--el) 9%, transparent), transparent 75%); }
+.svc .promise:nth-child(-n + 3) { border-bottom: 1px solid rgba(239, 230, 214, 0.08); }
+.svc .promise:not(:nth-child(3n)) { border-right: 1px solid rgba(239, 230, 214, 0.08); }
+.svc .promise-mark { display: grid; place-items: center; width: 56px; height: 56px; margin: 8px 0 4px; transform: rotate(45deg);
+  background: color-mix(in srgb, var(--el) 8%, #0a0b14); border: 1px solid color-mix(in srgb, var(--el) 60%, transparent);
+  box-shadow: 0 0 26px -6px var(--el), inset 0 0 14px color-mix(in srgb, var(--el) 25%, transparent); transition: background .35s, box-shadow .35s; }
+.svc .promise-mark i { transform: rotate(-45deg); font: 700 16px/1 var(--display); font-style: normal; color: var(--el); transition: color .35s; }
+.svc .promise:hover .promise-mark { background: var(--el); box-shadow: 0 0 36px -2px var(--el); }
+.svc .promise:hover .promise-mark i { color: #0b0c14; }
+.svc .promise b { font: 600 clamp(18px, 1.5vw, 21px)/1.3 var(--display); letter-spacing: 0.01em; }
+.svc .promise small { max-width: 20rem; margin-top: 8px; font-size: 15px; }
+.svc .guarantee .draft-note { display: block; width: fit-content; margin-inline: auto; }
+
+/* ---------- packages and reviews ---------- */
+.svc .tiers { padding-bottom: clamp(90px, 14vh, 160px); }
+.svc .tiers + .reviews::after { display: none; }
+.svc .reviews { background: var(--void); }
+
+/* ---------- FAQ: heading and a way forward on the left, the questions on the right ---------- */
+.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.faq-side { position: sticky; top: 120px; }
+.faq-side .sec-head { margin-bottom: 20px; }
+.faq-more { margin: 0 0 28px; max-width: 24rem; color: var(--muted); font-size: var(--step-1); line-height: 1.55; }
+.svc .faq { background: radial-gradient(40% 60% at 10% 40%, color-mix(in srgb, var(--el) 7%, transparent), transparent 70%), var(--void); }
+.svc .faq-list { max-width: none; gap: 0; counter-reset: faq; border-top: 1px solid rgba(239, 230, 214, 0.1); }
+.svc .faq-list details { position: relative; border: 0; border-bottom: 1px solid rgba(239, 230, 214, 0.1); border-radius: 0; background: none; transition: background .3s; }
+.svc .faq-list details::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--el);
+  box-shadow: 0 0 12px var(--el); transform: scaleY(0); transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.svc .faq-list details[open] { background: linear-gradient(90deg, color-mix(in srgb, var(--el) 7%, transparent), transparent 70%); }
+.svc .faq-list details[open]::before { transform: scaleY(1); }
+.svc .faq-list summary { justify-content: flex-start; gap: 20px; padding: 26px 8px 26px 22px; font: 600 clamp(17px, 1.4vw, 20px)/1.35 var(--ui); transition: color .2s; }
+.svc .faq-list summary:hover { color: var(--el); }
+.svc .faq-list summary::before { counter-increment: faq; content: counter(faq, decimal-leading-zero); flex: none; min-width: 26px;
+  font: 600 12px/1 var(--ui); letter-spacing: 0.16em; color: var(--el); }
+.svc .faq-list summary::after { display: grid; place-items: center; width: 36px; height: 36px; margin-left: auto; border-radius: 50%;
+  border: 1px solid rgba(239, 230, 214, 0.2); transition: transform .3s, background .3s, color .3s, border-color .3s; }
+.svc .faq-list details[open] summary::after { background: var(--el); border-color: var(--el); color: #0b0c14; }
+.svc .faq-list details p { padding: 0 64px 26px 68px; font-size: 16px; line-height: 1.65; }
+@supports (interpolate-size: allow-keywords) {
+  .svc .faq-list { interpolate-size: allow-keywords; }
+  .svc .faq-list details::details-content { height: 0; overflow: clip; transition: height .4s cubic-bezier(.2, .7, .2, 1), content-visibility .4s allow-discrete; }
+  .svc .faq-list details[open]::details-content { height: auto; }
+}
+
+/* ---------- closing call: the page's orb, a huge line, and the pain points struck out ---------- */
+.svc .pain { overflow: hidden; padding-block: clamp(110px, 18vh, 200px);
+  background: radial-gradient(42% 55% at 50% 50%, color-mix(in srgb, var(--el) 16%, transparent), transparent 72%), var(--void); }
+.svc .pain::before, .svc .pain::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: min(980px, 130vw); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--el) 40%, transparent) 0 0.4deg, transparent 0.4deg 4deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 93%, #000 94% 97%, transparent 98%);
+  mask-image: radial-gradient(closest-side, transparent 93%, #000 94% 97%, transparent 98%);
+  animation: ring-spin 120s linear infinite; opacity: .55; }
+.svc .pain::after { width: min(700px, 96vw); background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--gold) 45%, transparent) 0 0.6deg, transparent 0.6deg 15deg);
+  animation-direction: reverse; animation-duration: 80s; }
+.svc .pain .wrap { position: relative; z-index: 1; max-width: 58rem; }
+.pain-orb { display: block; width: 104px; height: 104px; margin: 0 auto 36px; animation: orb-float 6s ease-in-out infinite; }
+.svc .pain h2 { margin-bottom: 20px; font-size: clamp(40px, 6.4vw, 88px); line-height: 1.02; }
+.svc .pain .sec-sub { max-width: 36rem; margin-bottom: 36px; }
+.svc .pain .btn { min-width: min(300px, 100%); min-height: 62px; font-size: 18px; }
+.svc .pain-list { margin-bottom: 40px; }
+.svc .pain-list li { position: relative; text-decoration: none; background: rgba(6, 7, 13, 0.55); transition: color .4s calc(.5s + var(--i, 0) * .18s); }
+.svc .pain-list li::after { content: ""; position: absolute; left: 12px; right: 12px; top: 50%; height: 2px; margin-top: -1px; border-radius: 2px;
+  background: var(--el); box-shadow: 0 0 10px var(--el); transform: scaleX(0); transform-origin: left center;
+  transition: transform .55s cubic-bezier(.6, 0, .2, 1) calc(.3s + var(--i, 0) * .18s); }
+.svc .pain.in .pain-list li { color: var(--muted); }
+.svc .pain.in .pain-list li::after { transform: scaleX(1); }
+.svc .pain-list li:nth-child(2) { --i: 1; }
+.svc .pain-list li:nth-child(3) { --i: 2; }
+.svc .pain-list li:nth-child(4) { --i: 3; }
+.svc .pain-list li:nth-child(5) { --i: 4; }
+
+/* ---------- the other two services ---------- */
+.svc .more { padding-top: clamp(80px, 12vh, 130px); }
+.svc .more-grid { gap: 22px; }
+.svc .more .svc-link { position: relative; overflow: hidden; gap: clamp(16px, 2vw, 26px); padding: clamp(24px, 3vw, 36px); border-radius: 20px;
+  background: radial-gradient(70% 130% at 0% 50%, color-mix(in srgb, var(--el) 16%, transparent), transparent 62%), linear-gradient(180deg, #0f101d, #08090f);
+  transition: border-color .3s, transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s; }
+.svc .more .svc-link::before { content: ""; position: absolute; left: 12%; right: 12%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--el), transparent); }
+.svc .more .svc-link .tier-orb { width: clamp(64px, 6vw, 84px); height: clamp(64px, 6vw, 84px); transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.svc .more .svc-link b { font-size: clamp(22px, 2vw, 28px); }
+.svc .more .svc-link small { margin-top: 6px; font-size: 15px; }
+.svc .more .svc-link .arrow { flex: none; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; font-size: 18px;
+  border: 1px solid color-mix(in srgb, var(--el) 45%, transparent); transition: background .3s, color .3s, transform .3s; }
+.svc .more .svc-link:hover { transform: translateY(-5px); box-shadow: 0 30px 70px -35px var(--el); }
+.svc .more .svc-link:hover .tier-orb { transform: scale(1.08); }
+.svc .more .svc-link:hover .arrow { background: var(--el); color: #0b0c14; transform: translateX(4px); }
+
+/* ---------- sections settle in as they arrive (js/site.js adds .rv, then .in) ---------- */
+.rv { opacity: 0; }
+.rv.in { opacity: 1; animation: rv-in .9s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.rv.rv-now { animation: none; }
+/* translate, not transform, so hover lifts on the same elements still work */
+@keyframes rv-in { from { opacity: 0; translate: 0 30px; } to { opacity: 1; translate: 0 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .svc .how-num::before, .svc .about-grid::before, .svc .pain::before, .svc .pain::after, .pain-orb { animation: none; }
+  .svc .pain-list li, .svc .pain-list li::after { transition: none; }
+  .svc .more .svc-link, .svc .more .svc-link:hover { transform: none; }
+}
+@media (max-width: 900px) {
+  .faq-grid { grid-template-columns: 1fr; }
+  .faq-side { position: static; }
+  .svc .promise-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .svc .promise:nth-child(n) { border-right: 0; border-bottom: 1px solid rgba(239, 230, 214, 0.08); }
+  .svc .promise:nth-child(odd) { border-right: 1px solid rgba(239, 230, 214, 0.08); }
+  .svc .promise:nth-last-child(-n + 2) { border-bottom: 0; }
+  .svc .about-grid::before, .svc .about-grid::after { left: 50%; top: auto; bottom: -10%; translate: -50% 0; }
+  .svc .included { margin-top: 60px; }
+  /* how it works: the line runs down the left, beside each step */
+  .svc .how-grid { gap: 36px; }
+  .svc .how-grid::before, .svc .how-grid::after { top: 40px; bottom: 40px; left: 39px; right: auto; width: 2px; height: auto; margin: 0; }
+  .svc .how-grid::after { background: linear-gradient(180deg, color-mix(in srgb, var(--el) 30%, transparent), var(--el) 50%, color-mix(in srgb, var(--el) 30%, transparent));
+    transform-origin: center top; }
+  @supports (animation-timeline: view()) { .svc .how-grid::after { animation-name: how-fill-y; } }
+  .svc .how { display: grid; grid-template-columns: 80px minmax(0, 1fr); column-gap: 24px; padding: 0; text-align: left; }
+  .svc .how > :not(.how-num) { grid-column: 2; }
+  .svc .how-num { grid-row: 1 / span 3; margin: 0; }
+  .svc .how h3 { margin-top: 14px; }
+  .svc .how p:not(.how-num) { margin-inline: 0; }
+  .svc .how .chips { justify-content: flex-start; }
+}
+@media (max-width: 560px) {
+  .svc .promise-grid { grid-template-columns: 1fr; }
+  .svc .promise:nth-child(n) { border-right: 0; border-bottom: 1px solid rgba(239, 230, 214, 0.08); }
+  .svc .promise:last-child { border-bottom: 0; }
+  .svc .faq-list summary { padding-left: 14px; gap: 14px; }
+  .svc .faq-list details p { padding: 0 16px 22px 54px; }
+  .svc .more .svc-link .arrow { width: 40px; height: 40px; }
+}
+
+/* draft notes are for the team: shown locally or with ?drafts, never to visitors */
+html:not(.drafts) .draft-note { display: none; }
+
+/* the intro loader plays once per visit; later pages in the same visit skip it (flag set in each page's head) */
+.seen-intro .preloader { display: none; }

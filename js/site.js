@@ -2,12 +2,19 @@
 // reviews carousel. Loaded as a module after the GSAP scripts.
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// draft notes ("placeholder prices", "sample figures") are for the team: shown locally or with ?drafts, hidden from visitors
+if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(location.search).has('drafts')) {
+  document.documentElement.classList.add('drafts');
+}
+
 /* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
 // Stays at least MIN_MS (a 3-second intro), never longer than MAX_MS so a slow 3D download can't hold
 // the page hostage (the CSS has its own failsafe too, in case this script never runs).
 {
   const pl = document.getElementById('preloader');
-  if (pl) {
+  // only the first page of a visit plays the intro (the flag is set by a tiny script in each page's head)
+  if (pl && document.documentElement.classList.contains('seen-intro')) pl.remove();
+  else if (pl) {
     const MIN_MS = 3000, MAX_MS = 6000, start = performance.now();   // a deliberate 3s intro; never more than 6s
     let done = false;
     const finish = () => {
@@ -52,6 +59,39 @@ if (window.gsap && window.ScrollTrigger && document.querySelector('.tier-grid'))
         scrollTrigger: { trigger: grid, start: 'top 80%', once: true } });
     });
   });
+}
+
+/* ---------- service pages: sections settle in as they arrive ---------- */
+// Singles fade up on their own; the items of a grid follow one another. Anything already above the screen (a reload
+// part-way down, or a jump to #order) is shown at once, so scrolling back up never finds an empty section.
+if (!reduced && document.querySelector('main.svc')) {
+  const q = (sel) => [...document.querySelectorAll(sel)];
+  const items = [
+    ...q('.svc .section:not(.pain):not(.reviews):not(.tiers) .sec-head, .svc .order-layout, .svc .calc-form, .svc .about-copy, .svc .included, .svc .faq-side')
+      .map((el) => [el, 0]),
+    ...['.svc .how-grid > li', '.svc .promise-grid > li', '.svc .faq-list > details', '.svc .more-grid > a', '.svc .pain .wrap > *']
+      .flatMap((sel) => q(sel).map((el, i) => [el, i])),
+  ];
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting && e.boundingClientRect.top > 0) continue;
+      if (!e.isIntersecting) e.target.classList.add('rv-now');   // passed while off screen: no animation
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  for (const [el, i] of items) {
+    el.classList.add('rv');
+    if (i) el.style.setProperty('--i', Math.min(i, 6));
+    io.observe(el);
+  }
+}
+// the closing call strikes through its pain points once it is on screen
+{
+  const pain = document.querySelector('.svc .pain');
+  if (pain) new IntersectionObserver(([e], io) => {
+    if (e.isIntersecting || e.boundingClientRect.top < 0) { pain.classList.add('in'); io.disconnect(); }
+  }, { threshold: 0.35 }).observe(pain);
 }
 
 /* ---------- order buttons: reveal the "checkout isn't live yet" note they point at ---------- */
