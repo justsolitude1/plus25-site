@@ -62,6 +62,20 @@ if (document.getElementById('revTrack')) {
     if (Math.abs(vel) < 2) vel = 0;
     track.scrollLeft = pos;
     selfScroll = track.scrollLeft;
+    if (++frames % 3 === 0) lightCentre();            // cheap enough at 20fps, invisible at this scale
+  }
+
+  // whichever card is passing the middle of the row lights up: brighter frame, a lift, a stronger glow
+  const cards = [...track.children];
+  let frames = 0;
+  function lightCentre() {
+    const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+    for (const card of cards) {
+      const r = card.getBoundingClientRect();
+      if (r.right < -200 || r.left > innerWidth + 200) continue;        // off screen, leave it alone
+      const d = Math.abs(r.left + r.width / 2 - mid) / (track.clientWidth / 2);
+      card.style.setProperty('--focus', Math.max(0, 1 - d * 1.6).toFixed(2));
+    }
   }
   requestAnimationFrame(frame);
 
