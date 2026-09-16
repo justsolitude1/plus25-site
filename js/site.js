@@ -149,3 +149,26 @@ import('./supabase.js').then(({ isConfigured, hasStoredSession }) => {
   if (!isConfigured || !hasStoredSession()) return;
   document.querySelectorAll('[data-auth-link]').forEach((a) => { a.textContent = 'Account'; a.href = 'account.html'; });
 });
+
+/* ---------- reviews backdrop: the three orbs drifting behind the section ---------- */
+// Scenery, so it only loads on roomy screens with a mouse (phones already run a 3D scene on these pages), and it
+// only draws while the section is on screen. If WebGL fails, the CSS glows behind it stay.
+{
+  const host = document.querySelector('.rev-backdrop');
+  const roomy = matchMedia('(min-width: 900px) and (pointer: fine)').matches;
+  if (host && roomy) {
+    const canvas = host.querySelector('canvas');
+    let scene = null, loading = false;
+    canvas.addEventListener('backdropready', () => host.classList.add('is-3d'), { once: true });
+    new IntersectionObserver(async ([e]) => {
+      if (e.isIntersecting && !scene && !loading) {
+        loading = true;
+        try {
+          const { initBackdrop } = await import('./backdrop.js');
+          scene = await initBackdrop({ canvas, reduced, mobile: false });
+        } catch (err) { console.error(err); }
+      }
+      scene?.setActive(e.isIntersecting);
+    }, { rootMargin: '300px 0px' }).observe(host);
+  }
+}

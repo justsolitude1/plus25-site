@@ -409,7 +409,22 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
   background: repeating-linear-gradient(135deg, rgba(240, 175, 94, 0.035) 0 1px, transparent 1px 26px);
   -webkit-mask-image: radial-gradient(80% 70% at 50% 40%, #000, transparent 75%); mask-image: radial-gradient(80% 70% at 50% 40%, #000, transparent 75%); }
-.reviews > .wrap { position: relative; }
+.reviews > .wrap { position: relative; z-index: 1; }
+/* the orbs, drifting behind the section (js/backdrop.js); the CSS glows above stay as the fallback */
+.rev-backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.rev-backdrop canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease;
+  -webkit-mask-image: radial-gradient(75% 65% at 50% 45%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(75% 65% at 50% 45%, #000 40%, transparent 100%); }
+.rev-backdrop.is-3d canvas { opacity: 1; }
+
+/* trust strip: the promises under the row */
+.trust-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: clamp(30px, 5vh, 52px) 0 0; padding: 22px 0 0;
+  border-top: 1px solid rgba(239, 230, 214, 0.1); list-style: none; }
+.trust-strip li { display: grid; gap: 4px; justify-items: center; text-align: center; }
+.trust-strip b { font: 700 clamp(24px, 2.4vw, 32px)/1 var(--display); color: var(--gold); font-variant-numeric: lining-nums; }
+.trust-strip span { font: 500 11px/1.3 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.reviews .draft-note { display: block; width: fit-content; margin-inline: auto; }
+@media (max-width: 700px) { .trust-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; } }
 /* the eyebrow gets arrow flourishes either side */
 .rev-hero .eyebrow { display: flex; align-items: center; gap: 12px; }
 .rev-hero .eyebrow::before, .rev-hero .eyebrow::after { content: "→"; color: color-mix(in srgb, var(--gold) 70%, transparent); }
