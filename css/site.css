@@ -1079,6 +1079,53 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .svc .more .svc-link .arrow { width: 40px; height: 40px; }
 }
 
+/* ---------- revisions: calmer steps, no orbs in the panels, package cards built around a medallion ---------- */
+/* how it works: the step art smaller (the illustrations stay crisp), no numbered orbs; pages without art mark each step
+   with a small lit diamond on the line */
+.svc .how-art { width: clamp(118px, 11vw, 148px); }
+.svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: calc(clamp(118px, 11vw, 148px) * 0.47); }
+.svc .has-art .how-art { margin-bottom: 22px; }
+.svc .has-art .how-num { display: none; }
+.svc .how-grid:not(.has-art)::before, .svc .how-grid:not(.has-art)::after { top: 9px; }
+.svc .how-grid:not(.has-art) .how-num { width: 18px; height: 18px; margin: 0 auto 30px; border-radius: 3px; rotate: 45deg; font-size: 0;
+  background: #0a0b14; border: 1px solid var(--el); box-shadow: 0 0 14px color-mix(in srgb, var(--el) 80%, transparent), inset 0 0 6px color-mix(in srgb, var(--el) 60%, transparent); }
+.svc .how-grid:not(.has-art) .how-num::before { display: none; }
+.svc .included { padding-top: clamp(28px, 3vw, 36px); }
+
+/* package cards: centred on a medallion holding the count, the list on an inset panel that fills down to the price */
+.svc .tier { text-align: center; padding: 34px clamp(20px, 2.2vw, 28px) 28px; }
+.svc .tier-head { justify-items: center; margin-bottom: 22px; }
+.svc .tier-mmr { position: relative; isolation: isolate; display: grid; place-content: center; justify-items: center; gap: 8px;
+  width: 172px; aspect-ratio: 1; margin: 0 auto; border-radius: 50%; font-size: clamp(50px, 4.4vw, 62px); line-height: .9;
+  background: radial-gradient(circle, color-mix(in srgb, var(--el) 16%, transparent) 0%, transparent 68%); }
+.svc .tier-mmr span { display: block; margin: 0; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--el); }
+.svc .tier-mmr::before { /* rune ticks round the rim */
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--el) 55%, transparent) 0 1deg, transparent 1deg 10deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 86%, #000 87% 98%, transparent 99%);
+  mask-image: radial-gradient(closest-side, transparent 86%, #000 87% 98%, transparent 99%);
+  transition: transform 1.2s cubic-bezier(.2, .7, .2, 1); }
+.svc .tier-mmr::after { content: ''; position: absolute; inset: 14px; z-index: -1; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--el) 30%, transparent); box-shadow: inset 0 0 30px color-mix(in srgb, var(--el) 12%, transparent); }
+.svc .tier:hover .tier-mmr::before { transform: rotate(60deg); }
+.svc .tier[data-gain] .tier-mmr { font-size: clamp(36px, 3.2vw, 42px); }
+.svc .tier-wins { align-self: center; margin-top: 18px; }
+.svc .tier-rule { margin: 22px 0 18px; }
+.svc .tier ul { flex: 1; margin: 0 0 24px; padding: 18px 20px; gap: 12px; text-align: left; border-radius: 12px;
+  background: rgba(6, 7, 13, 0.45); border: 1px solid rgba(239, 230, 214, 0.07); }
+.svc .tier-foot { gap: 18px; }
+.svc .tier-price { justify-content: center; }
+.svc .tier-price small:not(.from) { margin-left: 8px; }
+@media (max-width: 900px) {
+  .svc .how-grid.has-art::before, .svc .how-grid.has-art::after { top: 50px; bottom: 50px; left: 49px; }
+  .svc .has-art .how { grid-template-columns: 100px minmax(0, 1fr); }
+  .svc .has-art .how-art { width: 100px; margin: 0; }
+  .svc .how-grid:not(.has-art)::before, .svc .how-grid:not(.has-art)::after { left: 8px; top: 9px; bottom: 9px; }
+  .svc .how-grid:not(.has-art) .how { grid-template-columns: 18px minmax(0, 1fr); }
+  .svc .how-grid:not(.has-art) .how-num { margin: 16px 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { .svc .tier-mmr::before { transition: none; } }
+
 /* draft notes are for the team: shown locally or with ?drafts, never to visitors */
 html:not(.drafts) .draft-note { display: none; }
 
