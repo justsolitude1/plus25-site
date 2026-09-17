@@ -6,7 +6,7 @@
 // The canvas is transparent so the page's wordmark shows behind Invoker; glow is screened over the page.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { createPost, createQuality } from './post.js';
+import { createPost, createQuality, createFrameGate, PHONE_3D } from './post.js';
 import { uTime, tickTime, rng, smooth, band } from './shared.js';
 import { ORB_DEFS, createOrb } from './orbs.js';
 import { createInvoker } from './cast.js';
@@ -56,7 +56,7 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   // dev aid (?debug): how long each setup step takes, logged once the scene is ready
   const t0 = performance.now(), timings = [];
   const mark = (label) => { if (debug) timings.push([label, Math.round(performance.now() - t0)]); };
-  const pr = Math.min(devicePixelRatio, mobile ? 1.25 : 1.5);   // starting budget; createQuality lowers it on slow devices
+  const pr = Math.min(devicePixelRatio, mobile ? PHONE_3D.pr : 1.5);   // starting budget; createQuality lowers it on slow devices
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance', preserveDrawingBuffer: debug });
   mark('renderer');
   // start loading Invoker straight away; the rest of the scene is built while his files download
@@ -113,7 +113,7 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   invoker.root.updateMatrixWorld(true);
 
   mark('orbs');
-  const post = createPost(renderer, scene, camera, { pr });
+  const post = createPost(renderer, scene, camera, { pr, bloomScale: mobile ? PHONE_3D.bloomScale : 1 });
   mark('bloom');
 
   // Invoker holds still on screen while the camera travels: each frame he is placed in the camera's frame
@@ -147,7 +147,7 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   }
   resize();
   addEventListener('resize', resize);
-  const quality = createQuality({ renderer, post, start: pr, onChange: resize });
+  const quality = createQuality({ renderer, post, start: pr, onChange: resize, ...(mobile && PHONE_3D.quality) });
 
   const motion = reduced ? 0 : 1;
   const drift = new THREE.Vector3();
@@ -213,12 +213,14 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
   }
 
   let active = false, paused = false, target = -1, p = -1, raf = 0;
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(), gate = createFrameGate(mobile ? PHONE_3D.fps : 0);
   const timeScale = reduced ? 0.35 : 1;
 
   function frame() {
     raf = requestAnimationFrame(frame);
-    const raw = clock.getDelta(), dt = Math.min(raw, 0.05);
+    const raw = gate(clock.getDelta());
+    if (!raw) return;
+    const dt = Math.min(raw, 0.05);
     if (active) { renderFrame(dt); quality.sample(raw); }
   }
 

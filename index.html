@@ -46,7 +46,7 @@
 <link rel="modulepreload" href="js/orbs.js">
 <link rel="modulepreload" href="js/cast.js">
 <link rel="modulepreload" href="js/book.js">
-<link rel="stylesheet" href="css/site.css?v=mu5gvti7">
+<link rel="stylesheet" href="css/site.css?v=mu5h7dkz">
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
 <script>try{var n=performance.getEntriesByType('navigation')[0],r=document.referrer;if(n&&n.type!=='reload'&&r&&new URL(r).origin===location.origin)document.documentElement.classList.add('seen-intro')}catch(e){}</script>
 
@@ -367,7 +367,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=mu5gvti7"></script>
+<script type="module" src="js/site.js?v=mu5h7dkz"></script>
 <script type="module">
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile = matchMedia('(max-width: 760px)').matches;
@@ -429,9 +429,14 @@ const onScroll = () => { onStory(); window.ScrollTrigger?.update(); };
 addEventListener('scroll', onScroll, { passive: true });
 addEventListener('resize', onScroll);
 // and once per frame while the story is on screen, so it can never sit on a stale position
+let lastY = -1, lastW = 0, lastH = 0, lastLen = 0;
 (function driveStory() {
   requestAnimationFrame(driveStory);
-  if (inView) onStory();
+  if (!inView) return;
+  // only when something moved: reading layout every idle frame costs phones for nothing
+  if (scrollY === lastY && innerWidth === lastW && innerHeight === lastH && story.offsetHeight === lastLen) return;
+  lastY = scrollY; lastW = innerWidth; lastH = innerHeight; lastLen = story.offsetHeight;
+  onStory();
 })();
 if (debug) window.__story = { get value() { return value; }, get inView() { return inView; }, scene: () => scene?.state() };
 

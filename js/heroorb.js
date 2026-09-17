@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { uTime, tickTime } from './shared.js';
 import { ORB_DEFS, createOrb } from './orbs.js';
-import { createPost, createQuality } from './post.js';
+import { createPost, createQuality, createFrameGate, PHONE_3D } from './post.js';
 
 // The orb with its crystals and halo, in scene units, so the camera keeps all of it in frame
 const SPAN = 4.4;
@@ -13,7 +13,7 @@ const SPAN = 4.4;
 export async function initHeroOrb({ canvas, key, reduced = false, mobile = false }) {
   const def = ORB_DEFS.find((d) => d.key === key);
   if (!def) throw new Error(`unknown orb ${key}`);
-  const pr = Math.min(devicePixelRatio, mobile ? 1.25 : 1.5);   // starting budget; createQuality lowers it on slow devices
+  const pr = Math.min(devicePixelRatio, mobile ? PHONE_3D.pr : 1.5);   // starting budget; createQuality lowers it on slow devices
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance' });
   renderer.setPixelRatio(pr);
   renderer.setClearColor(0x000000, 0);
@@ -26,7 +26,7 @@ export async function initHeroOrb({ canvas, key, reduced = false, mobile = false
 
   const orb = createOrb(def, { mobile, pr });
   scene.add(orb.root);
-  const post = createPost(renderer, scene, camera, { pr });
+  const post = createPost(renderer, scene, camera, { pr, bloomScale: mobile ? PHONE_3D.bloomScale : 1 });
 
   function resize() {
     const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1, aspect = w / h;
@@ -40,7 +40,7 @@ export async function initHeroOrb({ canvas, key, reduced = false, mobile = false
   }
   resize();
   addEventListener('resize', resize);
-  const quality = createQuality({ renderer, post, start: pr, onChange: resize });
+  const quality = createQuality({ renderer, post, start: pr, onChange: resize, ...(mobile && PHONE_3D.quality) });
 
   const motion = reduced ? 0 : 1;
   const lean = { x: 0, y: 0 }, leanS = { x: 0, y: 0 };
@@ -49,7 +49,7 @@ export async function initHeroOrb({ canvas, key, reduced = false, mobile = false
   }
 
   let active = false, raf = 0, shown = false;
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(), gate = createFrameGate(mobile ? PHONE_3D.fps : 0);
   function update(dt) {
     tickTime(dt, reduced ? 0.35 : 1);
     const t = uTime.value, k = 1 - Math.exp(-dt * 3);
@@ -64,7 +64,9 @@ export async function initHeroOrb({ canvas, key, reduced = false, mobile = false
   await renderer.compileAsync(scene, camera);   // compile shaders up front, in parallel where supported
   (function loop() {
     raf = requestAnimationFrame(loop);
-    const raw = clock.getDelta(), dt = Math.min(raw, 0.05);
+    const raw = gate(clock.getDelta());
+    if (!raw) return;
+    const dt = Math.min(raw, 0.05);
     if (active) { update(dt); quality.sample(raw); }
   })();
 

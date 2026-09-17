@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { uTime, tickTime, smooth, band } from './shared.js';
 import { createBook } from './book.js';
-import { createPost, createQuality } from './post.js';
+import { createPost, createQuality, createFrameGate, PHONE_3D } from './post.js';
 
 // Where the book starts (below and right of the frame) and where it rests, turned slightly toward the form
 const FROM = { pos: new THREE.Vector3(4.3, -4.8, 1.2), rot: new THREE.Euler(0.5, -1.1, 0.5) };   // just outside the frame, so it shows early
@@ -14,7 +14,7 @@ const REST = { pos: new THREE.Vector3(0, 0, 0), rot: new THREE.Euler(0.08, -0.4,
 const SPAN = { w: 7.6, h: 5.6 };
 
 export async function initCalcBook({ canvas, reduced = false, mobile = false, debug = false }) {
-  const pr = Math.min(devicePixelRatio, mobile ? 1.25 : 1.5);   // starting budget; createQuality lowers it on slow devices
+  const pr = Math.min(devicePixelRatio, mobile ? PHONE_3D.pr : 1.5);   // starting budget; createQuality lowers it on slow devices
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance', preserveDrawingBuffer: debug });
   renderer.setPixelRatio(pr);
   renderer.setClearColor(0x000000, 0);
@@ -31,7 +31,7 @@ export async function initCalcBook({ canvas, reduced = false, mobile = false, de
   holder.add(book.root);
   scene.add(holder);
 
-  const post = createPost(renderer, scene, camera, { pr, bloom: [0.55, 0.55, 0.9] });
+  const post = createPost(renderer, scene, camera, { pr, bloom: [0.55, 0.55, 0.9], bloomScale: mobile ? PHONE_3D.bloomScale : 1 });
 
   function resize() {
     const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1, aspect = w / h;
@@ -45,11 +45,11 @@ export async function initCalcBook({ canvas, reduced = false, mobile = false, de
   }
   resize();
   addEventListener('resize', resize);
-  const quality = createQuality({ renderer, post, start: pr, onChange: resize });
+  const quality = createQuality({ renderer, post, start: pr, onChange: resize, ...(mobile && PHONE_3D.quality) });
 
   const motion = reduced ? 0 : 1;
   let enter = reduced ? 1 : 0, enterS = enter, active = false, raf = 0;
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(), gate = createFrameGate(mobile ? PHONE_3D.fps : 0);
 
   function update(dt) {
     tickTime(dt, reduced ? 0.35 : 1);
@@ -72,7 +72,9 @@ export async function initCalcBook({ canvas, reduced = false, mobile = false, de
   await renderer.compileAsync(scene, camera);   // compile shaders up front, in parallel where supported
   (function loop() {
     raf = requestAnimationFrame(loop);
-    const raw = clock.getDelta(), dt = Math.min(raw, 0.05);
+    const raw = gate(clock.getDelta());
+    if (!raw) return;
+    const dt = Math.min(raw, 0.05);
     if (active) { update(dt); quality.sample(raw); }
   })();
 

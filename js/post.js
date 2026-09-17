@@ -8,8 +8,20 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
-// bloom = [strength, radius, threshold]
-export function createPost(renderer, scene, camera, { pr = 1, bloom = [0.55, 0.45, 0.62] } = {}) {
+// Phones: the 3D scenes draw at 30fps with the bloom blur at half resolution, start at 1x pixels and may drop to
+// 0.75x. The quality thresholds are in frame time, so they're set for 30fps (a frame is ~33ms even when it's fine).
+export const PHONE_3D = { fps: 30, pr: 1, bloomScale: 0.5, quality: { floor: 0.75, slowMs: 45, fastMs: 36 } };
+
+// Draws at most `fps` frames a second (0 = every frame). Feed it each rAF's delta; it returns the time since the
+// last drawn frame, or 0 when this one should be skipped.
+export function createFrameGate(fps) {
+  const min = fps ? 1 / fps - 0.004 : 0;
+  let acc = 0;
+  return (delta) => { acc += delta; if (acc < min) return 0; const d = acc; acc = 0; return d; };
+}
+
+// bloom = [strength, radius, threshold]; bloomScale < 1 runs the blur at a fraction of the canvas size (cheaper)
+export function createPost(renderer, scene, camera, { pr = 1, bloom = [0.55, 0.45, 0.62], bloomScale = 1 } = {}) {
   const composer = new EffectComposer(renderer);
   composer.setPixelRatio(pr);
   composer.addPass(new RenderPass(scene, camera));
@@ -45,7 +57,7 @@ export function createPost(renderer, scene, camera, { pr = 1, bloom = [0.55, 0.4
 
   return {
     render() { composer.render(); },
-    setSize(w, h) { composer.setSize(w, h); bloomPass.setSize(w, h); },
+    setSize(w, h) { composer.setSize(w, h); bloomPass.setSize(Math.max(1, Math.round(w * bloomScale)), Math.max(1, Math.round(h * bloomScale))); },
     setPixelRatio(pr) { composer.setPixelRatio(pr); },
   };
 }

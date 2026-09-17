@@ -160,6 +160,7 @@ if (document.getElementById('revTrack')) {
   });
   const loopWidth = () => track.scrollWidth / 2;     // one full set of cards
 
+  const finePointer = matchMedia('(pointer: fine)').matches;
   let pos = 0, vel = 0, dragging = false, hovered = false, focused = false, visible = false, last = 0, selfScroll = -1;
   const drifting = () => !reduced && visible && !hovered && !focused && !dragging && document.visibilityState === 'visible';
   const wrap = (x) => { const w = loopWidth(); return w > 0 ? ((x % w) + w) % w : x; };
@@ -169,12 +170,13 @@ if (document.getElementById('revTrack')) {
     const dt = Math.min(0.05, (now - last) / 1000) || 0;
     last = now;
     if (dragging) return;                            // the pointer owns the row
+    if (!visible && !vel) return;                    // off screen and at rest: nothing to move or light
     pos = wrap(pos + ((drifting() ? DRIFT : 0) + vel) * dt);
     vel *= Math.pow(0.0015, dt);                     // a throw or arrow press fades out
     if (Math.abs(vel) < 2) vel = 0;
     track.scrollLeft = pos;
     selfScroll = track.scrollLeft;
-    if (++frames % 3 === 0) lightCentre();            // cheap enough at 20fps, invisible at this scale
+    if (finePointer && ++frames % 3 === 0) lightCentre();   // phones skip the centre highlight: it repaints every card's glow
   }
 
   // whichever card is passing the middle of the row lights up: brighter frame, a lift, a stronger glow
@@ -236,10 +238,24 @@ if (document.getElementById('revTrack')) {
   }, { passive: true });
 }
 
-/* ---------- service page header: the page's orb in 3D, loaded when the header is on screen ---------- */
+/* ---------- service page header: the page's orb ---------- */
+// Desktops draw the real 3D orb, loaded when the header is on screen. Phones and small tablets get the SVG orb (the
+// loader's design): GPU-only animation, and the 3D library is never downloaded there.
 {
   const host = document.querySelector('.hero-orb3d');
-  if (host) {
+  const phone = matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1024px)').matches;
+  if (host && phone) {
+    const clip = '<g clip-path="url(#heroOrbCore)" fill="none" stroke="currentColor" stroke-linecap="round">';
+    host.insertAdjacentHTML('beforeend', `<span class="svg-orb" aria-hidden="true">
+      <svg class="pl-defs" width="0" height="0"><defs><clipPath id="heroOrbCore"><circle cx="50" cy="50" r="29"/></clipPath></defs></svg>
+      <span class="pl-halo"></span><span class="pl-core"></span>
+      <svg class="pl-plasma" viewBox="0 0 100 100">${clip}<path d="M18 46C33 30 55 60 82 40" stroke-width="3.2"/><path d="M22 64C38 50 58 74 80 58" stroke-width="2"/><path d="M30 30C44 42 60 24 74 34" stroke-width="1.6"/></g></svg>
+      <svg class="pl-plasma b" viewBox="0 0 100 100">${clip}<path d="M20 56C36 70 52 38 80 52" stroke-width="4"/><path d="M40 22C34 40 64 58 58 80" stroke-width="2.4"/></g></svg>
+      <svg class="pl-ribbon" viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="41" ry="12" transform="rotate(-24 50 50)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="84 46" stroke-linecap="round"/></svg>
+      <svg class="pl-sparks" viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="5" r="1.6"/><circle cx="92" cy="40" r="1.1"/><circle cx="80" cy="84" r="1.4"/><circle cx="16" cy="78" r="1"/><circle cx="8" cy="34" r="1.3"/></svg>
+    </span>`);
+    host.classList.add('is-svg');
+  } else if (host) {
     const canvas = host.querySelector('canvas');
     let orb = null, loading = false;
     canvas.addEventListener('orbready', () => host.classList.add('is-3d'), { once: true });
@@ -250,7 +266,7 @@ if (document.getElementById('revTrack')) {
         loading = true;
         try {
           const { initHeroOrb } = await import('./heroorb.js');
-          orb = await initHeroOrb({ canvas, key: host.dataset.orb, reduced, mobile: matchMedia('(max-width: 760px)').matches });
+          orb = await initHeroOrb({ canvas, key: host.dataset.orb, reduced, mobile: matchMedia('(pointer: coarse)').matches });
         } catch (err) { console.error(err); fallback(); }
       }
       orb?.setActive(e.isIntersecting);
