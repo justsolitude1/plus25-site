@@ -21,10 +21,13 @@ if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(
       if (done) return;
       done = true;
       setTimeout(() => {
-        pl.classList.add('is-done');
-        pl.setAttribute('aria-hidden', 'true');
-        setTimeout(() => pl.remove(), 700);          // after the fade
-      }, Math.max(0, MIN_MS - (performance.now() - start)));
+        pl.classList.add('is-complete');              // the arc closes the circle…
+        setTimeout(() => {
+          pl.classList.add('is-done');                // …then the loader fades
+          pl.setAttribute('aria-hidden', 'true');
+          setTimeout(() => pl.remove(), 700);         // after the fade
+        }, 420);
+      }, Math.max(0, MIN_MS - 420 - (performance.now() - start)));
     };
     const pageLoaded = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
     // the home page waits for the story scene too (it marks itself is-3d, or no-webgl if it falls back to video)
