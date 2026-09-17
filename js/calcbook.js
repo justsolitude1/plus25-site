@@ -83,7 +83,8 @@ export async function initCalcBook({ canvas, reduced = false, mobile = false, de
     setActive(v) { if (v && !active) clock.getDelta(); active = v; },
     dispose() { cancelAnimationFrame(raf); removeEventListener('resize', resize); renderer.dispose(); },
     // dev aid (?debug): render a settled frame at entrance progress v
-    capture(v, time = 6) {
+    capture(v, time = 6, capturePr = 0) {
+      if (capturePr) { renderer.setPixelRatio(capturePr); post.setPixelRatio(capturePr); resize(); }
       enter = enterS = v; uTime.value = time;
       for (let i = 0; i < 3; i++) update(1 / 60);
       return new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.86));

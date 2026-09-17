@@ -10,11 +10,11 @@ import { createPost, createQuality, createFrameGate, PHONE_3D } from './post.js'
 // The orb with its crystals and halo, in scene units, so the camera keeps all of it in frame
 const SPAN = 4.4;
 
-export async function initHeroOrb({ canvas, key, reduced = false, mobile = false }) {
+export async function initHeroOrb({ canvas, key, reduced = false, mobile = false, debug = false }) {
   const def = ORB_DEFS.find((d) => d.key === key);
   if (!def) throw new Error(`unknown orb ${key}`);
   const pr = Math.min(devicePixelRatio, mobile ? PHONE_3D.pr : 1.5);   // starting budget; createQuality lowers it on slow devices
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !mobile, powerPreference: 'high-performance', preserveDrawingBuffer: debug });
   renderer.setPixelRatio(pr);
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.NoToneMapping;
@@ -73,5 +73,11 @@ export async function initHeroOrb({ canvas, key, reduced = false, mobile = false
   return {
     setActive(v) { if (v && !active) clock.getDelta(); active = v; },
     dispose() { cancelAnimationFrame(raf); removeEventListener('resize', resize); renderer.dispose(); },
+    // dev aid (?debug): render a settled frame at a chosen time and pixel ratio (the phone stills)
+    capture(time = 6, capturePr = 0) {
+      if (capturePr) { renderer.setPixelRatio(capturePr); post.setPixelRatio(capturePr); resize(); }
+      uTime.value = time; lean.x = lean.y = leanS.x = leanS.y = 0;
+      for (let i = 0; i < 3; i++) update(1 / 60);
+    },
   };
 }

@@ -15,38 +15,15 @@
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
 } }
 </script>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/loaders/GLTFLoader.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/utils/BufferGeometryUtils.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/environments/RoomEnvironment.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/EffectComposer.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/RenderPass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/SavePass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/UnrealBloomPass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/OutputPass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/ShaderPass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/Pass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/postprocessing/MaskPass.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/shaders/CopyShader.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/shaders/LuminosityHighPassShader.js" crossorigin>
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/shaders/OutputShader.js" crossorigin>
-<!-- Invoker's model, fetched in parallel with the code instead of after it (crossorigin matches the loader's requests) -->
-<link rel="preload" href="models/invoker/scene.gltf" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/scene.bin" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn3_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn4_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn5_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn6_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn7_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn8_baseColor.webp" as="fetch" crossorigin>
-<link rel="preload" href="models/invoker/textures/blinn9_baseColor.webp" as="fetch" crossorigin>
-<link rel="modulepreload" href="js/scene.js">
-<link rel="modulepreload" href="js/shared.js">
-<link rel="modulepreload" href="js/post.js">
-<link rel="modulepreload" href="js/orbs.js">
-<link rel="modulepreload" href="js/cast.js">
-<link rel="modulepreload" href="js/book.js">
-<link rel="stylesheet" href="css/site.css?v=mu5h7dkz">
+<!-- the 3D story's files, fetched early on desktop only (phones never run the 3D) -->
+<script>(function(){var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))return;
+var T='https://cdn.jsdelivr.net/npm/three@0.164.1/',M='models/invoker/';
+['m@build/three.module.min.js','m@examples/jsm/loaders/GLTFLoader.js','m@examples/jsm/utils/BufferGeometryUtils.js','m@examples/jsm/environments/RoomEnvironment.js','m@examples/jsm/postprocessing/EffectComposer.js','m@examples/jsm/postprocessing/RenderPass.js','m@examples/jsm/postprocessing/SavePass.js','m@examples/jsm/postprocessing/UnrealBloomPass.js','m@examples/jsm/postprocessing/OutputPass.js','m@examples/jsm/postprocessing/ShaderPass.js','m@examples/jsm/postprocessing/Pass.js','m@examples/jsm/postprocessing/MaskPass.js','m@examples/jsm/shaders/CopyShader.js','m@examples/jsm/shaders/LuminosityHighPassShader.js','m@examples/jsm/shaders/OutputShader.js','f#scene.gltf','f#scene.bin','f#textures/blinn3_baseColor.webp','f#textures/blinn4_baseColor.webp','f#textures/blinn5_baseColor.webp','f#textures/blinn6_baseColor.webp','f#textures/blinn7_baseColor.webp','f#textures/blinn8_baseColor.webp','f#textures/blinn9_baseColor.webp','mjs/scene.js','mjs/shared.js','mjs/post.js','mjs/orbs.js','mjs/cast.js','mjs/book.js'].forEach(function(u){
+var l=document.createElement('link');l.rel=u[0]==='m'?'modulepreload':'preload';if(u[0]==='f')l.as='fetch';
+u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.href=u;if(!/^js\//.test(u))l.crossOrigin='anonymous';document.head.appendChild(l);});})();</script>
+<link rel="stylesheet" href="css/site.css?v=mu5hyb4i">
+<!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
+<script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
 <script>try{var n=performance.getEntriesByType('navigation')[0],r=document.referrer;if(n&&n.type!=='reload'&&r&&new URL(r).origin===location.origin)document.documentElement.classList.add('seen-intro')}catch(e){}</script>
 
@@ -111,6 +88,14 @@
         </h1>
       </div>
       <canvas id="scene" aria-hidden="true"></canvas>
+      <!-- phones: the story as stills of the same scene, one per beat, crossfaded as you scroll -->
+      <div class="stills" aria-hidden="true">
+        <img src="media/lite/story-hero.webp" alt="" width="780" height="1688" decoding="async" fetchpriority="high">
+        <img src="media/lite/story-orbs.webp" alt="" width="780" height="1688" decoding="async">
+        <img src="media/lite/story-quas.webp" alt="" width="780" height="1688" decoding="async">
+        <img src="media/lite/story-wex.webp" alt="" width="780" height="1688" decoding="async">
+        <img src="media/lite/story-exort.webp" alt="" width="780" height="1688" decoding="async">
+      </div>
       <div class="stage-fade"></div>
       <div class="beat-rail" aria-hidden="true">
         <ol id="rail">
@@ -367,10 +352,13 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=mu5h7dkz"></script>
+<script type="module" src="js/site.js?v=mu5hyb4i"></script>
 <script type="module">
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const mobile = matchMedia('(max-width: 760px)').matches;
+// ?capture (dev): full desktop quality at any size, for rendering the phone stills
+const mobile = matchMedia('(max-width: 760px)').matches && !new URLSearchParams(location.search).has('capture');
+// phones and tablets: no WebGL, the story and grimoire as pre-rendered stills (decided in the page head)
+const lite = document.documentElement.classList.contains('lite');
 
 /* ---------- hero wordmark: always spans the full width, whatever the font's metrics ---------- */
 const debug = new URLSearchParams(location.search).has('debug');
@@ -421,6 +409,21 @@ function onStory() {
   story.classList.toggle('at-hero', value < -0.15);
   updateRail(Math.max(0, value));
   scene?.setProgress(value);
+  if (lite) updateStills(value);
+}
+// phones: each still fades in over the one before it as the story reaches its beat (opacity only, so it's GPU work)
+const STILL_AT = [-1, 0.03, 0.35, 0.66, 0.97];
+const stills = [...document.querySelectorAll('.stills img')];
+function updateStills(v) {
+  let top = 0;
+  stills.forEach((img, i) => {
+    const t = i === 0 ? 1 : Math.min(1, Math.max(0, (v - STILL_AT[i - 1]) / (STILL_AT[i] - STILL_AT[i - 1])));
+    const o = t * t * (3 - 2 * t);
+    if (o >= 1) top = i;
+    img.style.opacity = o.toFixed(3);
+  });
+  // the stills after the hero are opaque: anything under the top full one needn't be drawn
+  stills.forEach((img, i) => { img.style.visibility = top > 0 && i < top ? 'hidden' : 'visible'; });
 }
 onStory();
 // the card fades and the grimoire still run on GSAP, so give it the same nudge: if its cached scroll position ever
@@ -473,8 +476,9 @@ function startFallback() {
 // render only while the story is on screen
 new IntersectionObserver(([e]) => { inView = e.isIntersecting; scene?.setActive(inView); fallback?.sync(); }).observe(story);
 
-// the scene is the hero, so it loads straight away
-import('./js/scene.js')
+// the scene is the hero, so it loads straight away (phones: the stills instead)
+if (lite) { story.classList.add('is-lite'); updateStills(value); }
+else import('./js/scene.js')
   .then(({ initInvokeScene }) => initInvokeScene({ canvas: document.getElementById('scene'), reduced, mobile, debug }))
   .then((s) => {
     scene = s;
@@ -487,6 +491,13 @@ import('./js/scene.js')
   })
   .catch((err) => { console.error(err); story.classList.add('no-webgl'); fallback = startFallback(); });
 
+/* ---------- phones: the grimoire as a still, rising in when its section arrives ---------- */
+function bookStill(section) {
+  const box = section.querySelector('.calc-book');
+  box.insertAdjacentHTML('beforeend', '<img class="book-still" src="media/lite/grimoire.webp" alt="" width="900" height="972" loading="lazy" decoding="async">');
+  new IntersectionObserver(([e], io) => { if (e.isIntersecting) { box.classList.add('in'); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' }).observe(box);
+}
+
 /* ---------- the grimoire flies in from the bottom right and opens beside the service guide ---------- */
 {
   const section = document.getElementById('guide');
@@ -498,8 +509,9 @@ import('./js/scene.js')
   });
   const onEnter = (self) => { enter = self.progress; book?.setEnter(enter); };
   ScrollTrigger.create({ trigger: section, start: 'top bottom', end: 'top 15%', onUpdate: onEnter, onRefresh: onEnter });
-  // loads just before the section arrives, renders only while it's on screen
-  new IntersectionObserver(async ([e]) => {
+  // loads just before the section arrives, renders only while it's on screen (phones: a still that rises in)
+  if (lite) bookStill(section);
+  else new IntersectionObserver(async ([e]) => {
     if (e.isIntersecting && !book && !loading) {
       loading = true;
       try {

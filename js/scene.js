@@ -264,7 +264,8 @@ export async function initInvokeScene({ canvas, reduced = false, mobile = false,
     dispose() { cancelAnimationFrame(raf); removeEventListener('resize', resize); renderer.dispose(); },
     // Dev aids (?debug): render a settled frame at story value v, independent of rAF
     // (which browsers throttle in hidden windows); re-pose Invoker live
-    capture(v, time = 6) {
+    capture(v, time = 6, capturePr = 0) {
+      if (capturePr) { renderer.setPixelRatio(capturePr); post.setPixelRatio(capturePr); resize(); }
       target = p = v; uTime.value = time;
       for (let i = 0; i < 3; i++) renderFrame(1 / 60);
       return new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.86));
