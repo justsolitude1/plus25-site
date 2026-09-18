@@ -205,12 +205,8 @@ document.querySelectorAll('.tier[data-gain]').forEach((tier) => {
 {
   const section = document.getElementById('calculator');
   let book = null, loading = false;
-  if (document.documentElement.classList.contains('lite')) {
-    // phones: a still of the same book, rising in when the section arrives (no WebGL)
-    const box = section.querySelector('.calc-book');
-    box.insertAdjacentHTML('beforeend', '<img class="book-still" src="media/lite/grimoire.webp" alt="" width="900" height="972" loading="lazy" decoding="async">');
-    new IntersectionObserver(([e], io) => { if (e.isIntersecting) { box.classList.add('in'); io.disconnect(); } }, { rootMargin: '0px 0px -15% 0px' }).observe(box);
-  } else new IntersectionObserver(async ([e]) => {
+  // phones: no grimoire beside the form (the calculator stands on its own)
+  if (!document.documentElement.classList.contains('lite')) new IntersectionObserver(async ([e]) => {
     if (e.isIntersecting && !book && !loading) {
       loading = true;
       try {

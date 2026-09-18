@@ -760,15 +760,9 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   will-change: opacity, transform; animation: still-drift 9s ease-in-out infinite alternate; }
 .lite .stills img:first-child { opacity: 1; }
 @keyframes still-drift { from { transform: scale(1); } to { transform: scale(1.035) translateY(-6px); } }
-.lite .stage canvas, .lite .step-hero .video-toggle, .lite .calc-book canvas { display: none; }
-.book-still { position: absolute; left: -10%; top: -14%; width: 120%; height: 128%; max-width: none; object-fit: contain; pointer-events: none;
-  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-  opacity: 0; transform: translateY(48px) scale(.94); transition: opacity 1s ease, transform 1.3s cubic-bezier(.2, .7, .2, 1); }
-.calc-book.in .book-still { opacity: 1; transform: none; animation: book-float 6s ease-in-out 1.3s infinite alternate; }
-@keyframes book-float { to { translate: 0 -10px; } }
+.lite .stage canvas, .lite .step-hero .video-toggle, .lite .calc-book { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .orb-still, .lite .stills img, .calc-book.in .book-still { animation: none; }
-  .book-still { transition: none; }
+  .orb-still, .lite .stills img { animation: none; }
 }
 @media (max-width: 900px) {
   .hero-orb3d { order: -1; justify-self: center; width: min(78vw, 320px); margin: -20px 0 -10px; }
