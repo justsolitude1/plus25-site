@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mobile preview · Plus 25</title>
+<!-- A phone-shaped window onto the site, for checking the mobile design from a computer. Unlisted: nothing links here.
+     The site decides on its lite version (stills instead of live 3D) from the frame's width, so what shows here is
+     what a phone gets. Hover effects still work, because a mouse is still a mouse. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600&family=Cinzel:wght@600&display=swap">
+<style>
+  :root { --void: #06070d; --ink: #efe6d6; --muted: #a098ab; --gold: #f0af5e; --line: rgba(240, 175, 94, 0.22);
+    --ui: "Chakra Petch", system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; gap: 18px; align-items: center;
+    padding: 18px 18px 28px; background: radial-gradient(70% 60% at 50% 0%, #14121f, var(--void) 70%); color: var(--ink); font: 500 14px var(--ui); }
+  h1 { margin: 0; font: 600 20px/1 "Cinzel", Georgia, serif; letter-spacing: .04em; }
+  h1 b { color: var(--gold); }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: center; }
+  .group { display: flex; gap: 6px; align-items: center; padding: 6px; border: 1px solid var(--line); border-radius: 999px; background: rgba(6, 7, 13, .6); }
+  .group span { padding: 0 8px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  button, select { font: 500 13px var(--ui); color: var(--ink); background: transparent; border: 0; border-radius: 999px; padding: 8px 12px; cursor: pointer; }
+  button:hover, select:hover { color: var(--gold); }
+  button[aria-pressed="true"] { background: var(--gold); color: #1a0f08; }
+  select { appearance: none; padding-right: 26px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a098ab' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center; }
+  select option { background: #10111f; }
+  /* the phone */
+  .stage { flex: 1; display: grid; place-items: center; width: 100%; }
+  .phone { position: relative; padding: 14px; border-radius: 44px; background: linear-gradient(160deg, #26283a, #0c0d15);
+    box-shadow: 0 40px 80px -30px #000, inset 0 0 0 1px rgba(255, 255, 255, .07); transform-origin: top center; }
+  .phone::before { content: ""; position: absolute; left: 50%; top: 24px; width: 86px; height: 22px; translate: -50% 0; border-radius: 999px; background: #05060b; z-index: 2; }
+  .phone.tablet { border-radius: 26px; padding: 18px; }
+  .phone.tablet::before { display: none; }
+  iframe { display: block; border: 0; border-radius: 32px; background: var(--void); }
+  .phone.tablet iframe { border-radius: 10px; }
+  .size { font-size: 12px; color: var(--muted); letter-spacing: .12em; }
+  .size b { color: var(--ink); font-weight: 500; }
+</style>
+<body>
+  <h1><b>+</b>25 mobile preview</h1>
+  <div class="bar">
+    <div class="group">
+      <span>Page</span>
+      <select id="page">
+        <option value="index.html">Home</option>
+        <option value="replay-analysis.html">Replay analysis</option>
+        <option value="coaching.html">Coaching</option>
+        <option value="mmr-boost.html">MMR boost</option>
+        <option value="login.html">Log in</option>
+        <option value="account.html">Account</option>
+      </select>
+    </div>
+    <div class="group" id="devices"><span>Device</span></div>
+    <div class="group">
+      <button id="rotate" type="button">Rotate</button>
+      <button id="reload" type="button">Reload</button>
+      <button id="newtab" type="button">Open in a tab</button>
+    </div>
+  </div>
+  <p class="size" id="size"></p>
+  <div class="stage"><div class="phone" id="phone"><iframe id="frame" title="Mobile preview"></iframe></div></div>
+
+<script>
+  const DEVICES = [
+    ['iPhone 15', 393, 852], ['iPhone SE', 375, 667], ['Pixel 8', 412, 915], ['Small', 320, 640], ['iPad', 768, 1024],
+  ];
+  const frame = document.getElementById('frame'), phone = document.getElementById('phone');
+  const pageSel = document.getElementById('page'), sizeOut = document.getElementById('size');
+  let device = DEVICES[0], landscape = false;
+
+  const buttons = DEVICES.map((d) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = d[0];
+    b.addEventListener('click', () => { device = d; landscape = false; apply(); });
+    document.getElementById('devices').append(b);
+    return b;
+  });
+
+  // the frame is scaled down when the window is too short, so the whole phone always fits
+  function apply(reload = true) {
+    const [name, w, h] = device;
+    const vw = landscape ? h : w, vh = landscape ? w : h;
+    frame.style.width = vw + 'px';
+    frame.style.height = vh + 'px';
+    phone.classList.toggle('tablet', name === 'iPad');
+    const room = innerHeight - document.querySelector('.bar').offsetHeight - 150;
+    const scale = Math.min(1, room / (vh + 28), (innerWidth - 60) / (vw + 28));
+    phone.style.scale = scale.toFixed(3);
+    phone.style.marginBottom = `${-(vh + 28) * (1 - scale)}px`;
+    buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(DEVICES[i] === device)));
+    sizeOut.innerHTML = `<b>${name}</b> · ${vw} × ${vh} · shown at ${Math.round(scale * 100)}%`;
+    if (reload) load();
+  }
+  // phones have no scrollbar: hide the frame's so the layout width matches a real device
+  frame.addEventListener('load', () => {
+    try {
+      const d = frame.contentDocument;
+      const st = d.createElement('style');
+      st.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{display:none}';
+      d.head.append(st);
+    } catch (e) { /* different origin: nothing to do */ }
+  });
+
+  const url = () => `${pageSel.value}?preview=${Date.now()}`;   // a fresh copy each time, never the cached one
+  const load = () => { frame.src = url(); };
+
+  pageSel.addEventListener('change', load);
+  document.getElementById('rotate').addEventListener('click', () => { landscape = !landscape; apply(false); });
+  document.getElementById('reload').addEventListener('click', load);
+  document.getElementById('newtab').addEventListener('click', () => open(url(), '_blank'));
+  addEventListener('resize', () => apply(false));
+  apply();
+</script>
+</body>
+</html>
