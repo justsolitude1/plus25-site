@@ -21,7 +21,7 @@ var T='https://cdn.jsdelivr.net/npm/three@0.164.1/',M='models/invoker/';
 ['m@build/three.module.min.js','m@examples/jsm/loaders/GLTFLoader.js','m@examples/jsm/utils/BufferGeometryUtils.js','m@examples/jsm/environments/RoomEnvironment.js','m@examples/jsm/postprocessing/EffectComposer.js','m@examples/jsm/postprocessing/RenderPass.js','m@examples/jsm/postprocessing/SavePass.js','m@examples/jsm/postprocessing/UnrealBloomPass.js','m@examples/jsm/postprocessing/OutputPass.js','m@examples/jsm/postprocessing/ShaderPass.js','m@examples/jsm/postprocessing/Pass.js','m@examples/jsm/postprocessing/MaskPass.js','m@examples/jsm/shaders/CopyShader.js','m@examples/jsm/shaders/LuminosityHighPassShader.js','m@examples/jsm/shaders/OutputShader.js','f#scene.gltf','f#scene.bin','f#textures/blinn3_baseColor.webp','f#textures/blinn4_baseColor.webp','f#textures/blinn5_baseColor.webp','f#textures/blinn6_baseColor.webp','f#textures/blinn7_baseColor.webp','f#textures/blinn8_baseColor.webp','f#textures/blinn9_baseColor.webp','mjs/scene.js','mjs/shared.js','mjs/post.js','mjs/orbs.js','mjs/cast.js','mjs/book.js'].forEach(function(u){
 var l=document.createElement('link');l.rel=u[0]==='m'?'modulepreload':'preload';if(u[0]==='f')l.as='fetch';
 u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.href=u;if(!/^js\//.test(u))l.crossOrigin='anonymous';document.head.appendChild(l);});})();</script>
-<link rel="stylesheet" href="css/site.css?v=mu6z7krk">
+<link rel="stylesheet" href="css/site.css?v=mu6zp3qs">
 <!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
 <script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
@@ -92,10 +92,6 @@ u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.hr
       <!-- phones: the story as stills of the same scene, one per beat, crossfaded as you scroll -->
       <div class="stills" aria-hidden="true">
         <img src="media/lite/story-hero.webp" alt="" width="780" height="1688" decoding="async" fetchpriority="high">
-        <img src="media/lite/story-orbs.webp" alt="" width="780" height="1688" decoding="async">
-        <img src="media/lite/story-quas.webp" alt="" width="780" height="1688" decoding="async">
-        <img src="media/lite/story-wex.webp" alt="" width="780" height="1688" decoding="async">
-        <img src="media/lite/story-exort.webp" alt="" width="780" height="1688" decoding="async">
       </div>
       <div class="stage-fade"></div>
       <div class="beat-rail" aria-hidden="true">
@@ -349,7 +345,7 @@ u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.hr
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=mu6z7krk"></script>
+<script type="module" src="js/site.js?v=mu6zp3qs"></script>
 <script type="module">
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // ?capture (dev): full desktop quality at any size, for rendering the phone stills
@@ -408,18 +404,8 @@ function onStory() {
   updateRail(Math.max(0, value));
   scene?.setProgress(value);
 }
-// Phones: no pinned stage. Invoker stands at the top, then each beat is its picture with the words right underneath,
-// so the page reads as ordinary sections and never scrolls through a screen with nothing on it.
+// Phones: no pinned stage. Invoker stands at the top and the beats read as plain sections of copy underneath.
 const stills = [...document.querySelectorAll('.stills img')];
-if (lite) {
-  const beats = [...document.querySelectorAll('.steps .step:not(.step-hero)')];
-  stills.slice(1).forEach((img, i) => {
-    if (!beats[i]) return;
-    img.className = 'beat-art';
-    img.loading = 'lazy';
-    beats[i].prepend(img);
-  });
-}
 onStory();
 // the card fades and the grimoire still run on GSAP, so give it the same nudge: if its cached scroll position ever
 // falls behind (a flick, a restored scroll, a sleeping ticker), this brings it back in step
