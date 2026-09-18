@@ -1169,3 +1169,17 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 
 /* the intro loader plays when the site is opened or refreshed; moving between pages skips it (flag set in each page's head) */
 .seen-intro .preloader { display: none; }
+
+/* ---------- phones: tighter spacing, so sections meet instead of leaving long empty stretches ---------- */
+@media (max-width: 760px) {
+  /* the story's beats: a beat no longer needs a whole screen to itself */
+  .steps .step:not(.step-hero) { min-height: 76svh; padding-block: 7vh; }
+  .section { padding-block: clamp(48px, 7vh, 84px); }
+  .sec-head { margin-bottom: 26px; }
+  .svc .guarantee { padding-block: clamp(48px, 7vh, 84px); }
+  .svc .pain { padding-block: clamp(64px, 9vh, 110px); }
+  .svc .tiers { padding-bottom: clamp(56px, 8vh, 90px); }
+  .svc .more { padding-top: clamp(52px, 7vh, 88px); }
+  .calc-book { min-height: 300px; }
+  .about-grid, .order-layout, .calc-layout { gap: 28px; }
+}
