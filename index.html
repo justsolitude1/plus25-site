@@ -21,7 +21,7 @@ var T='https://cdn.jsdelivr.net/npm/three@0.164.1/',M='models/invoker/';
 ['m@build/three.module.min.js','m@examples/jsm/loaders/GLTFLoader.js','m@examples/jsm/utils/BufferGeometryUtils.js','m@examples/jsm/environments/RoomEnvironment.js','m@examples/jsm/postprocessing/EffectComposer.js','m@examples/jsm/postprocessing/RenderPass.js','m@examples/jsm/postprocessing/SavePass.js','m@examples/jsm/postprocessing/UnrealBloomPass.js','m@examples/jsm/postprocessing/OutputPass.js','m@examples/jsm/postprocessing/ShaderPass.js','m@examples/jsm/postprocessing/Pass.js','m@examples/jsm/postprocessing/MaskPass.js','m@examples/jsm/shaders/CopyShader.js','m@examples/jsm/shaders/LuminosityHighPassShader.js','m@examples/jsm/shaders/OutputShader.js','f#scene.gltf','f#scene.bin','f#textures/blinn3_baseColor.webp','f#textures/blinn4_baseColor.webp','f#textures/blinn5_baseColor.webp','f#textures/blinn6_baseColor.webp','f#textures/blinn7_baseColor.webp','f#textures/blinn8_baseColor.webp','f#textures/blinn9_baseColor.webp','mjs/scene.js','mjs/shared.js','mjs/post.js','mjs/orbs.js','mjs/cast.js','mjs/book.js'].forEach(function(u){
 var l=document.createElement('link');l.rel=u[0]==='m'?'modulepreload':'preload';if(u[0]==='f')l.as='fetch';
 u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.href=u;if(!/^js\//.test(u))l.crossOrigin='anonymous';document.head.appendChild(l);});})();</script>
-<link rel="stylesheet" href="css/site.css?v=mu6yuwhn">
+<link rel="stylesheet" href="css/site.css?v=mu6z7krk">
 <!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
 <script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
@@ -349,7 +349,7 @@ u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.hr
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=mu6yuwhn"></script>
+<script type="module" src="js/site.js?v=mu6z7krk"></script>
 <script type="module">
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // ?capture (dev): full desktop quality at any size, for rendering the phone stills
@@ -397,6 +397,7 @@ ScrollTrigger.config({ ignoreMobileResize: true });   // showing the phone's add
 // A cached scroll position that misses an update (a fast flick back to the top, a restored scroll, a stalled
 // ticker) would otherwise leave the scene, the beat rail and the wordmark frozen at whatever beat you left.
 function onStory() {
+  if (lite) return;
   const len = Math.max(1, story.offsetHeight - innerHeight);          // the story's own scroll length
   const scrolled = Math.min(Math.max(-story.getBoundingClientRect().top, 0), len);
   const heroLen = heroStep.offsetHeight;
@@ -406,19 +407,17 @@ function onStory() {
   story.classList.toggle('at-hero', value < -0.15);
   updateRail(Math.max(0, value));
   scene?.setProgress(value);
-  if (lite) updateStills(value);
 }
-// phones: one beat at a time — each still fades in as the one before it fades out, so nothing shows through from underneath
-const STILL_AT = [-1, 0.03, 0.35, 0.66, 0.97];
+// Phones: no pinned stage. Invoker stands at the top, then each beat is its picture with the words right underneath,
+// so the page reads as ordinary sections and never scrolls through a screen with nothing on it.
 const stills = [...document.querySelectorAll('.stills img')];
-const ease = (t) => { const c = Math.min(1, Math.max(0, t)); return c * c * (3 - 2 * c); };
-function updateStills(v) {
-  stills.forEach((img, i) => {
-    const rise = i === 0 ? 1 : ease((v - STILL_AT[i - 1]) / (STILL_AT[i] - STILL_AT[i - 1]));
-    const fall = i === stills.length - 1 ? 0 : ease((v - STILL_AT[i]) / (STILL_AT[i + 1] - STILL_AT[i]));
-    const o = rise * (1 - fall);
-    img.style.opacity = o.toFixed(3);
-    img.style.visibility = o < 0.004 ? 'hidden' : 'visible';   // off-screen stills cost nothing to draw
+if (lite) {
+  const beats = [...document.querySelectorAll('.steps .step:not(.step-hero)')];
+  stills.slice(1).forEach((img, i) => {
+    if (!beats[i]) return;
+    img.className = 'beat-art';
+    img.loading = 'lazy';
+    beats[i].prepend(img);
   });
 }
 onStory();
@@ -439,9 +438,10 @@ let lastY = -1, lastW = 0, lastH = 0, lastLen = 0;
 })();
 if (debug) window.__story = { get value() { return value; }, get inView() { return inView; }, scene: () => scene?.state() };
 
-// copy cards drift in and out with their beat (reduced motion: cards simply stay visible)
+// copy cards drift in and out with their beat (reduced motion, and phones, where the cards simply stay visible)
 const mm = gsap.matchMedia();
 mm.add('(prefers-reduced-motion: no-preference)', () => {
+  if (lite) return;   // phones: the cards are plain sections, always readable
   const steps = gsap.utils.toArray('.step:not(.step-hero)');
   steps.forEach((step, i) => {
     const card = step.querySelector('.card');
