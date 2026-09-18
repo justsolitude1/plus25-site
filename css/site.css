@@ -760,6 +760,12 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   will-change: opacity, transform; animation: still-drift 9s ease-in-out infinite alternate; }
 .lite .stills img:first-child { opacity: 1; }
 @keyframes still-drift { from { transform: scale(1); } to { transform: scale(1.035) translateY(-6px); } }
+/* the beats: the orb sits smaller and higher, and the still's lower edge fades into the page so the copy reads on clean dark */
+.lite .stills img:not(:first-child) { transform-origin: 50% 8%; animation-name: still-beat;
+  /* an oval of light rather than a full-bleed frame: the orb glows high on the screen and the haze falls away to the page's own dark */
+  -webkit-mask-image: radial-gradient(118% 58% at 50% 26%, #000 34%, rgba(0, 0, 0, .5) 66%, transparent 88%);
+  mask-image: radial-gradient(118% 58% at 50% 26%, #000 34%, rgba(0, 0, 0, .5) 66%, transparent 88%); }
+@keyframes still-beat { from { transform: scale(.82); } to { transform: scale(.86) translateY(-8px); } }
 .lite .stage canvas, .lite .step-hero .video-toggle, .lite .calc-book { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .orb-still, .lite .stills img { animation: none; }
