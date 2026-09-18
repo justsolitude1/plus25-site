@@ -242,9 +242,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .sec-head-row { max-width: none; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .section h2 { font-size: var(--step-3); line-height: 1.1; }
 .sec-sub { margin: 14px 0 0; color: var(--muted); font-size: var(--step-1); }
-.draft-note { display: inline-block; margin: 18px 0 0; padding: 7px 10px; border: 1px dashed rgba(160, 152, 171, 0.4); border-radius: 6px;
-  font: 500 11px/1.4 var(--ui); letter-spacing: 0.08em; color: #9a91a6; }
-.draft-note code { font: inherit; color: var(--gold); }
 
 /* calculator: compact form on the left, the grimoire arriving on the right */
 /* clip sideways only (no page scroll from the book's overhang); vertical stays visible so the fade below can reach up */
@@ -349,7 +346,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .sum-main .dot { color: var(--muted); }
 .sum-detail { margin: 0; color: #d6ccbd; font-size: 15px; font-variant-numeric: tabular-nums; }
 .calc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-.calc-actions .draft-note { margin: 0; }
 .res-note { margin: 0; color: var(--muted); font-size: 14px; }
 /* the canvas overhangs its column so the book's orbiting pages aren't clipped; the section clips the rest */
 .calc-book { position: relative; min-height: clamp(420px, 62vh, 660px); }
@@ -486,7 +482,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .trust-strip li { display: grid; gap: 4px; justify-items: center; text-align: center; }
 .trust-strip b { font: 700 clamp(24px, 2.4vw, 32px)/1 var(--display); color: var(--gold); font-variant-numeric: lining-nums; }
 .trust-strip span { font: 500 11px/1.3 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-.reviews .draft-note { display: block; width: fit-content; margin-inline: auto; }
 @media (max-width: 700px) { .trust-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; } }
 /* the eyebrow gets arrow flourishes either side */
 .rev-hero .eyebrow { display: flex; align-items: center; gap: 12px; }
@@ -578,7 +573,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .post .ex { margin: 0; color: var(--muted); font-size: 15px; }
 
 .site-foot { padding: 28px clamp(20px, 6vw, 96px) 36px; border-top: 1px solid var(--line); background: var(--void); }
-.site-foot p { max-width: 1180px; margin: 0 auto; font: 400 12px/1.6 var(--ui); letter-spacing: 0.04em; color: var(--muted); }
+.site-foot p { display: flex; gap: 18px; max-width: 1180px; margin: 0 auto; font: 400 12px/1.6 var(--ui); letter-spacing: 0.04em; color: var(--muted); }
 .site-foot a { color: var(--gold); }
 
 @media (max-width: 900px) {
@@ -993,7 +988,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .promise b { font: 600 clamp(19px, 1.6vw, 23px)/1.25 var(--display); letter-spacing: 0.01em; }
 .svc .promise small { max-width: 22rem; margin-top: 10px; font-size: 15px; line-height: 1.55; }
 @media (prefers-reduced-motion: reduce) { .svc .promise, .svc .promise:hover { transform: none; } .svc .promise > span::before { transition: none; } }
-.svc .guarantee .draft-note { display: block; width: fit-content; margin-inline: auto; }
 
 /* ---------- packages and reviews ---------- */
 .svc .tier-head { grid-template-columns: 1fr; min-height: 0; row-gap: 0; }
@@ -1172,8 +1166,6 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 }
 @media (min-width: 761px) { .tier-dots { display: none; } }
 
-/* draft notes are for the team: shown locally or with ?drafts, never to visitors */
-html:not(.drafts) .draft-note { display: none; }
 
 /* the intro loader plays when the site is opened or refreshed; moving between pages skips it (flag set in each page's head) */
 .seen-intro .preloader { display: none; }

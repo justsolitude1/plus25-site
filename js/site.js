@@ -2,10 +2,6 @@
 // reviews carousel. Loaded as a module after the GSAP scripts.
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// draft notes ("placeholder prices", "sample figures") are for the team: shown locally or with ?drafts, hidden from visitors
-if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || new URLSearchParams(location.search).has('drafts')) {
-  document.documentElement.classList.add('drafts');
-}
 
 /* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
 // Stays at least MIN_MS (a 3-second intro), never longer than MAX_MS so a slow 3D download can't hold

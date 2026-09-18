@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/site.css?v=mu5i61av">
+<link rel="stylesheet" href="css/site.css?v=mu6u7tqa">
 <!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
 <script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
@@ -69,7 +69,7 @@
   <section class="account" aria-labelledby="account-title">
     <div class="wrap">
       <p class="account-loading" id="accountLoading" role="status">Loading your account…</p>
-      <p class="draft-note" id="authSetup" hidden>Accounts aren't connected yet: add the Supabase project URL and public key in js/supabase.js (see supabase/README.md)</p>
+      <p class="auth-fine" id="authSetup" hidden>Accounts are not open yet. Orders are taken without one in the meantime.</p>
 
       <div id="accountView" hidden>
         <header class="account-head">
@@ -116,12 +116,10 @@
 </main>
 
 <footer class="site-foot">
-  <p>Invoker model: "<a href="https://sketchfab.com/3d-models/invoker-dota-2-7572328187c14c1289d3fc7fc594ac22">Invoker DOTA 2</a>" by
-    <a href="https://sketchfab.com/ansaldotoys2">ansaldotoys2</a>, licensed under <a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.
-    Dota 2 is a trademark of Valve Corporation. Plus 25 is not affiliated with Valve.</p>
+  <p><span>© 2026 Plus 25</span> <a href="credits.html">Credits</a></p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=mu5i61av"></script>
-<script type="module" src="js/account.js?v=mu5i61av"></script>
+<script type="module" src="js/site.js?v=mu6u7tqa"></script>
+<script type="module" src="js/account.js?v=mu6u7tqa"></script>
