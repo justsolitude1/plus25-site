@@ -4,3 +4,6 @@ invoker-viewer.html
 
 # dev-only tools (loader sprite capture); not published
 tools/
+
+# local upload bundle for WHC
+plus25-site.zip
