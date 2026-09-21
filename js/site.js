@@ -4,14 +4,14 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 
 /* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
-// Stays at least MIN_MS (a 3-second intro), never longer than MAX_MS so a slow 3D download can't hold
+// Stays at least MIN_MS (a short intro), never longer than MAX_MS so a slow 3D download can't hold
 // the page hostage (the CSS has its own failsafe too, in case this script never runs).
 {
   const pl = document.getElementById('preloader');
   // the intro plays when the site is opened or refreshed, not on the way between its pages (flag set in each page's head)
   if (pl && document.documentElement.classList.contains('seen-intro')) pl.remove();
   else if (pl) {
-    const MIN_MS = 3000, MAX_MS = 6000, start = performance.now();   // a deliberate 3s intro; never more than 6s
+    const MIN_MS = 1200, MAX_MS = 4000, start = performance.now();   // a brief intro; never more than 4s
     let done = false;
     const finish = () => {
       if (done) return;
@@ -21,7 +21,7 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         setTimeout(() => {
           pl.classList.add('is-done');                // …then the loader fades
           pl.setAttribute('aria-hidden', 'true');
-          setTimeout(() => pl.remove(), 700);         // after the fade
+          setTimeout(() => pl.remove(), 500);         // after the fade
         }, 420);
       }, Math.max(0, MIN_MS - 420 - (performance.now() - start)));
     };

@@ -36,9 +36,9 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .preloader {
   position: fixed; inset: 0; z-index: 200; display: grid; place-content: center; justify-items: center; gap: 26px;
   background: radial-gradient(60% 60% at 50% 45%, #14121f 0%, var(--void) 70%);
-  transition: opacity .55s ease, visibility .55s;
+  transition: opacity .4s ease, visibility .4s;
   /* if the scripts never run, it still lets the page through */
-  animation: pl-failsafe 0s linear 8s forwards;
+  animation: pl-failsafe 0s linear 5s forwards;
 }
 .preloader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
 @keyframes pl-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
@@ -51,16 +51,16 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   background: radial-gradient(closest-side, rgba(240, 175, 94, 0.16), rgba(240, 175, 94, 0.05) 45%, transparent 72%);
   animation: pl-breathe 4.5s ease-in-out infinite; }
 .pl-frame { color: color-mix(in srgb, var(--gold) 85%, transparent); filter: drop-shadow(0 0 5px rgba(240, 175, 94, 0.35)); }
-.pl-tri { animation: pl-turn 54s linear infinite; filter: drop-shadow(0 0 6px rgba(240, 175, 94, 0.45)); }
-.pl-petals { color: color-mix(in srgb, var(--gold) 55%, transparent); animation: pl-turn 38s linear infinite reverse; }
-.pl-dotted { color: color-mix(in srgb, var(--gold) 70%, transparent); animation: pl-turn 90s linear infinite; }
-.pl-rune { color: #ffd9a3; animation: pl-breathe 3.2s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(240, 175, 94, 0.75)); }
+.pl-tri { animation: pl-turn 22s linear infinite; filter: drop-shadow(0 0 6px rgba(240, 175, 94, 0.45)); }
+.pl-petals { color: color-mix(in srgb, var(--gold) 55%, transparent); animation: pl-turn 16s linear infinite reverse; }
+.pl-dotted { color: color-mix(in srgb, var(--gold) 70%, transparent); animation: pl-turn 34s linear infinite; }
+.pl-rune { color: #ffd9a3; animation: pl-breathe 1.8s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(240, 175, 94, 0.75)); }
 @keyframes pl-turn { to { transform: rotate(1turn); } }
 @keyframes pl-breathe { 0%, 100% { opacity: .72; transform: scale(.985); } 50% { opacity: 1; transform: scale(1.015); } }
 /* the outer ring as the progress: most of the way over the intro, closed by the script once the page is ready */
 .pl-track { rotate: -90deg; }
 .pl-arc { stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 5px rgba(240, 175, 94, 0.7));
-  animation: pl-progress 2.9s cubic-bezier(.3, .6, .35, 1) forwards; }
+  animation: pl-progress 1.05s cubic-bezier(.3, .6, .35, 1) forwards; }
 .preloader.is-complete .pl-arc { animation: none; stroke-dashoffset: 0; transition: stroke-dashoffset .35s ease-out; }
 @keyframes pl-progress { to { stroke-dashoffset: 9; } }
 @media (prefers-reduced-motion: reduce) {
