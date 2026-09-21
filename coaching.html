@@ -108,7 +108,7 @@
   <section class="section order" id="order" aria-labelledby="order-title">
     <div class="wrap">
       <header class="sec-head"><p class="eyebrow">Book</p><h2 id="order-title">Plan your sessions.</h2><p class="sec-sub">Pick how many sessions you want and tell us where you're at. We'll match you with a coach for your role.</p></header>
-      <form class="order-layout" data-order-form novalidate>
+      <form class="order-layout" data-order-form data-service="Coaching" data-el="wex" novalidate>
         <div class="order-fields">
           <fieldset class="types">
             <legend>Package</legend>
@@ -153,8 +153,7 @@
             <li><span>Extras</span><span data-out="extras">None</span></li>
           </ul>
           <p class="order-total"><small>Total</small><span data-out="total">$110.00</span></p>
-          <button class="btn btn-gold" type="button" data-order="coachNote">Start checkout</button>
-          <p class="res-note" id="coachNote" hidden>Online checkout isn't live yet.</p>
+          <button class="btn btn-gold" type="button" data-checkout>Start checkout</button>
         </aside>
       </form>
     </div>

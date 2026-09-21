@@ -1,4 +1,4 @@
-// Shared by every page: nav, package cards rising in, order buttons whose checkout isn't live yet, and the
+// Shared by every page: nav, package cards rising in, and the
 // reviews carousel. Loaded as a module after the GSAP scripts.
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -142,11 +142,6 @@ document.querySelectorAll('.svc .promise').forEach((card) => card.addEventListen
   });
 }
 
-/* ---------- order buttons: reveal the "checkout isn't live yet" note they point at ---------- */
-document.querySelectorAll('[data-order]').forEach((btn) => btn.addEventListener('click', () => {
-  const note = document.getElementById(btn.dataset.order);
-  if (note) note.hidden = false;
-}));
 
 /* ---------- reviews: a row that drifts on its own, and can be grabbed and thrown ---------- */
 // The cards are duplicated once so the row loops without a visible jump. It drifts slowly so the section never reads

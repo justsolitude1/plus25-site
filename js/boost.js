@@ -197,7 +197,28 @@ document.querySelectorAll('.tier[data-gain]').forEach((tier) => {
   applyRune();
   fitSlider(readCurrent());
   form.addEventListener('submit', (e) => e.preventDefault());
-  $('checkoutBtn').addEventListener('click', () => { $('checkoutNote').hidden = false; });
+  // checkout gets the climb, the rune, every ticked option and whatever the option details say
+  $('checkoutBtn').addEventListener('click', () => {
+    const current = readCurrent();
+    if (current === null) return;
+    const desired = Number(desRange.value), type = form.elements.boostType.value;
+    const ticked = OPTIONS.filter((o) => optBox(o).checked);
+    const lines = [
+      ['Boost', PRICING.types[type].name],
+      ['From', `${fmt(current)} MMR · ${rankOf(current)}`],
+      ['To', `${fmt(desired)} MMR · ${rankOf(desired)}`],
+      ['Climb', $('resDetail').textContent],
+      ['Time', $('resDays').textContent],
+      ['Options', ticked.length ? ticked.map((o) => o.name).join(', ') : 'None'],
+    ];
+    const roles = [...form.querySelectorAll('input[name="role"]:checked')].map((i) => i.value);
+    if (roles.length && !form.querySelector('.detail[data-for="role"]').hidden) lines.push(['Roles', roles.join(', ')]);
+    for (const [name, label] of [['server', 'Server'], ['schedule', 'Schedule'], ['heroes', 'Heroes']]) {
+      const f = form.elements[name];
+      if (f && f.value.trim() && !f.closest('.detail')?.hidden) lines.push([label, f.value.trim()]);
+    }
+    import('./cart.js').then(({ goToCheckout }) => goToCheckout({ service: 'MMR boost', el: 'exort', lines, total: $('resPrice').textContent }));
+  });
   render();
 }
 

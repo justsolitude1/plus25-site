@@ -1186,3 +1186,29 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
   .calc-book { min-height: 300px; }
   .about-grid, .order-layout, .calc-layout { gap: 28px; }
 }
+
+/* ---------- checkout: confirm the order carried over from the service page, then on to Discord ---------- */
+.checkout-page .co-card { max-width: 34rem; }
+.co-card[hidden] { display: none; }
+.co-sum:not([class*="el-"]) { --el: var(--gold); }
+.co-sum { position: static; padding: 22px 22px 18px; }
+.co-sum .order-lines li span:last-child { overflow-wrap: anywhere; }
+.co-edit { justify-self: start; font: 500 12px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.co-edit:hover, .co-edit:focus-visible { color: var(--ink); }
+.co-opt { margin-left: 6px; letter-spacing: 0.1em; text-transform: none; color: #6f6878; }
+.auth-email textarea { width: 100%; min-height: 84px; resize: vertical; padding: 12px 14px; background: var(--void); border: 1px solid rgba(239, 230, 214, 0.2);
+  border-radius: 8px; color: var(--ink); font: 400 16px/1.4 var(--body); }
+.auth-email textarea:focus-visible { border-color: var(--gold); outline: none; }
+.auth-email .field-note { margin: 0; }
+.co-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.co-ref { margin: 0; color: var(--muted); }
+.co-ref b { display: block; margin-top: 6px; font: 600 clamp(26px, 3vw, 34px)/1 var(--display); letter-spacing: 0.06em; color: var(--gold); }
+.co-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 18px; counter-reset: co; }
+.co-steps li { position: relative; display: grid; gap: 6px; padding-left: 44px; counter-increment: co; }
+.co-steps li::before { content: counter(co); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; display: grid; place-items: center;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent); border-radius: 50%; font: 600 14px/1 var(--ui); color: var(--gold); }
+.co-steps b { color: var(--ink); font-weight: 600; }
+.co-steps span { color: var(--muted); font-size: 15px; }
+.co-steps .btn { justify-self: start; margin-top: 6px; }
+.co-discord[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
+.checkout-page h1:focus { outline: none; }

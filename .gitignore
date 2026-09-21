@@ -7,3 +7,6 @@ tools/
 
 # local upload bundle for WHC
 plus25-site.zip
+
+# the order webhook address, kept on the server only
+api/config.php

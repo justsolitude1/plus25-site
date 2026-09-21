@@ -1,6 +1,9 @@
 // Order panels on the replay analysis and coaching pages. Each form[data-order-form] prices a package
 // (input[name="package"] with data-price / data-label) times any ticked extras (data-surcharge, e.g. 0.3 = +30%),
-// and fills the summary from [data-out] and [data-out-picks] elements. Checkout isn't live yet (see site.js).
+// and fills the summary from [data-out] and [data-out-picks] elements. "Start checkout" carries the summary to
+// checkout.html (see cart.js).
+import { goToCheckout, linesFrom } from './cart.js';
+
 const money = (n) => `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 document.querySelectorAll('form[data-order-form]').forEach((form) => {
@@ -36,6 +39,21 @@ document.querySelectorAll('form[data-order-form]').forEach((form) => {
   form.addEventListener('change', render);
   form.addEventListener('submit', (e) => e.preventDefault());
   render();
+
+  // checkout gets the summary as shown, plus what was typed in full (match IDs, goals, times)
+  form.querySelector('[data-checkout]')?.addEventListener('click', () => {
+    render();
+    const lines = linesFrom(form.querySelector('.order-lines'));
+    if (ids) {
+      const list = (ids.value.match(/\d{6,}/g) || []).slice(0, Number(form.querySelector('input[name="package"]:checked').dataset.replays));
+      if (list.length) lines.push(['Match ID list', list.join(', ')]);
+    }
+    form.querySelectorAll('textarea:not([data-match-ids]), input[type="text"]').forEach((f) => {
+      const label = form.querySelector(`label[for="${f.id}"]`)?.textContent.trim();
+      if (label && f.value.trim()) lines.push([label, f.value.trim()]);
+    });
+    goToCheckout({ service: form.dataset.service, el: form.dataset.el, lines, total: out('total').textContent });
+  });
 });
 
 // package cards further down the page pick their package in the order form on the way up
