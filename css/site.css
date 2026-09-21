@@ -50,8 +50,8 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .pl-glow { border-radius: 50%; will-change: opacity;
   background: radial-gradient(closest-side, rgba(240, 175, 94, 0.16), rgba(240, 175, 94, 0.05) 45%, transparent 72%);
   animation: pl-breathe 4.5s ease-in-out infinite; }
-.pl-frame { color: color-mix(in srgb, var(--gold) 85%, transparent); filter: drop-shadow(0 0 5px rgba(240, 175, 94, 0.35)); }
-.pl-tri { animation: pl-turn 22s linear infinite; filter: drop-shadow(0 0 6px rgba(240, 175, 94, 0.45)); }
+.pl-frame { color: color-mix(in srgb, var(--gold) 85%, transparent); }
+.pl-tri { animation: pl-turn 22s linear infinite; }
 .pl-petals { color: color-mix(in srgb, var(--gold) 55%, transparent); animation: pl-turn 16s linear infinite reverse; }
 .pl-dotted { color: color-mix(in srgb, var(--gold) 70%, transparent); animation: pl-turn 34s linear infinite; }
 .pl-rune { color: #ffd9a3; animation: pl-breathe 1.8s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(240, 175, 94, 0.75)); }
@@ -59,7 +59,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 @keyframes pl-breathe { 0%, 100% { opacity: .72; transform: scale(.985); } 50% { opacity: 1; transform: scale(1.015); } }
 /* the outer ring as the progress: most of the way over the intro, closed by the script once the page is ready */
 .pl-track { rotate: -90deg; }
-.pl-arc { stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 5px rgba(240, 175, 94, 0.7));
+.pl-arc { stroke-dasharray: 100; stroke-dashoffset: 100;
   animation: pl-progress 1.05s cubic-bezier(.3, .6, .35, 1) forwards; }
 .preloader.is-complete .pl-arc { animation: none; stroke-dashoffset: 0; transition: stroke-dashoffset .35s ease-out; }
 @keyframes pl-progress { to { stroke-dashoffset: 9; } }

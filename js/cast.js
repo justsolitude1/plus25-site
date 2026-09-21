@@ -17,8 +17,22 @@ export const POSE = {
   book: { scale: 0.2, lift: 0.18, forward: 0.05, tilt: -0.4 },
 };
 
+// A texture that fails to arrive (a dropped request on a cold, hard-refreshed load) leaves its material untextured,
+// which draws as flat white. Check every textured material and load the model again (only the missing files are
+// fetched a second time; the rest come from cache) until all of them have their colour map.
+async function loadModel() {
+  for (let attempt = 0; ; attempt++) {
+    const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
+    const { parser } = gltf, mats = parser.json.materials || [];
+    const missing = (await Promise.all(mats.map((m, i) => m.pbrMetallicRoughness?.baseColorTexture
+      ? parser.getDependency('material', i).then((mat) => !mat.map) : false))).some(Boolean);
+    if (!missing || attempt >= 3) return gltf;
+    await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+  }
+}
+
 export async function createInvoker({ renderer, mobile = false, pr = 1 }) {
-  const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
+  const gltf = await loadModel();
   const invoker = gltf.scene;
   const bones = [];
   invoker.traverse((o) => {

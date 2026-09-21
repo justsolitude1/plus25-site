@@ -3,14 +3,17 @@
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 
-/* ---------- preloader: hide it once the page, and the home page's opening scene, are ready ---------- */
-// Stays at least MIN_MS (a short intro), never longer than MAX_MS so a slow 3D download can't hold
-// the page hostage (the CSS has its own failsafe too, in case this script never runs).
+/* ---------- preloader: a short intro, gone once the page has loaded ---------- */
+// Stays at least MIN_MS, never longer than MAX_MS (the CSS has its own failsafe too, in case this script never runs).
+// The 3D scenes wait for it to finish (window.__p25IntroDone): building them means seconds of main-thread work
+// (downloads decoding, shaders compiling) that would stutter the sigil while it spins.
+let introDone;
+window.__p25IntroDone = new Promise((r) => (introDone = r));
 {
   const pl = document.getElementById('preloader');
   // the intro plays when the site is opened or refreshed, not on the way between its pages (flag set in each page's head)
-  if (pl && document.documentElement.classList.contains('seen-intro')) pl.remove();
-  else if (pl) {
+  if (!pl || document.documentElement.classList.contains('seen-intro')) { pl?.remove(); introDone(); }
+  else {
     const MIN_MS = 1200, MAX_MS = 4000, start = performance.now();   // a brief intro; never more than 4s
     let done = false;
     const finish = () => {
@@ -21,19 +24,12 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         setTimeout(() => {
           pl.classList.add('is-done');                // …then the loader fades
           pl.setAttribute('aria-hidden', 'true');
-          setTimeout(() => pl.remove(), 500);         // after the fade
+          setTimeout(() => { pl.remove(); introDone(); }, 500);   // after the fade
         }, 420);
       }, Math.max(0, MIN_MS - 420 - (performance.now() - start)));
     };
     const pageLoaded = new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })));
-    // the home page waits for the story scene too (it marks itself is-3d, or no-webgl if it falls back to video)
-    const story = document.getElementById('invoke');
-    const sceneReady = !story ? Promise.resolve() : new Promise((r) => {
-      const ready = () => story.classList.contains('is-3d') || story.classList.contains('no-webgl') || story.classList.contains('is-lite');
-      if (ready()) return r();
-      new MutationObserver((_, mo) => { if (ready()) { mo.disconnect(); r(); } }).observe(story, { attributes: true, attributeFilter: ['class'] });
-    });
-    Promise.all([pageLoaded, sceneReady]).then(finish);
+    pageLoaded.then(finish);
     setTimeout(finish, MAX_MS);
   }
 }
@@ -256,6 +252,7 @@ if (document.getElementById('revTrack')) {
       if (e.isIntersecting && !orb && !loading) {
         loading = true;
         try {
+          await window.__p25IntroDone;   // after the loader, so building it never stutters the sigil
           const { initHeroOrb } = await import('./heroorb.js');
           const debug = new URLSearchParams(location.search).has('debug');
           orb = await initHeroOrb({ canvas, key: host.dataset.orb, reduced, mobile: matchMedia('(pointer: coarse)').matches, debug });
