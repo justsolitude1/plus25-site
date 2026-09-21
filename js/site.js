@@ -80,6 +80,14 @@ if (!reduced && document.querySelector('main.svc')) {
     if (i) el.style.setProperty('--i', Math.min(i, 6));
     io.observe(el);
   }
+  // safety net: at the foot of the page, anything still waiting is shown (content that sits too low to ever
+  // cross the observer's line would otherwise stay hidden)
+  const atEnd = () => {
+    if (innerHeight + scrollY < document.documentElement.scrollHeight - 4) return;
+    for (const [el] of items) if (!el.classList.contains('in')) { el.classList.add('in'); io.unobserve(el); }
+    removeEventListener('scroll', atEnd);
+  };
+  addEventListener('scroll', atEnd, { passive: true });
 }
 // the closing call strikes through its pain points once it is on screen
 {
