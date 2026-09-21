@@ -21,7 +21,7 @@ var T='https://cdn.jsdelivr.net/npm/three@0.164.1/',M='models/invoker/';
 ['m@build/three.module.min.js','m@examples/jsm/loaders/GLTFLoader.js','m@examples/jsm/utils/BufferGeometryUtils.js','m@examples/jsm/environments/RoomEnvironment.js','m@examples/jsm/postprocessing/EffectComposer.js','m@examples/jsm/postprocessing/RenderPass.js','m@examples/jsm/postprocessing/SavePass.js','m@examples/jsm/postprocessing/UnrealBloomPass.js','m@examples/jsm/postprocessing/OutputPass.js','m@examples/jsm/postprocessing/ShaderPass.js','m@examples/jsm/postprocessing/Pass.js','m@examples/jsm/postprocessing/MaskPass.js','m@examples/jsm/shaders/CopyShader.js','m@examples/jsm/shaders/LuminosityHighPassShader.js','m@examples/jsm/shaders/OutputShader.js','f#scene.gltf','f#scene.bin','f#textures/blinn3_baseColor.webp','f#textures/blinn4_baseColor.webp','f#textures/blinn5_baseColor.webp','f#textures/blinn6_baseColor.webp','f#textures/blinn7_baseColor.webp','f#textures/blinn8_baseColor.webp','f#textures/blinn9_baseColor.webp','mjs/scene.js','mjs/shared.js','mjs/post.js','mjs/orbs.js','mjs/cast.js','mjs/book.js'].forEach(function(u){
 var l=document.createElement('link');l.rel=u[0]==='m'?'modulepreload':'preload';if(u[0]==='f')l.as='fetch';
 u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.href=u;if(!/^js\//.test(u))l.crossOrigin='anonymous';document.head.appendChild(l);});})();</script>
-<link rel="stylesheet" href="css/site.css?v=muaymb2f">
+<link rel="stylesheet" href="css/site.css?v=muaz5b8b">
 <!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
 <script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
@@ -360,7 +360,7 @@ u=u.slice(1);if(u[0]==='@')u=T+u.slice(1);else if(u[0]==='#')u=M+u.slice(1);l.hr
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="js/site.js?v=muaymb2f"></script>
+<script type="module" src="js/site.js?v=muaz5b8b"></script>
 <script type="module">
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // ?capture (dev): full desktop quality at any size, for rendering the phone stills
@@ -452,22 +452,22 @@ const mm = gsap.matchMedia();
 mm.add('(prefers-reduced-motion: no-preference)', () => {
   if (lite) return;   // phones: the cards are plain sections, always readable
   const steps = gsap.utils.toArray('.step:not(.step-hero)');
-  // Each card plays a short fade in as its beat reaches the middle of the screen and out as it leaves, rather than
-  // being scrubbed by scroll: a scrubbed card could be left half faded wherever the scrolling stopped.
-  steps.forEach((step, i) => {
+  // Each card fades in as its beat arrives and out as it leaves: all or nothing, never scrubbed by scroll (a scrubbed
+  // card is left half faded wherever the scrolling stops). The fade itself is a CSS transition on a class, which the
+  // browser runs on its own, so a busy page can't hold a card invisible. The cards are only ever hidden once this
+  // script has taken charge of them (story.cards-live); if it never runs, they simply stay on screen.
+  story.classList.add('cards-live');
+  const triggers = steps.map((step, i) => {
     const card = step.querySelector('.card');
-    const last = i === steps.length - 1;
-    gsap.set(card, { autoAlpha: 0, y: 40 });
+    const show = (on, direction = 1) => { card.classList.toggle('is-shown', on); card.classList.toggle('is-above', !on && direction > 0); };
     // shown for as long as any real part of the card is on screen, whichever way the page is scrolling
-    ScrollTrigger.create({
-      trigger: step, start: 'top 80%', end: last ? 'max' : 'bottom 12%',
-      onToggle: ({ isActive, direction }) => gsap.to(card, isActive
-        ? { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: true }
-        : { autoAlpha: 0, y: direction > 0 ? -30 : 40, duration: 0.35, ease: 'power1.in', overwrite: true }),
-      // after a jump or a relayout, snap straight to the right state rather than wait for the next crossing
-      onRefresh: ({ isActive }) => gsap.set(card, isActive ? { autoAlpha: 1, y: 0 } : { autoAlpha: 0 }),
+    return ScrollTrigger.create({
+      trigger: step, start: 'top 80%', end: i === steps.length - 1 ? 'max' : 'bottom 12%',
+      onToggle: ({ isActive, direction }) => show(isActive, direction),
+      onRefresh: ({ isActive, progress }) => show(isActive, progress > 0 ? 1 : -1),   // after a jump or relayout
     });
   });
+  return () => { story.classList.remove('cards-live'); triggers.forEach((t) => t.kill()); };
 });
 
 // pause freezes the animation clock; scrolling still moves the camera
@@ -508,12 +508,7 @@ else (window.__p25IntroDone || Promise.resolve())   // built once the loader has
 {
   const section = document.getElementById('guide');
   let book = null, enter = 0, loading = false;
-  // the guide fades up once as the story hands over to it, then stays: text is never tied to the scroll position,
-  // where stopping part-way would leave it half faded
-  mm.add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.from('.calc-panel', { autoAlpha: 0, y: 40, duration: 0.8, ease: 'power2.out', clearProps: 'all',
-      scrollTrigger: { trigger: section, start: 'top 85%', once: true } });
-  });
+  // (the guide itself slides up with the page's other sections: see the reveal in js/site.js)
   const onEnter = (self) => { enter = self.progress; book?.setEnter(enter); };
   ScrollTrigger.create({ trigger: section, start: 'top bottom', end: 'top 15%', onUpdate: onEnter, onRefresh: onEnter });
   // loads just before the section arrives, renders only while it's on screen (phones: no grimoire, the guide reads on its own)

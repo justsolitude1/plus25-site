@@ -45,46 +45,49 @@ menuBtn.addEventListener('click', () => {
 });
 document.querySelectorAll('#links a').forEach((a) => a.addEventListener('click', () => { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }));
 
-/* ---------- package cards rise in, one after another ---------- */
-if (window.gsap && window.ScrollTrigger && document.querySelector('.tier-grid')) {
-  gsap.registerPlugin(ScrollTrigger);
-  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.utils.toArray('.tier-grid').forEach((grid) => {
-      gsap.from(grid.querySelectorAll('.tier'), { autoAlpha: 0, y: 48, duration: 0.9, ease: 'power3.out', stagger: 0.12, clearProps: 'transform,opacity,visibility',
-        scrollTrigger: { trigger: grid, start: 'top 80%', once: true } });
-    });
-  });
-}
-
-/* ---------- service pages: sections settle in as they arrive ---------- */
-// Singles fade up on their own; the items of a grid follow one another. Anything already above the screen (a reload
-// part-way down, or a jump to #order) is shown at once, so scrolling back up never finds an empty section.
-if (!reduced && document.querySelector('main.svc')) {
+/* ---------- sections settle in as they arrive (service pages; package cards on every page) ---------- */
+// A CSS animation, not a script-driven one: the browser runs it on its own, so it finishes on time even while the
+// page's main thread is busy (3D loading, a heavy scroll). Singles fade up on their own; the items of a grid follow
+// one another. Anything already above the screen (a reload part-way down, or a jump to #order) is shown at once, so
+// scrolling back up never finds an empty section. Each item is [element, place in its group, element that triggers it].
+const revealItems = (() => {
   const q = (sel) => [...document.querySelectorAll(sel)];
-  const items = [
-    ...q('.svc .section:not(.pain):not(.reviews):not(.tiers) .sec-head, .svc .order-layout, .svc .calc-form, .svc .about-copy, .svc .included, .svc .faq-side')
-      .map((el) => [el, 0]),
+  return [
+    ...q('.svc .section:not(.pain):not(.reviews):not(.tiers) .sec-head, .svc .order-layout, .svc .calc-form, .svc .about-copy, .svc .included, .svc .faq-side, .calc-panel')
+      .map((el) => [el, 0, el]),
     ...['.svc .how-grid > li', '.svc .promise-grid > li', '.svc .faq-list > details', '.svc .more-grid > a', '.svc .pain .wrap > *']
-      .flatMap((sel) => q(sel).map((el, i) => [el, i])),
+      .flatMap((sel) => q(sel).map((el, i) => [el, i, el])),
+    // package cards go together when their row arrives: on phones the row swipes sideways, and a card waiting to be
+    // scrolled into view on its own would fade in mid-swipe
+    ...q('.tier-grid').flatMap((grid) => [...grid.querySelectorAll('.tier')].map((el, i) => [el, i, grid])),
   ];
+})();
+if (!reduced && revealItems.length) {
+  const items = revealItems;
+  const groups = new Map();   // trigger element → the items it reveals
+  for (const [el, i, trigger] of items) {
+    el.classList.add('rv');
+    if (i) el.style.setProperty('--i', Math.min(i, 6));
+    if (!groups.has(trigger)) groups.set(trigger, []);
+    groups.get(trigger).push(el);
+  }
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (!e.isIntersecting && e.boundingClientRect.top > 0) continue;
-      if (!e.isIntersecting) e.target.classList.add('rv-now');   // passed while off screen: no animation
-      e.target.classList.add('in');
+      for (const el of groups.get(e.target)) {
+        if (!e.isIntersecting) el.classList.add('rv-now');   // passed while off screen: no animation
+        el.classList.add('in');
+      }
       io.unobserve(e.target);
     }
-  }, { rootMargin: '0px 0px -8% 0px' });
-  for (const [el, i] of items) {
-    el.classList.add('rv');
-    if (i) el.style.setProperty('--i', Math.min(i, 6));
-    io.observe(el);
-  }
+  }, { rootMargin: '0px 0px 20% 0px' });   // starts a little before it scrolls into view, so it's settled on arrival
+  for (const trigger of groups.keys()) io.observe(trigger);
   // safety net: at the foot of the page, anything still waiting is shown (content that sits too low to ever
   // cross the observer's line would otherwise stay hidden)
   const atEnd = () => {
     if (innerHeight + scrollY < document.documentElement.scrollHeight - 4) return;
-    for (const [el] of items) if (!el.classList.contains('in')) { el.classList.add('in'); io.unobserve(el); }
+    for (const [el] of items) el.classList.add('in');
+    io.disconnect();
     removeEventListener('scroll', atEnd);
   };
   addEventListener('scroll', atEnd, { passive: true });

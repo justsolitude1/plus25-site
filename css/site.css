@@ -741,6 +741,13 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .lite .stills img:first-child { opacity: 1; }
 @keyframes still-drift { from { transform: scale(1); } to { transform: scale(1.035) translateY(-6px); } }
 /* the beat stills already carry their framing (a smaller orb, feathered onto the page's dark), so they fill the screen as they are */
+/* story copy on desktop: each card fades in with its beat and out as it leaves (index.html toggles .is-shown).
+   Scoped to .cards-live, which that script sets, so the cards are never hidden unless it is running. */
+.story.cards-live .step:not(.step-hero) .card { opacity: 0; visibility: hidden; translate: 0 40px;
+  transition: opacity .35s ease-in, translate .35s ease-in, visibility 0s linear .35s; }
+.story.cards-live .step:not(.step-hero) .card.is-above { translate: 0 -30px; }
+.story.cards-live .step:not(.step-hero) .card.is-shown { opacity: 1; visibility: visible; translate: 0 0;
+  transition: opacity .5s cubic-bezier(.2, .7, .2, 1), translate .5s cubic-bezier(.2, .7, .2, 1), visibility 0s; }
 /* phones: the story flows as ordinary sections — Invoker at the top, then each beat's picture with its words under it */
 .lite .story .stage { position: relative; height: 84svh; }
 .lite .steps { margin-top: 0; }
@@ -1048,11 +1055,14 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .svc .more .svc-link:hover .arrow { background: var(--el); color: #0b0c14; transform: translateX(4px); }
 
 /* ---------- sections settle in as they arrive (js/site.js adds .rv, then .in) ---------- */
-.rv { opacity: 0; }
-.rv.in { opacity: 1; animation: rv-in .9s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+/* They only slide, never fade: text is at full strength the whole time, so a late script (a busy page, a fast
+   scroll) can leave it a few pixels low for a moment but never blank. translate, not transform, so hover lifts on
+   the same elements still work. */
+.rv { translate: 0 28px; }
+.rv.in { translate: 0 0; animation: rv-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 60ms); }
 .rv.rv-now { animation: none; }
-/* translate, not transform, so hover lifts on the same elements still work */
-@keyframes rv-in { from { opacity: 0; translate: 0 30px; } to { opacity: 1; translate: 0 0; } }
+/* an animation rather than a transition, so it never replaces the cards' own hover transitions */
+@keyframes rv-in { from { translate: 0 28px; } to { translate: 0 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .svc .how-num::before { animation: none; }
