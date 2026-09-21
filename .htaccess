@@ -1,0 +1,7 @@
+# Pages and unversioned scripts are checked with the server on every visit (a quick 304 when unchanged),
+# so a visitor never keeps an old copy of the site. Pictures, models and fonts can be cached for a week.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js|css|json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
