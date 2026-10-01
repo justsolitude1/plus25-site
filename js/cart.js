@@ -2,6 +2,8 @@
 // reaches the server and survives a refresh or a copied link; sessionStorage keeps a copy as a fallback.
 // An order is { service, el, back, lines: [[label, value], …], total }, all plain text.
 const KEY = 'p25-order';
+// set by checkout once the order is confirmed: { ref, discord, email, notes, at }, read by the thank-you page
+export const DONE_KEY = 'p25-confirmed';
 
 const toB64 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const fromB64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)));

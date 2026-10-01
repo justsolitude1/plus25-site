@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- seo -->
+<title>Order received | Plus 25</title>
+<meta name="description" content="Your Plus 25 order is in. Join our Discord and post your order code to get started.">
+<meta name="robots" content="noindex">
+<script>if(!/^(www\.)?plus25dota\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)){var m=document.createElement('meta');m.name='robots';m.content='noindex';document.head.appendChild(m)}</script>
+<meta name="theme-color" content="#06070d">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:site_name" content="Plus 25">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Order received | Plus 25">
+<meta property="og:description" content="Your Plus 25 order is in. Join our Discord and post your order code to get started.">
+<meta property="og:url" content="https://plus25dota.com/thank-you.html">
+<meta property="og:image" content="https://plus25dota.com/media/og/home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Plus 25: Dota 2 MMR boost, coaching and replay analysis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Order received | Plus 25">
+<meta name="twitter:description" content="Your Plus 25 order is in. Join our Discord and post your order code to get started.">
+<meta name="twitter:image" content="https://plus25dota.com/media/og/home.jpg">
+<!-- /seo -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/site.css?v=mupeq4rf">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="./" aria-label="Plus 25 home">
+    <span class="logo-mark"><b>+</b>25</span>
+    <span class="logo-sub">Dota 2 services</span>
+  </a>
+  <nav aria-label="Primary">
+    <ul class="links" id="links">
+      <li><a href="replay-analysis.html">Replay analysis</a></li>
+      <li><a href="coaching.html">Coaching</a></li>
+      <li><a href="mmr-boost.html">MMR boost</a></li>
+      <li><a href="./#blog">Blog</a></li>
+    </ul>
+  </nav>
+  <button class="btn btn-ghost menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+  <a class="btn btn-ghost login" href="login.html" data-auth-link>Login</a>
+</header>
+
+<!-- Checkout lands here once an order is confirmed (the conversion page). Without an order in this tab (opened
+     directly, or a new tab) it says what normally happens instead. -->
+<main id="main" class="auth-page checkout-page">
+  <section class="auth" aria-labelledby="ty-title">
+    <div class="auth-card co-card">
+      <p class="eyebrow">Checkout · step 2 of 2</p>
+      <h1 id="ty-title" tabindex="-1">Order confirmed</h1>
+      <p class="co-ref" id="tyRefRow" hidden>Your order code <b id="tyRef"></b></p>
+      <p class="auth-sub" id="tyNoOrder" hidden>Thanks for ordering with Plus 25. Your order code was shown when you confirmed it; if you've lost it, post your Discord username in #orders and we'll find your order.</p>
+      <ol class="co-steps">
+        <li><b>Join the Plus 25 Discord.</b><span>Our server is where orders are run.</span>
+          <a class="btn btn-gold co-discord" id="tyInvite" target="_blank" rel="noopener">Join our Discord</a></li>
+        <li><b>Post your order code in #orders.</b><span>Or paste the full details, copied with the button below.</span>
+          <button class="btn btn-ghost" type="button" id="tyCopy" hidden>Copy order details</button></li>
+        <li><b>We message you with the next steps.</b><span>A member of the team confirms the details and payment with you there, then your order starts.</span>
+          <!-- TODO(owner): add how soon the team replies (e.g. "usually within 2 hours"), once you can commit to it. --></li>
+      </ol>
+      <p class="auth-msg" id="tyCopyMsg" role="status" aria-live="polite"></p>
+      <p class="auth-fine">While you wait: <a href="replay-analysis.html">replay analysis</a> and <a href="coaching.html">coaching</a> pair well with a boost, so you hold the MMR you gain.</p>
+    </div>
+  </section>
+</main>
+
+<!-- foot -->
+<footer class="site-foot">
+  <div class="foot-in">
+    <nav class="foot-nav" aria-label="Footer">
+      <ul><li><a href="replay-analysis.html">Replay analysis</a></li><li><a href="coaching.html">Coaching</a></li><li><a href="mmr-boost.html">MMR boost</a></li><li><a href="careers.html">Work with us</a></li></ul>
+      <ul><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul>
+    </nav>
+    <p>No tracking or advertising cookies. <a href="privacy.html#storage">What we store</a></p>
+    <p>© 2026 Plus 25. Not affiliated with Valve Corporation. Dota 2 is a trademark of Valve Corporation.</p>
+  </div>
+</footer>
+<!-- /foot -->
+
+<script type="module" src="js/site.js?v=mupeq4rf"></script>
+<script type="module" src="js/thanks.js?v=mupeq4rf"></script>

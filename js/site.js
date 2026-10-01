@@ -45,6 +45,23 @@ menuBtn.addEventListener('click', () => {
 });
 document.querySelectorAll('#links a').forEach((a) => a.addEventListener('click', () => { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }));
 
+/* ---------- phones: the bottom bar steps aside while the page's own main button, or the form it leads to, is on screen ---------- */
+{
+  const bar = document.querySelector('[data-sticky-cta]');
+  if (bar) {
+    const href = bar.querySelector('a').getAttribute('href');
+    const watched = [...document.querySelectorAll('.page-hero .cta-row, .hero-copy .cta-row, .doc-head .cta-row, .auth-card .co-links')];
+    if (href.startsWith('#') && document.querySelector(href)) watched.push(document.querySelector(href));
+    const seen = new Set();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target);
+      bar.classList.toggle('is-hidden', seen.size > 0);
+    });
+    watched.forEach((el) => io.observe(el));
+    if (!watched.length) bar.classList.remove('is-hidden');   // it starts hidden, so it doesn't flash in over the hero
+  }
+}
+
 /* ---------- sections settle in as they arrive (service pages; package cards on every page) ---------- */
 // A CSS animation, not a script-driven one: the browser runs it on its own, so it finishes on time even while the
 // page's main thread is busy (3D loading, a heavy scroll). Singles fade up on their own; the items of a grid follow

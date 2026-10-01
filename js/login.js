@@ -1,6 +1,7 @@
 // Login page: Discord, Google, or a one-time email link. There are no passwords on this site; the first login creates
 // the account (and its profile row, via the trigger in supabase/schema.sql).
 import { getSupabase, isConfigured, accountUrl } from './supabase.js';
+import { formErrors, busy as busyButton } from './forms.js';
 
 const $ = (id) => document.getElementById(id);
 const msg = (text, isError = false) => { $('authMsg').textContent = text; $('authMsg').classList.toggle('is-error', isError); };
@@ -26,13 +27,19 @@ if (!isConfigured) {
     if (error) { busy(false); msg(error.message, true); }
   }));
 
+  const errors = formErrors($('emailForm')), emailBtn = $('emailForm').querySelector('button');
   $('emailForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('authEmail'), email = input.value.trim();
-    if (!input.checkValidity() || !email) { msg('Enter a valid email address.', true); input.focus(); return; }
+    if (!input.checkValidity() || !email) { errors.show({ email: 'Enter a valid email address, like you@example.com.' }); return; }
+    errors.clear();
     busy(true);
+    busyButton(emailBtn, true);
     msg('Sending your login link…');
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: accountUrl() } });
+    let error;
+    try { ({ error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: accountUrl() } })); }
+    catch (err) { error = { message: 'Something went wrong sending your link. Check your connection and try again.' }; }
+    busyButton(emailBtn, false);
     busy(false);
     if (error) msg(error.message, true);
     else msg(`Check ${email} for your login link. Open it in this browser.`);

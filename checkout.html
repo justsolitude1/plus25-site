@@ -2,13 +2,35 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Checkout · Plus 25</title>
+<!-- seo -->
+<title>Checkout | Plus 25</title>
 <meta name="description" content="Confirm your Plus 25 order and join our Discord to get started.">
 <meta name="robots" content="noindex">
+<script>if(!/^(www\.)?plus25dota\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)){var m=document.createElement('meta');m.name='robots';m.content='noindex';document.head.appendChild(m)}</script>
+<meta name="theme-color" content="#06070d">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:site_name" content="Plus 25">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Checkout | Plus 25">
+<meta property="og:description" content="Confirm your Plus 25 order and join our Discord to get started.">
+<meta property="og:url" content="https://plus25dota.com/checkout.html">
+<meta property="og:image" content="https://plus25dota.com/media/og/home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Plus 25: Dota 2 MMR boost, coaching and replay analysis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Checkout | Plus 25">
+<meta name="twitter:description" content="Confirm your Plus 25 order and join our Discord to get started.">
+<meta name="twitter:image" content="https://plus25dota.com/media/og/home.jpg">
+<!-- /seo -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Chakra+Petch:wght@400;500;600&family=Barlow:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/site.css?v=muazyzfe">
+<link rel="stylesheet" href="css/site.css?v=mupeq4rf">
 <!-- phones and tablets get the lite site: pre-rendered stills instead of live 3D (?force3d overrides) -->
 <script>try{var q=location.search;if(!/force3d|capture/.test(q)&&(matchMedia('(max-width: 760px)').matches||matchMedia('(pointer: coarse)').matches&&Math.min(screen.width,screen.height)<=1024))document.documentElement.classList.add('lite')}catch(e){}</script>
 <!-- the intro loader plays when the site is opened or refreshed, not when moving between its pages -->
@@ -93,7 +115,7 @@
       <div class="co-links"><a class="btn btn-ghost" href="replay-analysis.html">Replay analysis</a><a class="btn btn-ghost" href="coaching.html">Coaching</a><a class="btn btn-ghost" href="mmr-boost.html">MMR boost</a></div>
     </div>
 
-    <!-- step 1: the order as chosen, and how to reach the customer -->
+    <!-- step 1: the order as chosen, and how to reach the customer (step 2 is thank-you.html) -->
     <form class="auth-card co-card" id="coForm" novalidate hidden>
       <p class="eyebrow">Checkout · step 1 of 2</p>
       <h1 id="co-title">Confirm your order</h1>
@@ -105,42 +127,35 @@
       </div>
       <div class="auth-email">
         <label for="coDiscord">Discord username</label>
-        <input type="text" id="coDiscord" name="discord" autocomplete="username" placeholder="yourname" maxlength="40" required>
-        <p class="field-note">So we know it's you when you join.</p>
+        <input type="text" id="coDiscord" name="discord" autocomplete="username" placeholder="yourname" maxlength="40" required aria-describedby="coDiscordNote">
+        <p class="field-note" id="coDiscordNote">So we know it's you when you join.</p>
       </div>
       <div class="auth-email">
         <label for="coEmail">Email <span class="co-opt">optional</span></label>
-        <input type="email" id="coEmail" name="email" autocomplete="email" placeholder="you@example.com" maxlength="120">
+        <input type="email" id="coEmail" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" maxlength="120">
       </div>
       <div class="auth-email">
         <label for="coNotes">Anything else? <span class="co-opt">optional</span></label>
         <textarea id="coNotes" name="notes" rows="3" maxlength="600" placeholder="Questions, timing, anything we should know"></textarea>
       </div>
       <button class="btn btn-gold" type="submit">Confirm order</button>
-      <p class="auth-msg" id="coMsg" role="status" aria-live="polite"></p>
-      <p class="auth-fine">No payment here. We confirm every order with you on Discord before anything is charged.</p>
+      <p class="auth-fine">No payment here. We confirm every order with you on Discord before anything is charged. By confirming you agree to our <a href="terms.html">terms</a>; see how we use your details in our <a href="privacy.html">privacy policy</a>.</p>
     </form>
-
-    <!-- step 2: the order is in; join the Discord to get going -->
-    <div class="auth-card co-card" id="coDone" hidden>
-      <p class="eyebrow">Checkout · step 2 of 2</p>
-      <h1 tabindex="-1">Order confirmed</h1>
-      <p class="co-ref">Your order code <b id="coRef"></b></p>
-      <ol class="co-steps">
-        <li><b>Join the Plus 25 Discord.</b><span>Our server is where orders are run.</span>
-          <a class="btn btn-gold co-discord" id="coInvite" href="#" target="_blank" rel="noopener">Join our Discord</a></li>
-        <li><b>Post your order code in #orders.</b><span>Or paste the full details, copied with the button below.</span>
-          <button class="btn btn-ghost" type="button" id="coCopy">Copy order details</button></li>
-        <li><b>You'll be notified on the next steps.</b><span>A member of the team messages you there to confirm the details and payment, then your order starts.</span></li>
-      </ol>
-      <p class="auth-msg" id="coCopyMsg" role="status" aria-live="polite"></p>
-    </div>
   </section>
 </main>
 
+<!-- foot -->
 <footer class="site-foot">
-  <p>© 2026 Plus 25</p>
+  <div class="foot-in">
+    <nav class="foot-nav" aria-label="Footer">
+      <ul><li><a href="replay-analysis.html">Replay analysis</a></li><li><a href="coaching.html">Coaching</a></li><li><a href="mmr-boost.html">MMR boost</a></li><li><a href="careers.html">Work with us</a></li></ul>
+      <ul><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul>
+    </nav>
+    <p>No tracking or advertising cookies. <a href="privacy.html#storage">What we store</a></p>
+    <p>© 2026 Plus 25. Not affiliated with Valve Corporation. Dota 2 is a trademark of Valve Corporation.</p>
+  </div>
 </footer>
+<!-- /foot -->
 
-<script type="module" src="js/site.js?v=muazyzfe"></script>
-<script type="module" src="js/checkout.js?v=muazyzfe"></script>
+<script type="module" src="js/site.js?v=mupeq4rf"></script>
+<script type="module" src="js/checkout.js?v=mupeq4rf"></script>

@@ -271,6 +271,8 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .slider-scale { display: flex; justify-content: space-between; margin-top: 6px; font: 500 11px/1 var(--ui); letter-spacing: 0.12em; color: var(--muted); font-variant-numeric: tabular-nums; }
 .types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
 .types legend { grid-column: 1 / -1; padding: 0 0 14px; font: 500 12px/1 var(--ui); letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+.types.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.types[hidden], .opt-details[hidden] { display: none; }
 .type { position: relative; display: grid; cursor: pointer; }
 .type input { position: absolute; opacity: 0; pointer-events: none; }
 .type span { display: grid; align-content: center; gap: 6px; padding: 11px 6px; text-align: center; border: 1px solid rgba(239, 230, 214, 0.2); border-radius: 8px;
@@ -316,6 +318,7 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .pick { position: relative; cursor: pointer; }
 .pick span { display: block; padding: 8px 11px; border: 1px solid rgba(239, 230, 214, 0.2); border-radius: 999px; font: 500 12px/1 var(--ui); color: var(--ink); transition: border-color .2s, color .2s, background .2s; }
 .pick input:checked + span { border-color: var(--gold); color: var(--gold); background: rgba(240, 175, 94, 0.1); }
+.pick small { margin-left: 4px; font-size: 11px; letter-spacing: 0.06em; color: var(--gold); }
 @media (max-width: 460px) { .opts { grid-template-columns: 1fr; } }
 .sum-nudge { margin: 8px 0 0; font: 500 12px/1.4 var(--ui); letter-spacing: 0.06em; color: var(--gold); }
 .sum-nudge:empty { display: none; }
@@ -1212,3 +1215,104 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .co-steps .btn { justify-self: start; margin-top: 6px; }
 .co-discord[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
 .checkout-page h1:focus { outline: none; }
+
+/* ---------- footer: service and legal links, the storage note and the Valve notice (written by scripts/build.mjs) ---------- */
+.site-foot .foot-in { max-width: 1180px; margin: 0 auto; display: grid; gap: 10px; }
+.site-foot p { margin: 0; }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 4px 28px; margin-bottom: 8px; }
+.foot-nav ul { display: flex; flex-wrap: wrap; gap: 0 22px; margin: 0; padding: 0; list-style: none; }
+.foot-nav a { display: inline-block; padding-block: 12px; font: 500 12px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--ink); opacity: 0.82; }
+.foot-nav a:hover, .foot-nav a:focus-visible, .foot-nav a[aria-current="page"] { opacity: 1; color: var(--gold); }
+
+/* ---------- phones: the page's main action in a bar along the bottom (hidden while the page's own button or form is on screen) ---------- */
+.sticky-cta { display: none; }
+@media (max-width: 760px) {
+  .sticky-cta { position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: block;
+    padding: 10px clamp(20px, 6vw, 96px) calc(10px + env(safe-area-inset-bottom));
+    background: rgba(6, 7, 13, 0.94); border-top: 1px solid var(--line); transition: transform .3s ease, visibility .3s; }
+  .sticky-cta .btn { width: 100%; justify-content: center; }
+  .sticky-cta.is-hidden { transform: translateY(110%); visibility: hidden; }
+  /* room under the footer, so the bar never sits on top of its last line */
+  body:has(.sticky-cta) .site-foot { padding-bottom: calc(36px + 68px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .sticky-cta { transition: none; } }
+
+/* ---------- live chat: a Discord button in the corner, above the phone bar ---------- */
+.chat-fab { position: fixed; z-index: 31; right: clamp(14px, 2vw, 28px); bottom: calc(clamp(14px, 2vw, 28px) + env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 18px 0 14px; border: 1px solid rgba(240, 175, 94, 0.45); border-radius: 999px;
+  background: #5865f2; color: #fff; text-decoration: none; font: 600 13px/1 var(--ui); letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 14px 34px -14px rgba(88, 101, 242, 0.9); transition: transform .2s, box-shadow .2s; }
+.chat-fab:hover, .chat-fab:focus-visible { transform: translateY(-2px); box-shadow: 0 18px 40px -14px rgba(88, 101, 242, 1); }
+.chat-fab:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+@media (max-width: 760px) {
+  .chat-fab { width: 52px; padding: 0; justify-content: center; }
+  .chat-fab-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  body:has(.sticky-cta) .chat-fab { bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .chat-fab, .chat-fab:hover { transition: none; transform: none; } }
+
+/* ---------- pages of reading: privacy, terms, contact, careers ---------- */
+.doc-page { max-width: 46rem; margin: 0 auto; padding: clamp(110px, 16vh, 150px) clamp(20px, 6vw, 40px) clamp(60px, 10vh, 100px); }
+.doc-head { margin-bottom: clamp(28px, 5vh, 48px); }
+.doc-head h1 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.08; margin-bottom: 18px; }
+.doc-head .lede { margin-bottom: 0; }
+.doc-head .cta-row { margin-top: 26px; }
+.doc-date { margin: 0 0 16px; font: 500 12px/1 var(--ui); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.doc-section { padding-block: 26px; border-top: 1px solid var(--line); }
+.doc-section h2 { font-size: clamp(22px, 2.4vw, 28px); margin-bottom: 14px; }
+.doc-section p, .doc-section li, .doc-section dd { color: #d9cfc0; }
+.doc-section p { margin: 0 0 14px; }
+.doc-section p:last-child { margin-bottom: 0; }
+.doc-section a:not(.btn) { color: var(--gold); }
+.doc-section ul:not(.doc-cards):not(.picks) { margin: 0 0 14px; padding-left: 1.2em; display: grid; gap: 8px; }
+.doc-section b { color: var(--ink); font-weight: 600; }
+.doc-list { margin: 0 0 14px; display: grid; gap: 6px; }
+.doc-list dt { font: 600 15px/1.3 var(--ui); letter-spacing: 0.04em; color: var(--ink); margin-top: 10px; }
+.doc-list dd { margin: 0; }
+.doc-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.doc-cards li { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 4px 16px; align-items: start; padding: 18px; border: 1px solid color-mix(in srgb, var(--el) 30%, transparent);
+  border-radius: 14px; background: color-mix(in srgb, var(--el) 6%, transparent); }
+.doc-cards .tier-orb { grid-row: span 2; width: 42px; height: 42px; }
+.doc-cards b { font: 600 16px/1.3 var(--ui); letter-spacing: 0.04em; }
+.doc-cards span:not(.tier-orb) { color: #d9cfc0; font-size: 15px; }
+.err-links { display: flex; flex-wrap: wrap; gap: 0 20px; margin: 4px 0 0; padding: 0; list-style: none; }
+.err-links a { display: inline-block; padding-block: 12px; color: var(--gold); font: 500 13px/1 var(--ui); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---------- careers: the application form ---------- */
+.apply-form { display: grid; gap: 22px; }
+.apply-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 560px) { .apply-row { grid-template-columns: 1fr; } }
+.field input[type="email"], .field input[type="url"], .field input[type="number"] { display: block; width: 100%; padding: 11px 12px; background: var(--void);
+  border: 1px solid rgba(239, 230, 214, 0.2); border-radius: 8px; color: var(--ink); font: 400 16px/1.3 var(--body); }
+.field input[type="email"]:focus-visible, .field input[type="url"]:focus-visible, .field input[type="number"]:focus-visible { border-color: var(--gold); outline: none; }
+.field input::placeholder { color: #6f6878; }
+.apply-form .field label { margin-bottom: 10px; }
+.apply-form .btn { justify-self: start; }
+.apply-done h3 { margin: 0 0 10px; font: 600 24px/1.2 var(--display); color: var(--gold); }
+.apply-done h3:focus { outline: none; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- form states: errors tied to their fields, a summary on top, a busy button ---------- */
+.form-errors { padding: 14px 16px; border: 1px solid #ff8a7a; border-left-width: 4px; border-radius: 10px; background: rgba(255, 138, 122, 0.08); color: var(--ink); font-size: 15px; }
+.form-errors[hidden] { display: none; }
+.form-errors:focus { outline: 2px solid #ff8a7a; outline-offset: 2px; }
+.form-errors p { margin: 0 0 6px; font-weight: 500; }
+.form-errors p:only-child { margin: 0; }
+.form-errors ul { margin: 0; padding-left: 1.2em; }
+.form-errors a { color: #ffb4a8; }
+.field-error { margin: 8px 0 0; font: 500 13px/1.4 var(--ui); color: #ff8a7a; }
+.field-error::before { content: "! "; font-weight: 700; }
+:is(input, select, textarea)[aria-invalid="true"] { border-color: #ff8a7a !important; box-shadow: 0 0 0 1px #ff8a7a; }
+.field-set:has([aria-invalid="true"]) .pick span { border-color: rgba(255, 138, 122, 0.6); }
+.text-btn { padding: 0; border: 0; background: none; color: var(--gold); font: inherit; text-decoration: underline; cursor: pointer; }
+.spinner { display: inline-block; width: 1em; height: 1em; margin-right: 10px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  vertical-align: -0.15em; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+
+/* ---------- phones: the calculator's price stays in view beside the slider while you set your goal ---------- */
+@media (max-width: 760px) {
+  .svc .calc-form > .calc-sum { position: sticky; z-index: 5; bottom: 0; margin-inline: calc(-1 * clamp(22px, 3vw, 40px)); padding: 14px clamp(22px, 3vw, 40px) calc(14px + env(safe-area-inset-bottom));
+    background: rgba(12, 13, 24, 0.96); border-top: 1px solid color-mix(in srgb, var(--el) 40%, transparent); box-shadow: 0 -18px 30px -18px rgba(0, 0, 0, 0.8); }
+  .svc .calc-form > .calc-sum .sum-main { font-size: 26px; }
+}

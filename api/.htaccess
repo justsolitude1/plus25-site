@@ -1,0 +1,4 @@
+# Only the two endpoints answer from the web; the shared code and the webhook config are never served.
+<FilesMatch "^(lib|config)\.php$">
+  Require all denied
+</FilesMatch>

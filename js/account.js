@@ -52,8 +52,12 @@ if (!isConfigured) {
     $('nameForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const value = $('nameInput').value.trim();
-      if (!value) { $('nameMsg').textContent = 'Enter a display name.'; $('nameMsg').classList.add('is-error'); return; }
+      if (value) $('nameInput').removeAttribute('aria-invalid'); else $('nameInput').setAttribute('aria-invalid', 'true');
+      if (!value) { $('nameMsg').textContent = 'Enter a display name.'; $('nameMsg').classList.add('is-error'); $('nameInput').focus(); return; }
+      const btn = $('nameForm').querySelector('button');
+      btn.disabled = true; $('nameMsg').classList.remove('is-error'); $('nameMsg').textContent = 'Saving…';
       const { error } = await supabase.from('profiles').update({ display_name: value }).eq('id', user.id);
+      btn.disabled = false;
       $('nameMsg').classList.toggle('is-error', Boolean(error));
       $('nameMsg').textContent = error ? error.message : 'Saved';
       if (!error) $('accName').textContent = value;

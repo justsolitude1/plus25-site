@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- The share picture (1200×630) for each page, rendered by scripts/make-og.mjs: og.html?p=home|boost|coaching|replay -->
+<html lang="en">
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Chakra+Petch:wght@500;600&display=swap">
+<style>
+  html, body { margin: 0; }
+  body { width: 1200px; height: 630px; overflow: hidden; background: #06070d; color: #efe6d6; font-family: "Chakra Petch", sans-serif; position: relative; }
+  .glow { position: absolute; inset: 0; background: radial-gradient(60% 80% at 78% 50%, color-mix(in srgb, var(--c) 26%, transparent), transparent 70%), radial-gradient(40% 60% at 10% 100%, rgba(240,175,94,.12), transparent 70%); }
+  .frame { position: absolute; inset: 22px; border: 1px solid rgba(240,175,94,.28); border-radius: 18px; }
+  .copy { position: absolute; left: 84px; top: 0; bottom: 0; width: 600px; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+  .logo { width: 380px; }
+  .eyebrow { margin: 0; font: 600 20px/1 "Chakra Petch"; letter-spacing: .28em; text-transform: uppercase; color: var(--c); }
+  h1 { margin: 0; font: 700 64px/1.02 "Cinzel", serif; letter-spacing: -.01em; }
+  p.sub { margin: 0; font: 500 26px/1.3 "Chakra Petch"; color: #a098ab; }
+  .orbs { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); width: 500px; height: 500px; }
+  .orbs img { position: absolute; mix-blend-mode: screen; -webkit-mask-image: radial-gradient(circle, #000 38%, transparent 68%); mask-image: radial-gradient(circle, #000 38%, transparent 68%); }
+  .one img { width: 500px; height: 500px; inset: 0; }
+  .three img { width: 300px; height: 300px; }
+  .three img:nth-child(1) { left: 100px; top: 0; }
+  .three img:nth-child(2) { left: 0; top: 200px; }
+  .three img:nth-child(3) { left: 200px; top: 200px; }
+</style>
+<div class="glow"></div>
+<div class="frame"></div>
+<div class="copy">
+  <img class="logo" src="../brand/plus25-logo-on-dark.svg" alt="">
+  <p class="eyebrow" id="eyebrow"></p>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+</div>
+<div class="orbs" id="orbs"></div>
+<script>
+const P = {
+  home: { c: '#f0af5e', eyebrow: 'Dota 2 services', title: 'Climb the ladder, your way.', sub: 'MMR boost · Coaching · Replay analysis', orbs: ['quas', 'wex', 'exort'] },
+  boost: { c: '#ffa23a', eyebrow: 'Exort · MMR boost', title: 'Dota 2 MMR boost', sub: '+25 a win · Offline mode · From $22', orbs: ['exort'] },
+  coaching: { c: '#c07bff', eyebrow: 'Wex · Coaching', title: 'Dota 2 coaching', sub: 'Live one-to-one sessions with a high-MMR coach', orbs: ['wex'] },
+  replay: { c: '#4fc3ff', eyebrow: 'Quas · Replay analysis', title: 'Dota 2 replay analysis', sub: 'Timestamped notes from a high-MMR analyst', orbs: ['quas'] },
+}[new URLSearchParams(location.search).get('p') || 'home'];
+document.body.style.setProperty('--c', P.c);
+for (const k of ['eyebrow', 'title', 'sub']) document.getElementById(k).textContent = P[k];
+const orbs = document.getElementById('orbs');
+orbs.className = 'orbs ' + (P.orbs.length > 1 ? 'three' : 'one');
+orbs.innerHTML = P.orbs.map((o) => `<img src="../media/lite/orb-${o}.webp" alt="">`).join('');
+</script>

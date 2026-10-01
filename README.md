@@ -34,7 +34,10 @@ Then open http://localhost:5178/. Add `?debug` to the URL for the dev capture ho
 - **MMR boost prices** — set 10% under VikingDOTA's MMR boost, from their price formula (checked 2026-09-15). The
   `PRICING` table in `js/boost.js` drives both the calculator and the package cards' "from" prices; re-check if Viking
   changes rates. Boost types Bounty / Haste / Double Damage use Viking's Eco / Plus / Ultimate rates, bonus MMR tiers
-  and options (`OPTIONS`). The MMR cap is 7,000. The home page's "from $22" is written by hand.
+  and options (`OPTIONS`). The MMR cap is 8,000 (the cost table runs to 9,100). The home page's "from $22" is written by hand.
+- **Duo queue prices** — the calculator's Solo / Duo switch. Duo is set 10% under VikingDOTA's DuoQ Rank Up, from
+  their price formula (checked 2026-10-01): the `DUO` table in `js/boost.js` holds the rate, the main-role rates, the
+  add-ons, bonus MMR tiers and the 7,000 MMR cap. Viking's "Try Hard" packages and "Choose Pro Player" are left out.
 - **Replay analysis and coaching prices and packages** are placeholders, set in each page's order form
   (`data-price`) and package cards, and on the home page's service cards.
 - **Guarantees and FAQ answers** on every service page are draft promises; confirm each one before launch.
