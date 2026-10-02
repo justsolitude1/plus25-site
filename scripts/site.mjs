@@ -8,7 +8,7 @@ export const SITE = {
   // Real contact details go here once confirmed; empty values are left out of the page and the structured data.
   // TODO(owner): support email, and a business address if you want one shown.
   email: '',
-  discordInvite: '',
+  discordInvite: 'https://discord.com/invite/Hm8dxu2Uy',
 };
 
 // The site's one main action: shown in the home page's hero and in the phone bar on pages without their own.
