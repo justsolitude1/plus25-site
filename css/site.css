@@ -126,7 +126,10 @@ h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: 0.02em; 
 .logo-sub { font: 500 10px/1 var(--ui); letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
 .links { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
 .links a { font: 500 13px/1 var(--ui); letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; color: var(--ink); opacity: 0.82; transition: opacity .2s, color .2s; }
+.links a { white-space: nowrap; }
 .links a:hover { opacity: 1; color: var(--gold); }
+/* five links: tighter between phone and desktop widths, so none wraps */
+@media (max-width: 1000px) { .links { gap: 16px; } .links a { font-size: 12px; letter-spacing: 0.1em; } .logo-sub { display: none; } .nav .login { flex: none; } }
 .nav .login, .menu-btn { min-height: 44px; padding: 12px 20px; font-size: 14px; letter-spacing: 0.12em; }
 .menu-btn { display: none; }
 /* story cards: the link to each service, in that orb's colour */

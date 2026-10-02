@@ -10,3 +10,6 @@ plus25-site.zip
 
 # the order webhook address, kept on the server only
 api/config.php
+
+# local preview config for Claude
+.claude/
