@@ -2,6 +2,8 @@
 // Shared by order.php and apply.php: request checks, a per-address rate limit, text cleaning and the Discord webhook.
 // The webhook URL lives in config.php beside this file (kept out of the repo, never sent to the browser):
 //   <?php return ['discord_webhook' => 'https://discord.com/api/webhooks/…'];
+// An endpoint can have a channel of its own: 'orders_webhook' for order.php, 'apply_webhook' for apply.php.
+// Without one it posts to 'discord_webhook'.
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
 function done($code, $body) { http_response_code($code); echo json_encode($body); exit; }
@@ -13,6 +15,7 @@ function p25_request($bucket, $maxHits) {
   if ($origin !== '' && !in_array($origin, ['https://plus25dota.com', 'https://www.plus25dota.com'], true)) done(403, ['ok' => false]);
 
   $cfg = @include __DIR__ . '/config.php';
+  if (is_array($cfg) && !empty($cfg["{$bucket}_webhook"])) $cfg['discord_webhook'] = $cfg["{$bucket}_webhook"];
   if (!is_array($cfg) || empty($cfg['discord_webhook'])) done(503, ['ok' => false, 'error' => 'not configured']);
 
   // at most $maxHits posts per 10 minutes from one address, so the channel can't be flooded
